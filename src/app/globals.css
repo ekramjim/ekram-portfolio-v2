@@ -1,0 +1,24 @@
+@import 'tailwindcss';
+
+:root {
+  --bg-primary: #0d0d0d;
+  --text-primary: #f7f9fc;
+  --accent: #ff6600;
+}
+
+html {
+  background: var(--bg-primary);
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hide native cursor when the custom cursor is active (GalaxyCursor adds this class). */
+.custom-cursor,
+.custom-cursor * {
+  cursor: none !important;
+}
