@@ -8,12 +8,14 @@ interface ProjectsSkyProps {
   projects: Project[];
   /** Index of the project the camera should fly to, or -1 for the whole galaxy. */
   active: number;
+  /** A project is expanded: fly in closer. */
+  open: boolean;
   /** Narrow layout: galaxy sits under the list instead of beside it. */
   small: boolean;
 }
 
 /** The galaxy canvas behind the list. It fills its parent and only animates while on screen. */
-export default function ProjectsSky({ projects, active, small }: ProjectsSkyProps) {
+export default function ProjectsSky({ projects, active, open, small }: ProjectsSkyProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const skyRef = useRef<Sky | null>(null);
 
@@ -38,6 +40,7 @@ export default function ProjectsSky({ projects, active, small }: ProjectsSkyProp
   }, [projects]);
 
   useEffect(() => { skyRef.current?.setActive(active); }, [active]);
+  useEffect(() => { skyRef.current?.setOpen(open); }, [open]);
   useEffect(() => { skyRef.current?.setSmall(small); }, [small]);
 
   return <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />;

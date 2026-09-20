@@ -13,49 +13,50 @@ export interface Project {
   color2: string;
   /** Big letter(s) on the placeholder screen. */
   glyph: string;
-  /** Where the project's star sits in the galaxy: spiral arm (0-2) and distance along it (0 core, 1 rim). */
-  arm: number;
-  t: number;
+  /** Where the project's star sits in the sky, in sky units. (0, 0) is the middle of the overview; x grows right, y grows down. */
+  x: number;
+  y: number;
   /** Adds a sample chart line to the placeholder screen. */
   chart?: 1 | 2;
   /** Real screenshot, e.g. "/projects/linkedhive.png" (put the file in /public). Shown instead of the placeholder. */
   image?: string;
-  /** Case-study or live link. Rows render as links once this is set. */
+  /** Shown in the home page highlights. Every project appears on /projects. */
+  highlight?: boolean;
+  /** Case-study page or live link. The expanded row shows "View case study" once this is set. */
   href?: string;
 }
-
-/** Total number of projects, including the ones not listed here yet. */
-export const TOTAL_PROJECTS = 9;
 
 export const PROJECTS: Project[] = [
   {
     id: "linkedhive", name: "LinkedHive", group: "Mobile", kind: "phone",
     summary: "A mobile app in the LinkedHive line of work.",
     stack: ["React Native", "TypeScript", "PostgreSQL"],
-    color: "#5aa9ff", color2: "#2a3f8f", glyph: "L", arm: 0, t: 0.64,
+    highlight: true, color: "#5aa9ff", color2: "#2a3f8f", glyph: "L", x: -110, y: -80,
   },
   {
     id: "timebreak", name: "TimeBreak", group: "Mobile", kind: "phone",
     summary: "A mobile app for time and breaks.",
     stack: ["SwiftUI", "Swift"],
-    color: "#4fd0c4", color2: "#1d5a7a", glyph: "T", arm: 1, t: 0.44,
+    highlight: true, color: "#4fd0c4", color2: "#1d5a7a", glyph: "T", x: 40, y: -115,
   },
   {
     id: "lynksphere", name: "LynkSphere Website", group: "Web", kind: "browser",
     summary: "The website for LynkSphere, the company I co-founded.",
     stack: ["Next.js", "TypeScript", "AWS"],
-    color: "#ffb55e", color2: "#a2412b", glyph: "Ly", arm: 2, t: 0.8,
+    highlight: true, color: "#ffb55e", color2: "#a2412b", glyph: "Ly", x: 150, y: -20,
   },
   {
     id: "afl", name: "AFL Ranking System", group: "Data science", kind: "browser", chart: 1,
     summary: "A data-driven ranking system for AFL teams.",
     stack: ["Python", "Scikit-learn", "PostgreSQL"],
-    color: "#7be495", color2: "#1c6a52", glyph: "AFL", arm: 0, t: 0.3,
+    highlight: true, color: "#7be495", color2: "#1c6a52", glyph: "AFL", x: -60, y: 55,
   },
   {
     id: "f1", name: "F1 Dashboards", group: "Data science", kind: "browser", chart: 2,
     summary: "Interactive dashboards exploring Formula 1 data.",
     stack: ["Python", "TypeScript"],
-    color: "#ff6b5e", color2: "#7a1f3d", glyph: "F1", arm: 1, t: 0.9,
+    highlight: true, color: "#ff6b5e", color2: "#7a1f3d", glyph: "F1", x: 95, y: 105,
   },
 ];
+
+export const HIGHLIGHTS = PROJECTS.filter((project) => project.highlight);
