@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Space_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Hanken_Grotesk, Space_Mono } from "next/font/google";
 import GalaxyCursor from "@/components/ui/GalaxyCursor";
 import "./globals.css";
 
@@ -11,6 +11,10 @@ const spaceMono = Space_Mono({
   display: "swap",
 });
 
+// Display and body faces for the projects section.
+const display = Bricolage_Grotesque({ subsets: ["latin"], variable: "--font-display", display: "swap" });
+const sans = Hanken_Grotesk({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+
 export const metadata: Metadata = {
   title: "Ekram — Portfolio",
   description: "Co-founder · Bioinformatician · Computer scientist",
@@ -19,7 +23,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={spaceMono.variable}>
+      <body className={`${spaceMono.variable} ${display.variable} ${sans.variable}`}>
         <GalaxyCursor />
         {children}
       </body>
