@@ -92,7 +92,7 @@
   text-underline-offset: 8px;
 }
 .moreLink:hover { text-decoration-color: var(--ink); }
-.moreLink:focus-visible, .cta:focus-visible, .close:focus-visible, .pager button:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+.moreLink:focus-visible, .cta:focus-visible, .ctaQuiet:focus-visible, .close:focus-visible, .pager button:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
 
 .preview { position: fixed; z-index: 30; left: 0; top: 0; pointer-events: none; will-change: transform; }
 
@@ -122,13 +122,14 @@
 .idx { margin: 0 0 14px; font: 400 12px/1 var(--font-mono); letter-spacing: 0.02em; color: var(--ink-3); }
 .idx .dot { vertical-align: 1px; }
 .title { margin: 0; font: var(--heading-weight) clamp(38px, 5.2vw, 84px)/1.02 var(--font-sans); letter-spacing: var(--heading-tracking); text-wrap: balance; }
-.summary { margin: 18px 0 0; max-width: 34ch; color: var(--ink-2); font-size: 17px; line-height: 1.5; text-wrap: pretty; }
+.summary { margin: 18px 0 0; max-width: 46ch; color: var(--ink-2); font-size: 17px; line-height: 1.5; text-wrap: pretty; }
 .stack { margin: 12px 0 0; color: var(--ink-3); font-size: 14px; }
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px; margin-top: 22px; }
-.cta, .soon { display: inline-block; padding: 4px 0; font: 500 16px/1.2 var(--font-sans); }
+.cta { display: inline-block; padding: 4px 0; font: 500 16px/1.2 var(--font-sans); }
 .cta { color: var(--ink); text-decoration: underline; text-decoration-color: #ff6600; text-decoration-thickness: 2px; text-underline-offset: 8px; }
 .cta:hover { text-decoration-color: var(--ink); }
-.soon { color: var(--ink-3); }
+.ctaQuiet { display: inline-block; padding: 4px 0; color: var(--ink-2); font: 500 16px/1.2 var(--font-sans); text-decoration: none; transition: color 0.2s; }
+.ctaQuiet:hover { color: var(--ink); }
 .pager { display: inline-flex; gap: 2px; }
 .pager button { padding: 6px 10px; border: 0; background: none; color: var(--ink-2); font: 400 18px/1 var(--font-sans); cursor: pointer; transition: color 0.2s; }
 .pager button:hover { color: var(--ink); }

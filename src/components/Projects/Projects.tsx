@@ -29,6 +29,14 @@ function useMedia(query: string) {
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
+/** Button text for a project's main link, based on where it points. */
+function linkLabel(href: string) {
+  const host = new URL(href).hostname;
+  if (host.endsWith("github.com")) return "View on GitHub";
+  if (host.endsWith("apple.com")) return "View on the App Store";
+  return "Open project";
+}
+
 /**
  * Projects as a big type list over a galaxy. Hovering (or focusing) a name flies the galaxy to that project's star and
  * shows its preview. Clicking fuses into a full scene: the list fades away, the camera flies into the star, and the
@@ -197,15 +205,16 @@ export default function Projects({ projects, heading, note, footer }: ProjectsPr
             <button type="button" className={styles.close} onClick={close}>Close <span aria-hidden="true">✕</span></button>
 
             <div className={styles.info} key={project.id}>
-              <p className={styles.idx}><i className={styles.dot} />{pad(open + 1)} / {pad(projects.length)} · {project.group}</p>
+              <p className={styles.idx}><i className={styles.dot} />{pad(open + 1)} / {pad(projects.length)} · {project.group} · {project.year}</p>
               <h3 className={styles.title}>{project.name}</h3>
               <p className={styles.summary}>{project.summary}</p>
               <p className={styles.stack}>{project.stack.join("  ·  ")}</p>
               <div className={styles.actions}>
-                {project.href ? (
-                  <Link href={project.href} className={styles.cta}>View case study →</Link>
-                ) : (
-                  <span className={styles.soon}>Case study coming soon</span>
+                {project.href && (
+                  <a href={project.href} target="_blank" rel="noopener noreferrer" className={styles.cta}>{linkLabel(project.href)} ↗</a>
+                )}
+                {project.github && (
+                  <a href={project.github} target="_blank" rel="noopener noreferrer" className={styles.ctaQuiet}>GitHub ↗</a>
                 )}
                 <span className={styles.pager}>
                   <button type="button" onClick={() => step(-1)} aria-label="Previous project">←</button>
