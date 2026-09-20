@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, type RefObject } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import * as THREE from "three";
 import { getScrollProgress } from "./scrollProgress";
 import type { GalaxyPhase } from "./types";
@@ -12,15 +12,20 @@ const CORE_COUNT = 350;
 const FIELD_AND_CORE = FIELD_COUNT + CORE_COUNT;
 // Headline stars: two words (left/right of the galaxy) sampled from rendered text.
 const TEXT_UNIT = 0.4; // world units per sampled text pixel at scale 1
-const TEXT_FONT = '400 120px "Helvetica Neue", Helvetica, Arial, sans-serif';
+
+/** Canvas font string for the headline: the site's sans token, so the star text matches the rest of the page. */
+function headlineFont() {
+  const family = getComputedStyle(document.documentElement).getPropertyValue("--font-sans").trim() || "system-ui, sans-serif";
+  return `500 120px ${family}`;
+}
 
 /** Rasterises a word and returns random points inside its glyphs as [x, y] pairs in world units, centred on (0, 0). */
-function sampleWord(word: string, count: number, random: () => number) {
+function sampleWord(word: string, count: number, random: () => number, font: string) {
   const width = 640, height = 180;
   const canvas = document.createElement("canvas");
   canvas.width = width; canvas.height = height;
   const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
-  ctx.font = TEXT_FONT;
+  ctx.font = font;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillStyle = "#fff";
@@ -44,7 +49,7 @@ function smoothstep(a: number, b: number, value: number) {
   return t * t * (3 - 2 * t);
 }
 
-function buildStars(mobile: boolean, title: [string, string]) {
+function buildStars(mobile: boolean, title: [string, string], font: string) {
   let seed = 76129;
   const random = () => {
     seed = (Math.imul(seed, 1664525) + 1013904223) | 0;
@@ -55,7 +60,7 @@ function buildStars(mobile: boolean, title: [string, string]) {
   const textStart = FIELD_AND_CORE;
   const armStart = textStart + textPerWord * 2;
   const count = armStart + ARM_COUNT * (mobile ? 2200 : 3700);
-  const words = [sampleWord(title[0], textPerWord, random), sampleWord(title[1], textPerWord, random)];
+  const words = [sampleWord(title[0], textPerWord, random, font), sampleWord(title[1], textPerWord, random, font)];
   const position = new Float32Array(count * 3);
   const scatter = new Float32Array(count * 3);
   const color = new Float32Array(count * 3);
@@ -125,6 +130,15 @@ interface GalaxySceneProps {
 export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, onPhaseChange, replayToken }: GalaxySceneProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [titleLeft, titleRight] = title;
+  // The headline is sampled from the site font, so hold the scene until it has loaded (or a short timeout passes).
+  const [font, setFont] = useState<string | null>(null);
+  useEffect(() => {
+    let alive = true;
+    const wanted = headlineFont();
+    const timeout = new Promise((resolve) => setTimeout(resolve, 1500));
+    Promise.race([document.fonts.load(wanted), timeout]).catch(() => {}).then(() => { if (alive) setFont(wanted); });
+    return () => { alive = false; };
+  }, []);
   // Latest props live in refs so the scene effect runs once and is never torn down by parent re-renders.
   const onPhaseRef = useRef(onPhaseChange);
   onPhaseRef.current = onPhaseChange;
@@ -133,7 +147,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
   useEffect(() => {
     const canvas = canvasRef.current;
     const root = rootRef.current;
-    if (!canvas || !root) return;
+    if (!canvas || !root || !font) return;
     let phase: GalaxyPhase | null = null;
     const report = (next: GalaxyPhase) => {
       if (next === phase) return;
@@ -155,7 +169,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
     renderer.toneMapping = THREE.NoToneMapping;
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1800);
-    const { geometry, wordWidths } = buildStars(window.innerWidth < 640, [titleLeft, titleRight]);
+    const { geometry, wordWidths } = buildStars(window.innerWidth < 640, [titleLeft, titleRight], font);
     const uniforms = {
       uTime: { value: 0 }, uFormation: { value: 0 }, uRotation: { value: 0 },
       uTilt: { value: 0 }, uFade: { value: 0 }, uFlow: { value: 0 }, uFlowFade: { value: 0 }, uPixelRatio: { value: renderer.getPixelRatio() },
@@ -424,6 +438,6 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       window.removeEventListener("keydown", onKeyDown);
       geometry.dispose(); material.dispose(); glowTexture.dispose(); glowMaterial.dispose(); renderer.dispose();
     };
-  }, [rootRef, scrollScreens, flowSpeed, titleLeft, titleRight]);
+  }, [rootRef, scrollScreens, flowSpeed, titleLeft, titleRight, font]);
   return <canvas ref={canvasRef} aria-hidden="true" style={{ position: "fixed", inset: 0, width: "100%", height: "100%", zIndex: 0, pointerEvents: "none", background: "radial-gradient(ellipse at 50% 48%, #010204 10%, #060c12 72%, #09121a 100%)" }} />;
 }

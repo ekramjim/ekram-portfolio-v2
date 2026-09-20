@@ -38,10 +38,10 @@
   position: absolute;
   left: 8cqw;
   bottom: 4cqh;
-  font: 800 56cqw/0.8 var(--font-display), "Helvetica Neue", Arial, sans-serif;
-  letter-spacing: -0.06em;
+  font: 500 56cqw/0.8 var(--font-sans);
+  letter-spacing: -0.05em;
   color: rgba(255, 255, 255, 0.94);
 }
 .browser .glyph { font-size: 22cqw; left: 5cqw; bottom: 6cqh; }
 .art svg { position: absolute; inset: 14% 6% 10% 6%; width: 88%; height: 76%; }
-.art small { position: absolute; right: 12px; top: 10px; font: 400 10px/1 var(--font-space-mono), monospace; letter-spacing: 0.1em; color: rgba(255, 255, 255, 0.55); text-transform: uppercase; }
+.art small { position: absolute; right: 12px; top: 10px; font: 400 10px/1 var(--font-mono); letter-spacing: 0.06em; color: rgba(255, 255, 255, 0.55); text-transform: uppercase; }
