@@ -1,9 +1,10 @@
 "use client";
 
 /** Invisible drag surface over the galaxy so it can be rotated with the pointer or arrow keys. */
-export default function GalaxyOverlay() {
+export default function GalaxyOverlay({ title }: { title: string }) {
   return (
     <div style={{ position: "sticky", top: 0, height: "100dvh", width: "100%", overflow: "hidden", zIndex: 1, pointerEvents: "none" }}>
+      <h1 className="sr-only">{title}</h1>
       <button
         type="button"
         data-galaxy-interaction

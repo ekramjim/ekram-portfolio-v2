@@ -10,19 +10,52 @@ const ARM_COUNT = 3;
 const FIELD_COUNT = 800;
 const CORE_COUNT = 350;
 const FIELD_AND_CORE = FIELD_COUNT + CORE_COUNT;
+// Headline stars: two words (left/right of the galaxy) sampled from rendered text.
+const TEXT_UNIT = 0.4; // world units per sampled text pixel at scale 1
+const TEXT_FONT = '400 120px "Helvetica Neue", Helvetica, Arial, sans-serif';
+
+/** Rasterises a word and returns random points inside its glyphs as [x, y] pairs in world units, centred on (0, 0). */
+function sampleWord(word: string, count: number, random: () => number) {
+  const width = 640, height = 180;
+  const canvas = document.createElement("canvas");
+  canvas.width = width; canvas.height = height;
+  const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
+  ctx.font = TEXT_FONT;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = "#fff";
+  ctx.fillText(word, width / 2, height / 2);
+  const data = ctx.getImageData(0, 0, width, height).data;
+  const filled: number[] = [];
+  for (let i = 3; i < data.length; i += 4) if (data[i] > 128) filled.push((i - 3) / 4);
+  const points = new Float32Array(count * 2);
+  if (filled.length) {
+    for (let i = 0; i < count; i++) {
+      const pixel = filled[Math.floor(random() * filled.length)];
+      const x = (pixel % width) + random() - 0.5, y = Math.floor(pixel / width) + random() - 0.5;
+      points[i * 2] = (x - width / 2) * TEXT_UNIT;
+      points[i * 2 + 1] = -(y - height / 2) * TEXT_UNIT;
+    }
+  }
+  return { points, width: ctx.measureText(word).width * TEXT_UNIT };
+}
 function smoothstep(a: number, b: number, value: number) {
   const t = THREE.MathUtils.clamp((value - a) / (b - a), 0, 1);
   return t * t * (3 - 2 * t);
 }
 
-function buildStars(mobile: boolean) {
+function buildStars(mobile: boolean, title: [string, string]) {
   let seed = 76129;
   const random = () => {
     seed = (Math.imul(seed, 1664525) + 1013904223) | 0;
     return (seed >>> 0) / 4294967296;
   };
   const gaussian = () => (random() + random() + random() + random() - 2) * 1.73;
-  const count = FIELD_AND_CORE + ARM_COUNT * (mobile ? 2200 : 3700);
+  const textPerWord = mobile ? 2200 : 3200;
+  const textStart = FIELD_AND_CORE;
+  const armStart = textStart + textPerWord * 2;
+  const count = armStart + ARM_COUNT * (mobile ? 2200 : 3700);
+  const words = [sampleWord(title[0], textPerWord, random), sampleWord(title[1], textPerWord, random)];
   const position = new Float32Array(count * 3);
   const scatter = new Float32Array(count * 3);
   const color = new Float32Array(count * 3);
@@ -40,7 +73,10 @@ function buildStars(mobile: boolean) {
     const core = i >= FIELD_COUNT && i < FIELD_AND_CORE;
     // Most core stars are small points so the cluster reads as dense without blowing out; a few stay large and bright.
     const bright = core && random() < 0.12;
-    const hot = bright || (!core && random() < 0.06);
+    const text = i >= textStart && i < armStart;
+    const word = text && i - textStart >= textPerWord ? 1 : 0;
+    const spark = text && random() < 0.015;
+    const hot = bright || spark || (!core && !text && random() < 0.06);
     let t = random() < 0.72 ? knots[Math.floor(random() * knots.length)] + gaussian() * 0.012 : random();
     t = THREE.MathUtils.clamp(t, 0, 1);
     // Arm stars are placed in the vertex shader from (t, strand, noise) so they can flow along the spiral.
@@ -49,15 +85,19 @@ function buildStars(mobile: boolean) {
     let x = 0, y = 0, z = 0;
     if (field) { x = (random() - 0.5) * 850; y = (random() - 0.5) * 650; z = -60 - random() * 220; }
     if (core) { const r = Math.pow(random(), 2.2) * 24; const a = random() * Math.PI * 2; x = Math.cos(a) * r; y = Math.sin(a) * r; z = gaussian() * 3; }
+    if (text) {
+      const k = (i - textStart) % textPerWord;
+      x = words[word].points[k * 2]; y = words[word].points[k * 2 + 1]; z = (random() - 0.5) * 2;
+    }
     position.set([x, y, z], i * 3);
     scatter.set([(random() - 0.5) * 700, (random() - 0.5) * 480 + 35, (random() - 0.5) * 160], i * 3);
     const pick = random();
-    const tone = core ? palette[2] : palette[pick < 0.3 ? 0 : pick < 0.55 ? 1 : pick < 0.78 ? 2 : pick < 0.91 ? 3 : 4];
-    const intensity = field ? 0.2 + random() * 0.5 : core && !bright ? 0.7 + random() * 0.9 : hot ? 1.6 + random() * 1.8 : 0.32 + random() * 0.65;
+    const tone = core ? palette[2] : text ? palette[random() < 0.5 ? 0 : 1] : palette[pick < 0.3 ? 0 : pick < 0.55 ? 1 : pick < 0.78 ? 2 : pick < 0.91 ? 3 : 4];
+    const intensity = field ? 0.2 + random() * 0.5 : core && !bright ? 0.7 + random() * 0.9 : text && !spark ? 0.5 + random() * 0.45 : hot ? 1.6 + random() * 1.8 : 0.32 + random() * 0.65;
     color.set([tone.r * intensity, tone.g * intensity, tone.b * intensity], i * 3);
-    size[i] = core ? (bright ? 6 + random() * 13 : 1.4 + random() * 2.6) : field ? (random() < 0.025 ? 12 : 0.8 + random() * 2) : hot ? 15 + Math.pow(random(), 2) * 25 : 0.8 + random() * 1.8;
+    size[i] = text ? (spark ? 5.5 + random() * 3 : 1.2 + random() * 1.2) : core ? (bright ? 6 + random() * 13 : 1.4 + random() * 2.6) : field ? (random() < 0.025 ? 12 : 0.8 + random() * 2) : hot ? 15 + Math.pow(random(), 2) * 25 : 0.8 + random() * 1.8;
     phase[i] = random() * Math.PI * 2;
-    kind[i] = field ? 1 : core ? 2 : 0;
+    kind[i] = field ? 1 : core ? 2 : text ? 3 + word : 0;
   }
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.BufferAttribute(position, 3));
@@ -68,7 +108,7 @@ function buildStars(mobile: boolean) {
   geometry.setAttribute("aKind", new THREE.BufferAttribute(kind, 1));
   geometry.setAttribute("aArm", new THREE.BufferAttribute(arm, 2));
   geometry.setAttribute("aNoise", new THREE.BufferAttribute(noise, 3));
-  return geometry;
+  return { geometry, wordWidths: [words[0].width, words[1].width] as const };
 }
 
 interface GalaxySceneProps {
@@ -76,13 +116,15 @@ interface GalaxySceneProps {
   rootRef: RefObject<HTMLElement | null>;
   scrollScreens: number;
   flowSpeed: number;
+  title: [string, string];
   onPhaseChange: (phase: GalaxyPhase) => void;
   /** Bump to replay the intro. */
   replayToken: number;
 }
 
-export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, onPhaseChange, replayToken }: GalaxySceneProps) {
+export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, onPhaseChange, replayToken }: GalaxySceneProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [titleLeft, titleRight] = title;
   // Latest props live in refs so the scene effect runs once and is never torn down by parent re-renders.
   const onPhaseRef = useRef(onPhaseChange);
   onPhaseRef.current = onPhaseChange;
@@ -113,10 +155,11 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, onPhase
     renderer.toneMapping = THREE.NoToneMapping;
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1800);
-    const geometry = buildStars(window.innerWidth < 640);
+    const { geometry, wordWidths } = buildStars(window.innerWidth < 640, [titleLeft, titleRight]);
     const uniforms = {
       uTime: { value: 0 }, uFormation: { value: 0 }, uRotation: { value: 0 },
       uTilt: { value: 0 }, uFade: { value: 0 }, uFlow: { value: 0 }, uFlowFade: { value: 0 }, uPixelRatio: { value: renderer.getPixelRatio() },
+      uTextFade: { value: 1 }, uTextScale: { value: 1 }, uTextSize: { value: 1 }, uAnchorL: { value: new THREE.Vector2() }, uAnchorR: { value: new THREE.Vector2() },
     };
     const material = new THREE.ShaderMaterial({
       uniforms, vertexColors: true, transparent: true, depthWrite: false,
@@ -126,12 +169,15 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, onPhase
         attribute float aSize, aPhase, aKind;
         attribute vec2 aArm;
         attribute vec3 aNoise;
-        uniform float uTime, uFormation, uRotation, uTilt, uFade, uPixelRatio, uFlow, uFlowFade;
+        uniform float uTime, uFormation, uRotation, uTilt, uFade, uPixelRatio, uFlow, uFlowFade, uTextFade, uTextScale, uTextSize;
+        uniform vec2 uAnchorL, uAnchorR;
         varying vec3 vColor;
         varying float vAlpha, vHot;
         void main() {
           float background = 1.0 - step(0.1, abs(aKind - 1.0));
-          float core = step(1.5, aKind);
+          // Kinds: 0 arm, 1 background, 2 core, 3/4 left/right headline word.
+          float text = step(2.5, aKind);
+          float core = step(1.5, aKind) * (1.0 - text);
           // Easing is applied on the CPU (uFormation) so assembly starts moving on the first frame.
           float f = clamp(uFormation * 1.12 - aPhase * 0.018, 0.0, 1.0);
           // Arm stars ride the spiral: t runs 0 (core) to 1 (rim) and uFlow slides it inward, wrapping at the rim.
@@ -148,22 +194,25 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, onPhase
           // Negative so it turns the same way the arm stars travel (counter-clockwise on screen).
           float swirl = -uTime * 0.31 / (1.0 + length(position.xy) / 8.0) * core;
           vec3 basePosition = vec3(mat2(cos(swirl), -sin(swirl), sin(swirl), cos(swirl)) * position.xy, position.z);
-          vec3 galaxyPosition = mix(basePosition, armPosition, arm);
+          // Headline stars are laid out flat around the galaxy: local glyph coordinates scaled and anchored per side.
+          vec3 textPosition = vec3(position.xy * uTextScale + mix(uAnchorL, uAnchorR, step(3.5, aKind)), position.z);
+          vec3 galaxyPosition = mix(mix(basePosition, armPosition, arm), textPosition, text);
           vec3 p = mix(aScatter, galaxyPosition, mix(f, 1.0, background));
           float sweep = sin(f * 3.14159265) * (1.0 - f) * 0.6;
-          float rotation = (uRotation + sweep) * (1.0 - background);
+          float rotation = (uRotation * (1.0 - text) + sweep) * (1.0 - background);
           p.xy = mat2(cos(rotation), -sin(rotation), sin(rotation), cos(rotation)) * p.xy;
-          float tilt = uTilt * (1.0 - background);
+          float tilt = uTilt * (1.0 - background) * (1.0 - text);
           p.yz = mat2(cos(tilt), -sin(tilt), sin(tilt), cos(tilt)) * p.yz;
           vec4 viewPosition = modelViewMatrix * vec4(p, 1.0);
           gl_Position = projectionMatrix * viewPosition;
-          gl_PointSize = clamp(aSize * uPixelRatio * 440.0 / max(100.0, -viewPosition.z), 0.8, 80.0);
+          // Headline stars grow with camera distance so the letters stay solid on small screens.
+          gl_PointSize = clamp(aSize * uPixelRatio * 440.0 / max(100.0, -viewPosition.z) * mix(1.0, uTextSize, text), 0.8, 80.0);
           vColor = color;
           vHot = step(5.0, aSize);
           float twinkle = 0.9 + 0.1 * sin(uTime * 0.65 + aPhase);
           // Stars fade in at the rim and out into the core so the wrap-around is never seen.
           float seam = smoothstep(0.0, 0.05, t) * (1.0 - smoothstep(0.95, 1.0, t));
-          vAlpha = uFade * twinkle * mix(1.0, 0.22 + 0.78 * f, core) * mix(1.0, seam, arm * uFlowFade);
+          vAlpha = uFade * twinkle * mix(1.0, 0.22 + 0.78 * f, core) * mix(1.0, seam, arm * uFlowFade) * mix(1.0, uTextFade, text);
         }
       `,
       fragmentShader: `
@@ -205,6 +254,49 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, onPhase
     const CAMERA_Y = 44;
     const CAMERA_Z = 440;
     const SCROLL_TILT = 1.3;
+    const GALAXY_HALF_WIDTH = 135;
+    const GALAXY_BOTTOM = -137;
+    const SIDE_TEXT_MAX = 0.62; // largest headline scale beside the galaxy on wide screens
+    let cameraFit = 1;
+    // Wide screens put the words either side of the galaxy; everything else puts them on one line below it.
+    // The camera backs off (cameraFit) just enough that the galaxy and the text both fit the screen.
+    const layoutText = () => {
+      const aspect = camera.aspect;
+      const tanHalf = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+      const widest = Math.max(wordWidths[0], wordWidths[1], 1);
+      const sideLayout = aspect >= 1.25;
+      if (sideLayout) {
+        const halfWNeeded = (GALAXY_HALF_WIDTH + (widest * SIDE_TEXT_MAX) / 0.92) / 0.96;
+        cameraFit = Math.max(1, halfWNeeded / (tanHalf * CAMERA_Z * aspect));
+      } else {
+        // Tall enough for the galaxy plus a line of text underneath it.
+        cameraFit = Math.max(1.7, 0.8 / aspect);
+      }
+      const halfH = tanHalf * CAMERA_Z * cameraFit;
+      const halfW = halfH * aspect;
+      uniforms.uTextSize.value = cameraFit;
+      if (sideLayout) {
+        const room = halfW * 0.96 - GALAXY_HALF_WIDTH;
+        const x = GALAXY_HALF_WIDTH + room / 2;
+        const scale = THREE.MathUtils.clamp((room * 0.92) / widest, 0.3, SIDE_TEXT_MAX);
+        uniforms.uTextScale.value = scale;
+        // Keep star size proportional to the text so the letters don't get whiter as they shrink.
+        uniforms.uTextSize.value = cameraFit * (scale / 0.83);
+        uniforms.uAnchorL.value.set(-x, 0);
+        uniforms.uAnchorR.value.set(x, 0);
+      } else {
+        // Both words share one line below the galaxy, filling about 80% of the screen width.
+        const spaceWidth = 14; // ~0.28em of the sample font, in world units
+        const total = wordWidths[0] + spaceWidth + wordWidths[1];
+        const scale = THREE.MathUtils.clamp((halfW * 2 * 0.8) / total, 0.3, 1);
+        const capHeight = 34.6 * scale; // glyph cap height in world units (0.72em * 120px * TEXT_UNIT)
+        const lineY = GALAXY_BOTTOM - 14 - capHeight / 2;
+        uniforms.uTextScale.value = scale;
+        uniforms.uTextSize.value = cameraFit * scale;
+        uniforms.uAnchorL.value.set((-total / 2 + wordWidths[0] / 2) * scale, lineY);
+        uniforms.uAnchorR.value.set((total / 2 - wordWidths[1] / 2) * scale, lineY);
+      }
+    };
     let stableHeight = window.innerHeight;
     let scroll = 0;
     let inView = true;
@@ -273,6 +365,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, onPhase
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth < 640 ? 1.5 : 2));
       renderer.setSize(window.innerWidth, stableHeight);
       uniforms.uPixelRatio.value = renderer.getPixelRatio();
+      layoutText();
       onScroll();
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -282,6 +375,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, onPhase
     window.addEventListener("pointerup", onPointerUp);
     window.addEventListener("pointercancel", onPointerUp);
     window.addEventListener("keydown", onKeyDown);
+    layoutText();
     onScroll();
     onReplay();
     const clock = new THREE.Clock();
@@ -309,10 +403,11 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, onPhase
       const drift = reduced ? 0 : Math.sin(Math.max(0, elapsed - INTRO_DURATION) * 0.08) * 0.035;
       uniforms.uRotation.value += (dragRotation + drift - uniforms.uRotation.value) * ease;
       smoothScroll += (scroll - smoothScroll) * ease;
+      // The headline dissolves early in the scroll while the galaxy starts to tip back.
+      uniforms.uTextFade.value = 1 - smoothstep(0.03, 0.28, smoothScroll);
       const scrollTilt = SCROLL_TILT * smoothstep(0, 1, smoothScroll);
       uniforms.uTilt.value += (dragTilt + scrollTilt - uniforms.uTilt.value) * ease;
-      const fit = Math.max(1, 0.8 / camera.aspect);
-      camera.position.set(0, CAMERA_Y, CAMERA_Z * fit);
+      camera.position.set(0, CAMERA_Y, CAMERA_Z * cameraFit);
       camera.lookAt(0, CAMERA_Y, 0);
       if (inView) renderer.render(scene, camera);
     }
@@ -329,6 +424,6 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, onPhase
       window.removeEventListener("keydown", onKeyDown);
       geometry.dispose(); material.dispose(); glowTexture.dispose(); glowMaterial.dispose(); renderer.dispose();
     };
-  }, [rootRef, scrollScreens, flowSpeed]);
+  }, [rootRef, scrollScreens, flowSpeed, titleLeft, titleRight]);
   return <canvas ref={canvasRef} aria-hidden="true" style={{ position: "fixed", inset: 0, width: "100%", height: "100%", zIndex: 0, pointerEvents: "none", background: "radial-gradient(ellipse at 50% 48%, #010204 10%, #060c12 72%, #09121a 100%)" }} />;
 }

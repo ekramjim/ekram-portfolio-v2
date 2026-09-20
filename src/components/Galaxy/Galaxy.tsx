@@ -13,7 +13,7 @@ const noop = () => {};
  * Scroll-driven galaxy: starfield loads in, the galaxy forms, then scrolling flies the camera through it.
  * Place it once near the top of a page — it reserves `scrollScreens` viewport heights and clips its own fixed canvas to that zone.
  */
-export default function Galaxy({ scrollScreens = 5, flowSpeed = 0.02 }: GalaxyProps) {
+export default function Galaxy({ scrollScreens = 5, flowSpeed = 0.02, title }: GalaxyProps) {
   const rootRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -22,8 +22,8 @@ export default function Galaxy({ scrollScreens = 5, flowSpeed = 0.02 }: GalaxyPr
       // clip-path also clips the scene's position:fixed canvas to this zone, so it never bleeds into later sections.
       style={{ position: "relative", height: `${scrollScreens * 100}vh`, clipPath: "inset(0)" }}
     >
-      <GalaxyScene rootRef={rootRef} scrollScreens={scrollScreens} flowSpeed={flowSpeed} replayToken={0} onPhaseChange={noop} />
-      <GalaxyOverlay />
+      <GalaxyScene rootRef={rootRef} scrollScreens={scrollScreens} flowSpeed={flowSpeed} title={title} replayToken={0} onPhaseChange={noop} />
+      <GalaxyOverlay title={title.join(" ")} />
     </div>
   );
 }
