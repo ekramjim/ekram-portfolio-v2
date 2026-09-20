@@ -7,6 +7,8 @@
   --heading-weight: 400;
   --heading-tracking: -0.03em;
   --bg-primary: #0d0d0d;
+  /* Night-sky ground shared by the hero's fade-out and the projects section, so the seam between them disappears. */
+  --space: #04070b;
   --text-primary: #f7f9fc;
   --accent: #ff6600;
 }

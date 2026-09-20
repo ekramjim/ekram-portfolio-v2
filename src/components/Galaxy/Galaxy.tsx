@@ -24,6 +24,11 @@ export default function Galaxy({ scrollScreens = 5, flowSpeed = 0.02, title }: G
     >
       <GalaxyScene rootRef={rootRef} scrollScreens={scrollScreens} flowSpeed={flowSpeed} title={title} replayToken={0} onPhaseChange={noop} />
       <GalaxyOverlay title={title.join(" ")} />
+      {/* Fades the end of the hero into the next section's ground. */}
+      <div
+        aria-hidden="true"
+        style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: "35vh", zIndex: 2, pointerEvents: "none", background: "linear-gradient(to bottom, transparent, var(--space))" }}
+      />
     </div>
   );
 }
