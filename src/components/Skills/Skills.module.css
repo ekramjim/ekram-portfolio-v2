@@ -1,0 +1,39 @@
+.section {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--space);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.inner { position: relative; z-index: 1; max-width: 1480px; padding: 112px clamp(18px, 4vw, 56px) 120px; }
+
+.head { margin: 0 0 clamp(36px, 6vh, 64px); color: var(--ink-head); font: 500 17px/1 var(--font-sans); letter-spacing: -0.01em; }
+.head span { margin-left: 10px; color: var(--ink-3); font: 400 15px/1 var(--font-sans); letter-spacing: 0; }
+
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 44px clamp(24px, 4vw, 64px); }
+
+/* ---------- one constellation ---------- */
+.card { margin: 0; }
+.card figcaption { margin-bottom: 6px; color: var(--ink-3); font: 400 12px/1.4 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.card svg { display: block; width: 100%; height: auto; overflow: visible; }
+.line { stroke: rgba(207, 227, 247, 0.2); stroke-width: 1; }
+/* The pointer's dotted lines to the nearest stars, and the pointer itself. Both are moved by Constellation.tsx. */
+.beam { stroke: rgba(207, 227, 247, 0.9); stroke-width: 1; stroke-dasharray: 2 4; opacity: 0; pointer-events: none; }
+.cursor { fill: var(--ink); opacity: 0; pointer-events: none; }
+/* The stroke keeps a label readable where a line passes behind it. Font size goes with CHAR in Constellation.tsx. */
+.label { font: 400 13.5px var(--font-sans); paint-order: stroke; stroke: var(--space); stroke-width: 4px; stroke-linejoin: round; }
+
+/* The sixth cell: a hint for the pointer effect. */
+.key { align-self: center; margin: 0; padding-left: 8px; color: var(--ink-3); font: 400 13px/1.9 var(--font-mono); letter-spacing: 0.02em; }
+/* No pointer on touch screens, so the hint would not apply. */
+@media (hover: none) { .key { display: none; } }
+
+@media (max-width: 1100px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 760px) {
+  .inner { padding-top: 88px; }
+  .grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+  .key { padding-left: 0; }
+}

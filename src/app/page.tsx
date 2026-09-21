@@ -2,6 +2,7 @@ import { About } from "@/components/About";
 import { Experience } from "@/components/Experience";
 import { Galaxy } from "@/components/Galaxy";
 import { Projects } from "@/components/Projects";
+import { Skills } from "@/components/Skills";
 import { PROJECTS } from "@/data/projects";
 
 export default function Home() {
@@ -11,6 +12,7 @@ export default function Home() {
       <About />
       <Projects projects={PROJECTS} heading="Projects" note="Highlights" />
       <Experience />
+      <Skills />
     </main>
   );
 }
