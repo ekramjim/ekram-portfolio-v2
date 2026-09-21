@@ -1,43 +1,27 @@
 .section {
   --void: var(--space, #04070b);
-  --ink: #f4f7fb;
-  --ink-2: #b3c2d2;
-  --ink-3: #74869a;
   --glow: 255, 120, 200;
   position: relative;
   isolation: isolate;
   overflow: hidden;
   min-height: 100vh;
-  background: var(--void);
   color: var(--ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
 
-/* A few fixed stars so the sky carries on from the projects section above. */
-.stars {
+/* The deck: 5% see-through, so the hero galaxy behind the page is barely there. Its top and bottom edges dissolve into the galaxy instead of cutting off,
+   and whatever galaxy does show through is blurred like frosted glass. */
+.section::before {
+  content: "";
   position: absolute;
   inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image:
-    radial-gradient(1.4px 1.4px at 6% 12%, #fff, transparent),
-    radial-gradient(1px 1px at 14% 62%, #cfe0ff, transparent),
-    radial-gradient(1.2px 1.2px at 23% 34%, #fff, transparent),
-    radial-gradient(1px 1px at 31% 84%, #ffe3c8, transparent),
-    radial-gradient(1.4px 1.4px at 42% 18%, #cfe0ff, transparent),
-    radial-gradient(1px 1px at 51% 70%, #fff, transparent),
-    radial-gradient(1.2px 1.2px at 58% 40%, #fff, transparent),
-    radial-gradient(1px 1px at 66% 8%, #ffe3c8, transparent),
-    radial-gradient(1.4px 1.4px at 74% 90%, #cfe0ff, transparent),
-    radial-gradient(1px 1px at 83% 52%, #fff, transparent),
-    radial-gradient(1.2px 1.2px at 91% 24%, #fff, transparent),
-    radial-gradient(1px 1px at 96% 76%, #cfe0ff, transparent),
-    radial-gradient(0.9px 0.9px at 37% 50%, #fff, transparent),
-    radial-gradient(0.9px 0.9px at 79% 30%, #fff, transparent);
-  opacity: 0.7;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22vh, #000 100%);
-  mask-image: linear-gradient(to bottom, transparent 0, #000 22vh, #000 100%);
+  z-index: -1;
+  background: color-mix(in srgb, var(--void) 95%, transparent);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 18vh, #000 calc(100% - 18vh), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 18vh, #000 calc(100% - 18vh), transparent 100%);
 }
 
 .inner {
@@ -53,7 +37,7 @@
 
 /* ---------- text ---------- */
 .text { max-width: 760px; }
-.label { margin: 0 0 28px; font: 500 17px/1 var(--font-sans); letter-spacing: -0.01em; }
+.label { margin: 0 0 28px; color: var(--ink-head); font: 500 17px/1 var(--font-sans); letter-spacing: -0.01em; }
 .statement {
   margin: 0;
   font: var(--heading-weight) clamp(28px, 3.5vw, 54px)/1.16 var(--font-sans);

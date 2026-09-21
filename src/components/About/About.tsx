@@ -91,7 +91,6 @@ export default function About() {
 
   return (
     <section ref={sectionRef} id="about" className={styles.section} aria-labelledby="about-title">
-      <div className={styles.stars} aria-hidden="true" />
       <div className={styles.inner}>
         <div className={styles.text}>
           <h2 id="about-title" className={styles.label}>About</h2>

@@ -6,9 +6,10 @@ import { HIGHLIGHTS } from "@/data/projects";
 export default function Home() {
   return (
     <main>
-      <Galaxy title={["Hi, I'm", "Ekram."]} scrollScreens={2.5} />
+      <Galaxy title={["Hi, I'm", "Ekram."]} scrollScreens={2.5}>
+        <About />
+      </Galaxy>
       <Projects projects={HIGHLIGHTS} heading="Projects" note="Highlights" footer={{ label: "See all projects →", href: "/projects" }} />
-      <About />
     </main>
   );
 }

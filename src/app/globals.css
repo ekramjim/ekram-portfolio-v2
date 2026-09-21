@@ -10,6 +10,11 @@
   /* Night-sky ground shared by the hero's fade-out and the projects section, so the seam between them disappears. */
   --space: #04070b;
   --text-primary: #f7f9fc;
+  /* Text on the night sky is icy blue, not white. Only the section headings ("About", "Projects") stay white. */
+  --ink: #cfe3f7;
+  --ink-2: #9db5cd;
+  --ink-3: #6a86a3;
+  --ink-head: var(--text-primary);
   --accent: #ff6600;
   /* The resting colour of every link underline (see UnderlineLink). */
   --underline: rgba(255, 255, 255, 0.4);
