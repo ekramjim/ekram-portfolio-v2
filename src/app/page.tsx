@@ -1,6 +1,7 @@
 import { About } from "@/components/About";
 import { Contact } from "@/components/Contact";
 import { Experience } from "@/components/Experience";
+import { Footer } from "@/components/Footer";
 import { Galaxy } from "@/components/Galaxy";
 import { Leadership } from "@/components/Leadership";
 import { Projects } from "@/components/Projects";
@@ -9,7 +10,7 @@ import { PROJECTS } from "@/data/projects";
 
 export default function Home() {
   return (
-    <main>
+    <main id="top">
       <Galaxy title={["Hi, I'm", "Ekram."]} scrollScreens={2.5} />
       <About />
       <Projects projects={PROJECTS} heading="Projects" note="Highlights" />
@@ -17,6 +18,7 @@ export default function Home() {
       <Skills />
       <Leadership />
       <Contact />
+      <Footer />
     </main>
   );
 }

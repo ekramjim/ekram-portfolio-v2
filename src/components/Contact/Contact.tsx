@@ -134,8 +134,7 @@ export default function Contact() {
           <form className={styles.form} onSubmit={submit} data-reveal style={{ "--i": 2 } as CSSProperties}>
             <div className={styles.formHead}>
               <div>
-                <p className={styles.panelTitle}>Start with the idea</p>
-                <p>The rest unfolds once you begin.</p>
+                <p className={styles.panelTitle}>Contact Form</p>
               </div>
               <div className={styles.constellation} aria-hidden="true">
                 <svg viewBox="0 0 180 76" role="presentation">
@@ -149,7 +148,6 @@ export default function Contact() {
                   <circle cx="142" cy="25" r="4" className={`${styles.starNode} ${emailReady ? styles.active : ""}`} />
                   <circle cx="166" cy="48" r="4.5" className={`${styles.starNode} ${constellationReady ? styles.complete : ""}`} />
                 </svg>
-                <span>{constellationReady ? "Ready to send" : "Forming a connection"}</span>
               </div>
             </div>
 
@@ -230,10 +228,6 @@ export default function Contact() {
           </form>
         </div>
 
-        <footer className={styles.footer} data-reveal style={{ "--i": 3 } as CSSProperties}>
-          <span>© {new Date().getFullYear()} Ekram</span>
-          <span>Designed and built in Melbourne</span>
-        </footer>
       </div>
     </section>
   );

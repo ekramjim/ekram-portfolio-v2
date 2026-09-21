@@ -26,7 +26,7 @@
   z-index: 1;
   max-width: var(--content-max);
   margin-inline: auto;
-  padding: 120px var(--gutter) 36px;
+  padding: 120px var(--gutter);
 }
 
 .intro {
@@ -36,7 +36,7 @@
 
 .kicker { display: flex; align-items: center; gap: 10px; margin: 0 0 18px; color: var(--ink-2); font: 400 13px/1 var(--font-mono); }
 .kicker span { width: 7px; height: 7px; border-radius: 50%; background: #73d69b; box-shadow: 0 0 12px rgba(115, 214, 155, 0.65); }
-.intro h2 { margin: 0; color: var(--ink-head); font: var(--heading-weight) clamp(46px, 6.3vw, 90px)/0.94 var(--font-sans); letter-spacing: var(--heading-tracking); text-wrap: balance; }
+.intro h2 { margin: 0; color: var(--ink-head); font: var(--heading-weight) clamp(40px, 5vw, 72px)/1 var(--font-sans); letter-spacing: var(--heading-tracking); text-wrap: balance; }
 .lede { max-width: 650px; margin: 28px 0 0; color: var(--ink-2); font-size: clamp(16px, 1.4vw, 19px); line-height: 1.65; text-wrap: pretty; }
 
 .content { display: grid; grid-template-columns: minmax(280px, 0.7fr) minmax(480px, 1.3fr); gap: clamp(28px, 5vw, 72px); align-items: start; }
@@ -77,11 +77,9 @@
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.26);
 }
 .form::before { content: ""; position: absolute; left: 44px; right: 44px; top: -1px; height: 1px; background: linear-gradient(90deg, transparent, var(--contact-accent), transparent); }
-.formHead { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 34px; }
-.formHead div > p:last-child { margin: 8px 0 0; color: var(--ink-3); font-size: 13px; }
-.constellation { flex: none; width: 180px; }
+.formHead { display: flex; align-items: flex-start; margin-bottom: 16px; }
+.constellation { position: absolute; top: clamp(24px, 4vw, 44px); right: clamp(24px, 4vw, 44px); width: 180px; }
 .constellation svg { display: block; width: 100%; height: auto; overflow: visible; }
-.constellation > span { display: block; margin-top: -2px; color: var(--ink-3); font: 400 9px/1 var(--font-mono); text-align: right; }
 .starLine { stroke: rgba(207, 227, 247, 0.13); stroke-width: 1; transition: stroke 0.45s, filter 0.45s; }
 .starLine.active { stroke: rgba(207, 227, 247, 0.62); filter: drop-shadow(0 0 3px rgba(207, 227, 247, 0.35)); }
 .starNode { fill: #304358; stroke: rgba(207, 227, 247, 0.18); stroke-width: 5; transition: fill 0.35s, stroke 0.35s, filter 0.35s; }
@@ -121,8 +119,6 @@
 .status { display: flex; align-items: center; gap: 8px; color: var(--ink-2); font-size: 12px; }
 .status svg { flex: none; color: var(--contact-accent); }
 
-.footer { display: flex; justify-content: space-between; gap: 20px; margin-top: 90px; padding-top: 25px; border-top: 1px solid rgba(255, 255, 255, 0.1); color: var(--ink-3); font: 400 10px/1.4 var(--font-mono); }
-
 @media (max-width: 899px) {
   .inner { padding-top: 88px; }
   .content { grid-template-columns: 1fr; }
@@ -130,17 +126,15 @@
 }
 
 @media (max-width: 599px) {
-  .intro h2 { font-size: clamp(42px, 13vw, 62px); }
+  .intro h2 { font-size: clamp(36px, 11vw, 52px); }
   .lede { margin-top: 22px; }
   .twoColumns { grid-template-columns: 1fr; gap: 0; }
   .form { padding: 25px 18px; border-radius: 13px; }
   .form::before { left: 24px; right: 24px; }
-  .formHead { margin-bottom: 28px; }
-  .constellation { width: 128px; }
-  .constellation > span { display: none; }
+  .formHead { margin-bottom: 16px; }
+  .constellation { top: 25px; right: 18px; width: 128px; }
   .formFooter { align-items: flex-start; flex-direction: column; }
   .form button { width: 100%; }
-  .footer { margin-top: 64px; align-items: flex-start; flex-direction: column; }
 }
 
 @media (prefers-reduced-motion: reduce) {
