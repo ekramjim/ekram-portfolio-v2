@@ -61,10 +61,10 @@ function buildStars(mobile: boolean, title: [string, string], font: string) {
     return (seed >>> 0) / 4294967296;
   };
   const gaussian = () => (random() + random() + random() + random() - 2) * 1.73;
-  const textPerWord = mobile ? 2200 : 3200;
+  const textPerWord = mobile ? 2600 : 3200;
   const textStart = FIELD_AND_CORE;
   const armStart = textStart + textPerWord * 2;
-  const count = armStart + ARM_COUNT * (mobile ? 2200 : 3700);
+  const count = armStart + ARM_COUNT * (mobile ? 3400 : 3700);
   const words = [sampleWord(title[0], textPerWord, random, font), sampleWord(title[1], textPerWord, random, font)];
   const position = new Float32Array(count * 3);
   const scatter = new Float32Array(count * 3);
@@ -169,7 +169,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       return;
     }
     renderer.setClearColor(0x000000, 0);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth < 640 ? 1.5 : 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.toneMapping = THREE.NoToneMapping;
     const scene = new THREE.Scene();
@@ -298,7 +298,20 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
     const GALAXY_HALF_WIDTH = 135;
     const GALAXY_BOTTOM = -137;
     const SIDE_TEXT_MAX = 0.62; // largest headline scale beside the galaxy on wide screens
+    // Portrait screens frame the galaxy tighter than its full width: the outer arms run off the sides instead of the whole
+    // galaxy shrinking to fit, so the dust stays large and sharp. The camera then slides down so the headline sits a margin
+    // above the bottom edge, and backs off only as far as needed to keep the galaxy's top clear of the navbar.
+    const PORTRAIT_VISIBLE_WIDTH = 0.8; // share of the galaxy's half-width that fits across the screen
+    const PORTRAIT_MIN_FIT = 1.25;
+    const PORTRAIT_BOTTOM_MARGIN = 0.06; // share of the screen height kept clear below the headline
+    const GALAXY_TOP = 205;
+    // The spiral is lopsided: its left flank reaches farther out than its right, so on a cropped portrait screen it touches one
+    // edge while leaving a gap at the other. The camera slides a little to balance what is cropped at each edge.
+    const PORTRAIT_CAMERA_X = -10;
+    const NAVBAR_HEIGHT = 74; // px
     let cameraFit = 1;
+    let cameraY = CAMERA_Y;
+    let cameraX = 0;
     // Wide screens put the words either side of the galaxy; everything else puts them on one line below it.
     // The camera backs off (cameraFit) just enough that the galaxy and the text both fit the screen.
     const layoutText = () => {
@@ -306,12 +319,34 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       const tanHalf = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
       const widest = Math.max(wordWidths[0], wordWidths[1], 1);
       const sideLayout = aspect >= 1.25;
+      // Both words share one line below the galaxy on portrait screens, filling about 80% of the screen width.
+      const spaceWidth = 14; // ~0.28em of the sample font, in world units
+      const total = wordWidths[0] + spaceWidth + wordWidths[1];
+      const portraitLine = (fit: number) => {
+        const halfWAtFit = tanHalf * CAMERA_Z * fit * aspect;
+        const scale = THREE.MathUtils.clamp((halfWAtFit * 2 * 0.8) / total, 0.3, 1);
+        const capHeight = 34.6 * scale; // glyph cap height in world units (0.72em * 120px * TEXT_UNIT)
+        return { scale, capHeight, lineY: GALAXY_BOTTOM - 14 - capHeight / 2 };
+      };
       if (sideLayout) {
         const halfWNeeded = (GALAXY_HALF_WIDTH + (widest * SIDE_TEXT_MAX) / 0.92) / 0.96;
         cameraFit = Math.max(1, halfWNeeded / (tanHalf * CAMERA_Z * aspect));
+        cameraX = 0;
+        cameraY = CAMERA_Y;
       } else {
-        // Tall enough for the galaxy plus a line of text underneath it.
-        cameraFit = Math.max(1.7, 0.8 / aspect);
+        let fit = Math.max(PORTRAIT_MIN_FIT, (GALAXY_HALF_WIDTH * PORTRAIT_VISIBLE_WIDTH) / (tanHalf * CAMERA_Z * aspect));
+        const navShare = NAVBAR_HEIGHT / stableHeight;
+        for (let i = 0; i < 60; i++) {
+          const fitHalfH = tanHalf * CAMERA_Z * fit;
+          const { capHeight, lineY } = portraitLine(fit);
+          // Headline (with room for descenders) a margin above the bottom edge...
+          cameraY = lineY - capHeight * 0.75 - PORTRAIT_BOTTOM_MARGIN * 2 * fitHalfH + fitHalfH;
+          // ...as long as the galaxy's top still clears the navbar; otherwise back the camera off a little.
+          if (cameraY + fitHalfH * (1 - 2 * navShare) >= GALAXY_TOP) break;
+          fit *= 1.03;
+        }
+        cameraFit = fit;
+        cameraX = PORTRAIT_CAMERA_X;
       }
       const halfH = tanHalf * CAMERA_Z * cameraFit;
       const halfW = halfH * aspect;
@@ -326,16 +361,12 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
         uniforms.uAnchorL.value.set(-x, 0);
         uniforms.uAnchorR.value.set(x, 0);
       } else {
-        // Both words share one line below the galaxy, filling about 80% of the screen width.
-        const spaceWidth = 14; // ~0.28em of the sample font, in world units
-        const total = wordWidths[0] + spaceWidth + wordWidths[1];
-        const scale = THREE.MathUtils.clamp((halfW * 2 * 0.8) / total, 0.3, 1);
-        const capHeight = 34.6 * scale; // glyph cap height in world units (0.72em * 120px * TEXT_UNIT)
-        const lineY = GALAXY_BOTTOM - 14 - capHeight / 2;
+        const { scale, lineY } = portraitLine(cameraFit);
         uniforms.uTextScale.value = scale;
         uniforms.uTextSize.value = cameraFit * scale;
-        uniforms.uAnchorL.value.set((-total / 2 + wordWidths[0] / 2) * scale, lineY);
-        uniforms.uAnchorR.value.set((total / 2 - wordWidths[1] / 2) * scale, lineY);
+        // The headline stays centred on the screen even though the camera has slid sideways.
+        uniforms.uAnchorL.value.set(cameraX + (-total / 2 + wordWidths[0] / 2) * scale, lineY);
+        uniforms.uAnchorR.value.set(cameraX + (total / 2 - wordWidths[1] / 2) * scale, lineY);
       }
     };
     let stableHeight = window.innerHeight;
@@ -416,7 +447,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       stableHeight = window.innerHeight;
       camera.aspect = window.innerWidth / stableHeight;
       camera.updateProjectionMatrix();
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth < 640 ? 1.5 : 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.setSize(window.innerWidth, stableHeight);
       uniforms.uPixelRatio.value = renderer.getPixelRatio();
       uniforms.uAspect.value = camera.aspect;
@@ -483,8 +514,8 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
           wake.w = velocity.y;
         });
       }
-      camera.position.set(0, CAMERA_Y, CAMERA_Z * cameraFit);
-      camera.lookAt(0, CAMERA_Y, 0);
+      camera.position.set(cameraX, cameraY, CAMERA_Z * cameraFit);
+      camera.lookAt(cameraX, cameraY, 0);
       if (inView) renderer.render(scene, camera);
     }
     tick();
