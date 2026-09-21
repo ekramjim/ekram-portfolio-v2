@@ -27,6 +27,9 @@ function useMedia(query: string) {
   return matches;
 }
 
+/** Widest the page content gets, in px. Keep in step with --content-max in globals.css. */
+const CONTENT_MAX = 1480;
+
 /** How long each project stays featured before the preview moves on to the next. */
 const AUTO_MS = 5000;
 
@@ -197,7 +200,9 @@ export default function Projects({ projects, heading, note, footer }: ProjectsPr
     const tick = () => {
       raf = requestAnimationFrame(tick);
       const s = section.getBoundingClientRect();
-      const wantX = s.width * 0.7 - width / 2;
+      // The window sits 70% of the way across the centred content column, not the whole screen.
+      const column = Math.min(s.width, CONTENT_MAX);
+      const wantX = (s.width - column) / 2 + column * 0.7 - width / 2;
       const wantY = Math.max(76, Math.min(s.height - height - 28, (s.height - height) / 2));
       const p = position.current;
       if (!p.ready || reduced) { p.x = wantX; p.y = wantY; p.ready = true; }

@@ -19,7 +19,9 @@
   gap: clamp(40px, 7vw, 120px);
   align-items: center;
   min-height: 100vh;
-  padding: max(110px, 14vh) clamp(18px, 4vw, 56px) 90px;
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding: max(110px, 14vh) var(--gutter) 90px;
 }
 
 /* ---------- text ---------- */

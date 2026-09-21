@@ -16,6 +16,12 @@
   --ink-3: #6a86a3;
   --ink-head: var(--text-primary);
   --accent: #ff6600;
+  /* Page layout: content never grows wider than --content-max (side gutters included) and sits centred in the window.
+     --gutter is the side margin on small screens; --pad is the distance from a full-width section's edge to its content
+     edge, so a section that spans the window (Projects) can still line its content up with the rest. */
+  --content-max: 1480px;
+  --gutter: clamp(18px, 4vw, 56px);
+  --pad: max(var(--gutter), calc((100% - var(--content-max)) / 2 + var(--gutter)));
   /* The resting colour of every link underline (see UnderlineLink). */
   --underline: rgba(255, 255, 255, 0.4);
 }

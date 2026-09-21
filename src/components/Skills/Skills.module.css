@@ -8,7 +8,7 @@
   -webkit-font-smoothing: antialiased;
 }
 
-.inner { position: relative; z-index: 1; max-width: 1480px; padding: 112px clamp(18px, 4vw, 56px) 120px; }
+.inner { position: relative; z-index: 1; max-width: var(--content-max); margin-inline: auto; padding: 112px var(--gutter) 120px; }
 
 .head { margin: 0 0 clamp(36px, 6vh, 64px); color: var(--ink-head); font: 500 17px/1 var(--font-sans); letter-spacing: -0.01em; }
 .head span { margin-left: 10px; color: var(--ink-3); font: 400 15px/1 var(--font-sans); letter-spacing: 0; }

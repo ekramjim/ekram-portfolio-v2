@@ -36,7 +36,7 @@
   position: absolute;
   z-index: 3;
   top: 32px;
-  left: clamp(18px, 4vw, 56px);
+  left: var(--pad);
   margin: 0;
   color: var(--ink-head);
   font: 500 17px/1 var(--font-sans);
@@ -48,11 +48,11 @@
 .wrap {
   position: relative;
   z-index: 2;
-  padding: 112px clamp(18px, 4vw, 56px) 84px;
+  padding: 112px var(--pad) 84px;
   transition: opacity 0.4s;
 }
 .wrap[data-open] { opacity: 0; pointer-events: none; }
-.rows { list-style: none; margin: 0; padding: 0; max-width: 60vw; }
+.rows { list-style: none; margin: 0; padding: 0; max-width: 60%; }
 
 .row {
   display: grid;
@@ -96,7 +96,7 @@
 .close {
   position: absolute;
   top: 26px;
-  right: clamp(18px, 4vw, 56px);
+  right: var(--pad);
   padding: 8px 2px;
   border: 0;
   background: none;
@@ -127,7 +127,7 @@
 .pager button:hover { color: var(--ink); }
 /* The open window: big, on the right, leaving the star and its dotted line visible on the left. */
 .device {
-  --m: clamp(18px, 4vw, 56px);
+  --m: var(--pad);
   --dw: min(74vw, 1180px);
   --dh: min(76vh, 700px);
   position: absolute;
