@@ -54,6 +54,30 @@ function smoothstep(a: number, b: number, value: number) {
   return t * t * (3 - 2 * t);
 }
 
+// A solid version of a headline word, drawn to the same layout as sampleWord so it lands exactly on the star glyphs.
+const SOLID_SCALE = 3; // texture pixels per sampled text pixel
+const SOLID_PAD = 8; // sampled text pixels of room around the word, so antialiased edges are not clipped
+const SOLID_TEXT_WIDTH = 640, SOLID_TEXT_HEIGHT = 180; // sampleWord's canvas
+const SOLID_FONT_WEIGHT = 300; // lighter than the medium weight the stars are sampled from, so the solid words read as thin, not bold
+const SOLID_HEADLINE_OPACITY = 0.55; // well see-through, so the headline sits back in the sky instead of competing with the galaxy
+
+function solidWordTexture(word: string, font: string) {
+  const k = SOLID_SCALE;
+  const canvas = document.createElement("canvas");
+  canvas.width = (SOLID_TEXT_WIDTH + SOLID_PAD * 2) * k;
+  canvas.height = (SOLID_TEXT_HEIGHT + SOLID_PAD * 2) * k;
+  const ctx = canvas.getContext("2d")!;
+  ctx.font = font.replace(/^\d+/, String(SOLID_FONT_WEIGHT)).replace(/(\d+)px/, (_, size) => `${Number(size) * k}px`);
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = "#9db5cd"; // the site's muted secondary blue
+  ctx.fillText(word, canvas.width / 2, canvas.height / 2);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  // Width of the word at this weight, in world units at scale 1.
+  return { texture, width: (ctx.measureText(word).width / k) * TEXT_UNIT };
+}
+
 function buildStars(mobile: boolean, title: [string, string], font: string) {
   let seed = 76129;
   const random = () => {
@@ -179,7 +203,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       uTime: { value: 0 }, uFormation: { value: 0 }, uRotation: { value: 0 },
       uTilt: { value: 0 }, uFade: { value: 0 }, uFlow: { value: 0 }, uFlowFade: { value: 0 }, uPixelRatio: { value: renderer.getPixelRatio() },
       uAspect: { value: camera.aspect }, uHover: { value: 0 }, uWake: { value: WAKE_FREQUENCIES.map(() => new THREE.Vector4(9, 9, 0, 0)) },
-      uTextFade: { value: 1 }, uTextScale: { value: 1 }, uTextSize: { value: 1 }, uAnchorL: { value: new THREE.Vector2() }, uAnchorR: { value: new THREE.Vector2() },
+      uTextFade: { value: 1 }, uTextSolid: { value: 0 }, uTextScale: { value: 1 }, uTextSize: { value: 1 }, uAnchorL: { value: new THREE.Vector2() }, uAnchorR: { value: new THREE.Vector2() },
     };
     const material = new THREE.ShaderMaterial({
       uniforms, vertexColors: true, transparent: true, depthWrite: false,
@@ -189,7 +213,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
         attribute float aSize, aPhase, aKind;
         attribute vec2 aArm;
         attribute vec3 aNoise;
-        uniform float uTime, uFormation, uRotation, uTilt, uFade, uPixelRatio, uFlow, uFlowFade, uTextFade, uTextScale, uTextSize;
+        uniform float uTime, uFormation, uRotation, uTilt, uFade, uPixelRatio, uFlow, uFlowFade, uTextFade, uTextSolid, uTextScale, uTextSize;
         uniform vec2 uAnchorL, uAnchorR;
         uniform float uAspect, uHover;
         // Cursor wake springs: xy = position, zw = velocity, in screen-height units (y up, x scaled by aspect).
@@ -253,7 +277,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
           float twinkle = 0.9 + 0.1 * sin(uTime * 0.65 + aPhase);
           // Stars fade in at the rim and out into the core so the wrap-around is never seen.
           float seam = smoothstep(0.0, 0.05, t) * (1.0 - smoothstep(0.95, 1.0, t));
-          vAlpha = uFade * twinkle * (1.0 + 0.35 * near * uHover) * mix(1.0, 0.22 + 0.78 * f, core) * mix(1.0, seam, arm * uFlowFade) * mix(1.0, uTextFade, text);
+          vAlpha = uFade * twinkle * (1.0 + 0.35 * near * uHover) * mix(1.0, 0.22 + 0.78 * f, core) * mix(1.0, seam, arm * uFlowFade) * mix(1.0, uTextFade * (1.0 - uTextSolid), text);
         }
       `,
       fragmentShader: `
@@ -291,6 +315,16 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
     const coreGlow = new THREE.Sprite(glowMaterial);
     coreGlow.scale.set(65, 65, 1);
     scene.add(coreGlow);
+    // Solid headline: two textured planes laid over the star words. They stay hidden until the stars have assembled.
+    const solidWords = [titleLeft, titleRight].map((word) => {
+      const { texture, width } = solidWordTexture(word, font);
+      const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, depthWrite: false, opacity: 0 });
+      const mesh = new THREE.Mesh(new THREE.PlaneGeometry((SOLID_TEXT_WIDTH + SOLID_PAD * 2) * TEXT_UNIT, (SOLID_TEXT_HEIGHT + SOLID_PAD * 2) * TEXT_UNIT), material);
+      mesh.renderOrder = 2;
+      mesh.userData.width = width;
+      scene.add(mesh);
+      return mesh;
+    });
     // The camera never moves; scrolling tips the galaxy backwards (top edge away from the viewer) around the x axis.
     const CAMERA_Y = 44;
     const CAMERA_Z = 440;
@@ -298,6 +332,8 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
     const GALAXY_HALF_WIDTH = 135;
     const GALAXY_BOTTOM = -137;
     const SIDE_TEXT_MAX = 0.62; // largest headline scale beside the galaxy on wide screens
+    // The headline is drawn at this share of the size the layout has room for. It only shrinks the words: the galaxy keeps its framing.
+    const HEADLINE_SIZE = 0.75;
     // Portrait screens frame the galaxy tighter than its full width: the outer arms run off the sides instead of the whole
     // galaxy shrinking to fit, so the dust stays large and sharp. The camera then slides down so the headline sits a margin
     // above the bottom edge, and backs off only as far as needed to keep the galaxy's top clear of the navbar.
@@ -312,6 +348,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
     let cameraFit = 1;
     let cameraY = CAMERA_Y;
     let cameraX = 0;
+    let portraitLayout = false;
     // Wide screens put the words either side of the galaxy; everything else puts them on one line below it.
     // The camera backs off (cameraFit) just enough that the galaxy and the text both fit the screen.
     const layoutText = () => {
@@ -319,12 +356,13 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       const tanHalf = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
       const widest = Math.max(wordWidths[0], wordWidths[1], 1);
       const sideLayout = aspect >= 1.25;
+      portraitLayout = !sideLayout;
       // Both words share one line below the galaxy on portrait screens, filling about 80% of the screen width.
       const spaceWidth = 14; // ~0.28em of the sample font, in world units
       const total = wordWidths[0] + spaceWidth + wordWidths[1];
       const portraitLine = (fit: number) => {
         const halfWAtFit = tanHalf * CAMERA_Z * fit * aspect;
-        const scale = THREE.MathUtils.clamp((halfWAtFit * 2 * 0.8) / total, 0.3, 1);
+        const scale = THREE.MathUtils.clamp((halfWAtFit * 2 * 0.8) / total, 0.3, 1) * HEADLINE_SIZE;
         const capHeight = 34.6 * scale; // glyph cap height in world units (0.72em * 120px * TEXT_UNIT)
         return { scale, capHeight, lineY: GALAXY_BOTTOM - 14 - capHeight / 2 };
       };
@@ -354,7 +392,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       if (sideLayout) {
         const room = halfW * 0.96 - GALAXY_HALF_WIDTH;
         const x = GALAXY_HALF_WIDTH + room / 2;
-        const scale = THREE.MathUtils.clamp((room * 0.92) / widest, 0.3, SIDE_TEXT_MAX);
+        const scale = THREE.MathUtils.clamp((room * 0.92) / widest, 0.3, SIDE_TEXT_MAX) * HEADLINE_SIZE;
         uniforms.uTextScale.value = scale;
         // Keep star size proportional to the text so the letters don't get whiter as they shrink.
         uniforms.uTextSize.value = cameraFit * (scale / 0.83);
@@ -368,6 +406,17 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
         uniforms.uAnchorL.value.set(cameraX + (-total / 2 + wordWidths[0] / 2) * scale, lineY);
         uniforms.uAnchorR.value.set(cameraX + (total / 2 - wordWidths[1] / 2) * scale, lineY);
       }
+    };
+    const placeSolidWords = () => {
+      solidWords.forEach((mesh, i) => {
+        const anchor = (i === 0 ? uniforms.uAnchorL : uniforms.uAnchorR).value;
+        const scale = uniforms.uTextScale.value;
+        // The light-weight words are narrower than the stars they replace. On the shared line, keep each word's inner edge
+        // where it was so the gap between them stays a normal space.
+        const trim = portraitLayout ? ((i === 0 ? 1 : -1) * (wordWidths[i] - mesh.userData.width) * scale) / 2 : 0;
+        mesh.position.set(anchor.x + trim, anchor.y, 0.5);
+        mesh.scale.setScalar(scale);
+      });
     };
     let stableHeight = window.innerHeight;
     let scroll = 0;
@@ -452,6 +501,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       uniforms.uPixelRatio.value = renderer.getPixelRatio();
       uniforms.uAspect.value = camera.aspect;
       layoutText();
+      placeSolidWords();
       onScroll();
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -463,6 +513,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
     window.addEventListener("keydown", onKeyDown);
     document.documentElement.addEventListener("pointerleave", onPointerLeave);
     layoutText();
+    placeSolidWords();
     onScroll();
     onReplay();
     const clock = new THREE.Clock();
@@ -492,6 +543,9 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       smoothScroll += (scroll - smoothScroll) * ease;
       // The headline dissolves early in the scroll while the galaxy starts to tip back.
       uniforms.uTextFade.value = 1 - smoothstep(0.03, 0.28, smoothScroll);
+      // Once the stars have assembled, the headline sets into solid text and the star dust behind it fades away.
+      uniforms.uTextSolid.value = reduced ? 1 : smoothstep(INTRO_DURATION + 0.2, INTRO_DURATION + 2.4, elapsed);
+      for (const mesh of solidWords) (mesh.material as THREE.MeshBasicMaterial).opacity = uniforms.uTextSolid.value * uniforms.uTextFade.value * SOLID_HEADLINE_OPACITY;
       const scrollTilt = SCROLL_TILT * smoothstep(0, 1, smoothScroll);
       uniforms.uTilt.value += (dragTilt + scrollTilt - uniforms.uTilt.value) * ease;
       // Cursor wake: underdamped springs chase the pointer, so the dust it shoves keeps drifting and rocks back after the cursor stops.
@@ -530,6 +584,10 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       window.removeEventListener("pointercancel", onPointerUp);
       window.removeEventListener("keydown", onKeyDown);
       document.documentElement.removeEventListener("pointerleave", onPointerLeave);
+      for (const mesh of solidWords) {
+        const solid = mesh.material as THREE.MeshBasicMaterial;
+        mesh.geometry.dispose(); solid.map?.dispose(); solid.dispose();
+      }
       geometry.dispose(); material.dispose(); glowTexture.dispose(); glowMaterial.dispose(); renderer.dispose();
     };
   }, [rootRef, scrollScreens, flowSpeed, titleLeft, titleRight, font]);
