@@ -149,11 +149,12 @@ export default function Navbar() {
         <button
           type="button"
           className={styles.menuButton}
+          aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           aria-controls="mobile-navigation"
           onClick={() => setOpen((value) => !value)}
         >
-          <span>{open ? "Close" : "Menu"}</span>
+          <span className={styles.menuLabel} aria-hidden="true"><span>Menu</span><span>Close</span></span>
           <Spark />
         </button>
       </div>
