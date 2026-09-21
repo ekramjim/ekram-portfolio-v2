@@ -1,0 +1,158 @@
+.section {
+  --void: var(--space, #04070b);
+  --ink: #f4f7fb;
+  --ink-2: #b3c2d2;
+  --ink-3: #74869a;
+  --glow: 255, 120, 200;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 100vh;
+  background: var(--void);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* A few fixed stars so the sky carries on from the projects section above. */
+.stars {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1.4px 1.4px at 6% 12%, #fff, transparent),
+    radial-gradient(1px 1px at 14% 62%, #cfe0ff, transparent),
+    radial-gradient(1.2px 1.2px at 23% 34%, #fff, transparent),
+    radial-gradient(1px 1px at 31% 84%, #ffe3c8, transparent),
+    radial-gradient(1.4px 1.4px at 42% 18%, #cfe0ff, transparent),
+    radial-gradient(1px 1px at 51% 70%, #fff, transparent),
+    radial-gradient(1.2px 1.2px at 58% 40%, #fff, transparent),
+    radial-gradient(1px 1px at 66% 8%, #ffe3c8, transparent),
+    radial-gradient(1.4px 1.4px at 74% 90%, #cfe0ff, transparent),
+    radial-gradient(1px 1px at 83% 52%, #fff, transparent),
+    radial-gradient(1.2px 1.2px at 91% 24%, #fff, transparent),
+    radial-gradient(1px 1px at 96% 76%, #cfe0ff, transparent),
+    radial-gradient(0.9px 0.9px at 37% 50%, #fff, transparent),
+    radial-gradient(0.9px 0.9px at 79% 30%, #fff, transparent);
+  opacity: 0.7;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 22vh, #000 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 22vh, #000 100%);
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 380px);
+  gap: clamp(40px, 7vw, 120px);
+  align-items: center;
+  min-height: 100vh;
+  padding: max(110px, 14vh) clamp(18px, 4vw, 56px) 90px;
+}
+
+/* ---------- text ---------- */
+.text { max-width: 760px; }
+.label { margin: 0 0 28px; font: 500 17px/1 var(--font-sans); letter-spacing: -0.01em; }
+.statement {
+  margin: 0;
+  font: var(--heading-weight) clamp(28px, 3.5vw, 54px)/1.16 var(--font-sans);
+  letter-spacing: var(--heading-tracking);
+  text-wrap: pretty;
+}
+
+.fields {
+  margin: clamp(30px, 5vh, 52px) 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+.field {
+  display: grid;
+  grid-template-columns: 290px minmax(0, 1fr);
+  align-items: baseline;
+  gap: 24px;
+  margin: 0;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.field dt { display: flex; align-items: center; margin: 0; font: 500 16px/1.3 var(--font-sans); }
+.field dd { margin: 0; color: var(--ink-2); font-size: 16px; line-height: 1.5; text-wrap: pretty; }
+.spark { flex: none; width: 12px; height: 12px; margin-right: 10px; color: var(--ink); }
+
+/* Education as a line through the sky: one star per degree, filled up to today. */
+.timeline { position: relative; margin: clamp(34px, 6vh, 56px) 0 0; padding-right: 7px; }
+.track { position: relative; height: 12px; }
+.track::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(255, 255, 255, 0.16); }
+.fill {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: var(--now);
+  height: 2px;
+  margin-top: -1px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.85));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.6s 0.25s cubic-bezier(0.3, 0.6, 0.2, 1);
+}
+.timeline[data-in] .fill { transform: none; }
+.star { position: absolute; top: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px; color: var(--ink); opacity: 0.6; }
+.star.current { opacity: 1; }
+.star.end { width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; opacity: 1; color: inherit; border-radius: 50%; background: var(--void); border: 1px solid rgba(255, 255, 255, 0.4); }
+.stops { position: relative; list-style: none; margin: 0; padding: 0; height: 84px; }
+.stops li { position: absolute; top: 18px; padding-right: 16px; }
+.stops li > * { display: block; }
+.years { color: var(--ink-3); font: 400 13px/1.4 var(--font-mono); letter-spacing: 0.01em; }
+.stops b { margin-top: 6px; font: 500 16px/1.3 var(--font-sans); text-wrap: balance; }
+.stops small { margin-top: 3px; color: var(--ink-3); font-size: 14px; line-height: 1.4; }
+
+
+.links { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 32px; margin-top: 26px; }
+.cta { display: inline-block; padding: 4px 0; font: 500 17px/1.2 var(--font-sans); }
+.open { display: inline-flex; align-items: center; color: var(--ink-2); font-size: 15px; }
+.pulse { width: 8px; height: 8px; margin-right: 10px; border-radius: 50%; background: #5be3a0; box-shadow: 0 0 10px #5be3a0; animation: pulse 2.4s ease-in-out infinite; }
+
+/* ---------- photo ---------- */
+.photo { position: relative; margin: 0; justify-self: end; width: 100%; }
+/* The lamp in the photo throws pink light, so the photo throws a little onto the sky around it. */
+.photo::before {
+  content: "";
+  position: absolute;
+  inset: -12% -14% -8% -14%;
+  z-index: -1;
+  background: radial-gradient(ellipse at 30% 60%, rgba(var(--glow), 0.28), transparent 62%), radial-gradient(ellipse at 80% 30%, rgba(120, 110, 255, 0.22), transparent 60%);
+  filter: blur(28px);
+  pointer-events: none;
+}
+.frame {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: #0a0e14;
+  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.9);
+}
+.frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Darken the bottom edge so the caption reads and the photo settles into the sky. */
+.frame::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(4, 7, 11, 0.55), transparent 30%); pointer-events: none; }
+.photo figcaption { display: flex; align-items: center; margin-top: 16px; color: var(--ink-2); font: 400 14px/1.4 var(--font-sans); }
+
+/* ---------- reveal ---------- */
+.section [data-reveal] { opacity: 0; transform: translateY(18px); transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); transition-delay: calc(var(--i, 0) * 0.1s); }
+.section [data-reveal][data-in] { opacity: 1; transform: none; }
+
+@keyframes pulse { 50% { opacity: 0.45; } }
+@media (prefers-reduced-motion: reduce) {
+  .section [data-reveal] { opacity: 1; transform: none; transition: none; }
+  .pulse { animation: none; }
+  .fill { transform: none; transition: none; }
+}
+
+/* ---------- small screens ---------- */
+@media (max-width: 899px) {
+  .inner { grid-template-columns: minmax(0, 1fr); gap: 56px; padding-top: 90px; }
+  .photo { justify-self: start; max-width: 380px; }
+  .field { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .stops { height: 130px; }
+}
