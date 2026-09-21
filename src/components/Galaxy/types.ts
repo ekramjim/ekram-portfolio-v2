@@ -1,5 +1,3 @@
-import type { ReactNode } from "react";
-
 export type GalaxyPhase = "stars" | "title" | "settled";
 
 export interface GalaxyProps {
@@ -9,6 +7,4 @@ export interface GalaxyProps {
   scrollScreens?: number;
   /** How fast stars stream inward along the spiral arms, in arm-lengths per second (0 disables). Default 0.02 ≈ 50s from rim to core. */
   flowSpeed?: number;
-  /** Sections that follow the hero, drawn over the galaxy (which stays put behind them) until the zone ends. */
-  children?: ReactNode;
 }

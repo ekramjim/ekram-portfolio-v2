@@ -1,7 +1,9 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import StarBackdrop from "@/components/ui/StarBackdrop";
 import UnderlineLink from "@/components/ui/UnderlineLink";
+import { useReveal } from "@/components/ui/useReveal";
 import workspace from "./workspace.jpeg";
 import styles from "./About.module.css";
 
@@ -74,23 +76,11 @@ export default function About() {
   }, []);
 
   // Fields, photo and links rise into place the first time they are seen.
-  useEffect(() => {
-    const root = sectionRef.current;
-    if (!root) return;
-    const targets = Array.from(root.querySelectorAll<HTMLElement>("[data-reveal]"));
-    if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      targets.forEach((t) => t.setAttribute("data-in", ""));
-      return;
-    }
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) { e.target.setAttribute("data-in", ""); io.unobserve(e.target); } });
-    }, { threshold: 0.2 });
-    targets.forEach((t) => io.observe(t));
-    return () => io.disconnect();
-  }, []);
+  useReveal(sectionRef);
 
   return (
     <section ref={sectionRef} id="about" className={styles.section} aria-labelledby="about-title">
+      <StarBackdrop />
       <div className={styles.inner}>
         <div className={styles.text}>
           <h2 id="about-title" className={styles.label}>About</h2>
