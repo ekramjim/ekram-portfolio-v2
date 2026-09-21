@@ -29,7 +29,9 @@ export async function POST(request: Request) {
 
     const user = process.env.EMAIL_USER;
     const password = process.env.EMAIL_APP_PASSWORD;
-    const recipients = [process.env.EMAIL_RECIPIENT_1, process.env.EMAIL_RECIPIENT_2, "ekramjim002@gmail.com"].filter(Boolean) as string[];
+    const recipients = [...new Set(
+      [process.env.EMAIL_RECIPIENT_1, process.env.EMAIL_RECIPIENT_2, "ekramjim002@gmail.com"].filter(Boolean) as string[],
+    )];
 
     if (!user || !password) {
       console.error("Contact form email credentials are not configured");

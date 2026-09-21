@@ -32,7 +32,7 @@ export const CONTACT_LINKS: ContactLink[] = [
   {
     label: "GitHub",
     value: "github.com/ekramjim002",
-    href: "https://github.com/ekramjim002",
+    href: "https://github.com/ekramjim",
     icon: "github",
   },
   {
