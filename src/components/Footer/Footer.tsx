@@ -15,6 +15,7 @@ const CONNECT_LINKS = [
   { label: "LinkedIn", href: "https://www.linkedin.com/in/ekram02" },
   { label: "LynkSphere", href: "https://lynksphere.com" },
   { label: "Download CV", href: "/cv/ekram-tech-cv.pdf", download: true },
+  { label: "Archive · v1", href: "/archive/v1" },
 ];
 
 export default function Footer() {
