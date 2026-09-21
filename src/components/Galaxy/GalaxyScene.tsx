@@ -12,6 +12,11 @@ const CORE_COUNT = 350;
 const FIELD_AND_CORE = FIELD_COUNT + CORE_COUNT;
 // Headline stars: two words (left/right of the galaxy) sampled from rendered text.
 const TEXT_UNIT = 0.4; // world units per sampled text pixel at scale 1
+// Cursor wake: springs that trail the pointer at different lags and shove nearby stars along its motion.
+// Angular frequency (rad/s) per spring; lower = lazier. Damping ratio < 1 so they overshoot and settle.
+const WAKE_FREQUENCIES = [15, 9.5, 6.2, 4];
+const WAKE_DAMPING = 0.4;
+const WAKE_MAX_SPEED = 4; // screen-heights per second
 
 /** Canvas font string for the headline: the site's sans token, so the star text matches the rest of the page. */
 function headlineFont() {
@@ -173,6 +178,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
     const uniforms = {
       uTime: { value: 0 }, uFormation: { value: 0 }, uRotation: { value: 0 },
       uTilt: { value: 0 }, uFade: { value: 0 }, uFlow: { value: 0 }, uFlowFade: { value: 0 }, uPixelRatio: { value: renderer.getPixelRatio() },
+      uAspect: { value: camera.aspect }, uHover: { value: 0 }, uWake: { value: WAKE_FREQUENCIES.map(() => new THREE.Vector4(9, 9, 0, 0)) },
       uTextFade: { value: 1 }, uTextScale: { value: 1 }, uTextSize: { value: 1 }, uAnchorL: { value: new THREE.Vector2() }, uAnchorR: { value: new THREE.Vector2() },
     };
     const material = new THREE.ShaderMaterial({
@@ -185,6 +191,9 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
         attribute vec3 aNoise;
         uniform float uTime, uFormation, uRotation, uTilt, uFade, uPixelRatio, uFlow, uFlowFade, uTextFade, uTextScale, uTextSize;
         uniform vec2 uAnchorL, uAnchorR;
+        uniform float uAspect, uHover;
+        // Cursor wake springs: xy = position, zw = velocity, in screen-height units (y up, x scaled by aspect).
+        uniform vec4 uWake[4];
         varying vec3 vColor;
         varying float vAlpha, vHot;
         void main() {
@@ -219,6 +228,24 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
           p.yz = mat2(cos(tilt), -sin(tilt), sin(tilt), cos(tilt)) * p.yz;
           vec4 viewPosition = modelViewMatrix * vec4(p, 1.0);
           gl_Position = projectionMatrix * viewPosition;
+          // Cursor wake: work in screen space so stars at every depth react to the pointer the same way.
+          vec2 screen = gl_Position.xy / gl_Position.w * vec2(uAspect, 1.0);
+          vec2 push = vec2(0.0);
+          float near = 0.0;
+          for (int i = 0; i < 4; i++) {
+            vec4 wake = uWake[i];
+            vec2 away = screen - wake.xy;
+            float radius = 0.24 - 0.03 * float(i);
+            float reach = exp(-dot(away, away) / (radius * radius));
+            // Dragged along the motion, plus a little parting to either side of it.
+            push += wake.zw * reach * 0.036 + normalize(away + 1e-4) * length(wake.zw) * reach * 0.012;
+            near = max(near, reach);
+          }
+          // Each star answers with its own weight, so the dust scatters and lags instead of moving as one sheet.
+          float response = (0.45 + 1.0 * fract(aPhase * 1.618 + aNoise.x * 0.31)) * mix(1.0, 0.7, background);
+          push *= response * uHover;
+          push /= 1.0 + length(push) / 0.2;
+          gl_Position.xy += push / vec2(uAspect, 1.0) * gl_Position.w;
           // Headline stars grow with camera distance so the letters stay solid on small screens.
           gl_PointSize = clamp(aSize * uPixelRatio * 440.0 / max(100.0, -viewPosition.z) * mix(1.0, uTextSize, text), 0.8, 80.0);
           vColor = color;
@@ -226,7 +253,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
           float twinkle = 0.9 + 0.1 * sin(uTime * 0.65 + aPhase);
           // Stars fade in at the rim and out into the core so the wrap-around is never seen.
           float seam = smoothstep(0.0, 0.05, t) * (1.0 - smoothstep(0.95, 1.0, t));
-          vAlpha = uFade * twinkle * mix(1.0, 0.22 + 0.78 * f, core) * mix(1.0, seam, arm * uFlowFade) * mix(1.0, uTextFade, text);
+          vAlpha = uFade * twinkle * (1.0 + 0.35 * near * uHover) * mix(1.0, 0.22 + 0.78 * f, core) * mix(1.0, seam, arm * uFlowFade) * mix(1.0, uTextFade, text);
         }
       `,
       fragmentShader: `
@@ -321,6 +348,11 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
     let dragTilt = 0;
     let flow = 0;
     let pointer: { id: number; x: number; y: number; target: HTMLElement } | null = null;
+    // Cursor wake: pointer target in screen units, one spring per uniform entry.
+    const wakeTarget = new THREE.Vector2();
+    const wakeVelocity = WAKE_FREQUENCIES.map(() => new THREE.Vector2());
+    let hasPointer = false;
+    let pointerInside = false;
     const onReplay = () => {
       elapsed = 0;
       dragRotation = 0;
@@ -344,6 +376,13 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       target.style.cursor = "grabbing";
     };
     const onPointerMove = (event: PointerEvent) => {
+      wakeTarget.set((event.clientX / window.innerWidth * 2 - 1) * camera.aspect, -(event.clientY / stableHeight * 2 - 1));
+      pointerInside = true;
+      if (!hasPointer) {
+        // First sighting: park the springs on the pointer so nothing flies in from off screen.
+        hasPointer = true;
+        uniforms.uWake.value.forEach((wake) => wake.set(wakeTarget.x, wakeTarget.y, 0, 0));
+      }
       if (!pointer || event.pointerId !== pointer.id) return;
       dragRotation += (event.clientX - pointer.x) * 0.004;
       dragTilt = THREE.MathUtils.clamp(dragTilt + (event.clientY - pointer.y) * 0.003, -0.8, 0.8);
@@ -358,6 +397,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       }
       pointer = null;
     };
+    const onPointerLeave = () => { pointerInside = false; };
     const onKeyDown = (event: KeyboardEvent) => {
       const target = event.target instanceof Element ? event.target.closest("[data-galaxy-interaction]") : null;
       if (!target || !root.contains(target)) return;
@@ -379,6 +419,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth < 640 ? 1.5 : 2));
       renderer.setSize(window.innerWidth, stableHeight);
       uniforms.uPixelRatio.value = renderer.getPixelRatio();
+      uniforms.uAspect.value = camera.aspect;
       layoutText();
       onScroll();
     };
@@ -389,6 +430,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
     window.addEventListener("pointerup", onPointerUp);
     window.addEventListener("pointercancel", onPointerUp);
     window.addEventListener("keydown", onKeyDown);
+    document.documentElement.addEventListener("pointerleave", onPointerLeave);
     layoutText();
     onScroll();
     onReplay();
@@ -421,6 +463,26 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       uniforms.uTextFade.value = 1 - smoothstep(0.03, 0.28, smoothScroll);
       const scrollTilt = SCROLL_TILT * smoothstep(0, 1, smoothScroll);
       uniforms.uTilt.value += (dragTilt + scrollTilt - uniforms.uTilt.value) * ease;
+      // Cursor wake: underdamped springs chase the pointer, so the dust it shoves keeps drifting and rocks back after the cursor stops.
+      const hoverTarget = !reduced && hasPointer && pointerInside && inView ? 1 : 0;
+      uniforms.uHover.value += (hoverTarget - uniforms.uHover.value) * (1 - Math.exp(-6 * dt));
+      if (hasPointer && !reduced) {
+        const steps = 3;
+        const h = dt / steps;
+        uniforms.uWake.value.forEach((wake, i) => {
+          const omega = WAKE_FREQUENCIES[i];
+          const velocity = wakeVelocity[i];
+          for (let s = 0; s < steps; s++) {
+            velocity.x += (omega * omega * (wakeTarget.x - wake.x) - 2 * WAKE_DAMPING * omega * velocity.x) * h;
+            velocity.y += (omega * omega * (wakeTarget.y - wake.y) - 2 * WAKE_DAMPING * omega * velocity.y) * h;
+            velocity.clampLength(0, WAKE_MAX_SPEED);
+            wake.x += velocity.x * h;
+            wake.y += velocity.y * h;
+          }
+          wake.z = velocity.x;
+          wake.w = velocity.y;
+        });
+      }
       camera.position.set(0, CAMERA_Y, CAMERA_Z * cameraFit);
       camera.lookAt(0, CAMERA_Y, 0);
       if (inView) renderer.render(scene, camera);
@@ -436,6 +498,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("pointercancel", onPointerUp);
       window.removeEventListener("keydown", onKeyDown);
+      document.documentElement.removeEventListener("pointerleave", onPointerLeave);
       geometry.dispose(); material.dispose(); glowTexture.dispose(); glowMaterial.dispose(); renderer.dispose();
     };
   }, [rootRef, scrollScreens, flowSpeed, titleLeft, titleRight, font]);
