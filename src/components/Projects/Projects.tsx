@@ -11,8 +11,8 @@ interface ProjectsProps {
   heading: string;
   /** Small line beside the heading, e.g. "Highlights". */
   note?: string;
-  /** Link shown under the list. */
-  footer: { label: string; href: string };
+  /** Link shown under the list, if any. */
+  footer?: { label: string; href: string };
 }
 
 function useMedia(query: string) {
@@ -257,9 +257,11 @@ export default function Projects({ projects, heading, note, footer }: ProjectsPr
                 </button>
               </li>
             ))}
-            <li className={styles.more}>
-              <UnderlineLink href={footer.href} className={styles.moreLink}>{footer.label}</UnderlineLink>
-            </li>
+            {footer && (
+              <li className={styles.more}>
+                <UnderlineLink href={footer.href} className={styles.moreLink}>{footer.label}</UnderlineLink>
+              </li>
+            )}
           </ol>
         </div>
 

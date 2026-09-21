@@ -13,32 +13,30 @@ export interface Project {
   /** Where the project's star sits in the sky, in sky units. (0, 0) is the middle of the overview; x grows right, y grows down. */
   x: number;
   y: number;
-  /** Shown in the home page highlights. Every project appears on /projects. */
-  highlight?: boolean;
   /** Live site, store page or repository. */
   href?: string;
   /** Source repository, when it is separate from `href`. */
   github?: string;
 }
 
-/** Highlights first (in display order), then the rest. */
+/** Every project, in display order. */
 export const PROJECTS: Project[] = [
   {
-    id: "linkedhive", name: "LinkedHive", group: "Mobile", year: "2025–2026", highlight: true,
+    id: "linkedhive", name: "LinkedHive", group: "Mobile", year: "2025–2026",
     summary: "Cross-platform (iOS, Android, Web) community and business networking app for Australian suburbs, with real-time chat, events, jobs, local deals and AI translation.",
     stack: ["React Native", "Expo", "Next.js 16", "TypeScript", "Supabase", "Drizzle ORM", "Stripe"],
     href: "https://www.linkedhive.com.au/",
     color: "#5aa9ff", color2: "#2a3f8f", x: -110, y: -80,
   },
   {
-    id: "lynksphere", name: "LynkSphere Website", group: "Web", year: "2026", highlight: true,
+    id: "lynksphere", name: "LynkSphere Website", group: "Web", year: "2026",
     summary: "Production marketing site for LynkSphere with rich 3D animation. It is the main customer acquisition channel, contributing $30K AUD revenue in 8 months.",
     stack: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "GSAP", "Three.js"],
     href: "https://lynksphere.com/",
     color: "#ffb55e", color2: "#a2412b", x: -20, y: -30,
   },
   {
-    id: "timebreak", name: "TimeBreak", group: "Mobile", year: "2026", highlight: true,
+    id: "timebreak", name: "TimeBreak", group: "Mobile", year: "2026",
     summary: "Native Pomodoro timer for iPhone, iPad, Mac and the menu bar, with an analog clock, Live Activities, a WidgetKit widget and Reminders integration.",
     stack: ["Swift", "SwiftUI", "WidgetKit", "ActivityKit", "AppIntents", "EventKit"],
     href: "https://apps.apple.com/au/app/timebreak-pomodoro/id6763444390",
@@ -46,14 +44,14 @@ export const PROJECTS: Project[] = [
     color: "#4fd0c4", color2: "#1d5a7a", x: 40, y: -115,
   },
   {
-    id: "mindsigns", name: "MindSigns Website", group: "Web", year: "2026", highlight: true,
+    id: "mindsigns", name: "MindSigns Website", group: "Web", year: "2026",
     summary: "Official website for MindSigns, a Monash University Faculty of IT initiative, with a particle-built 3D hand that morphs between sign-language poses.",
     stack: ["Next.js", "React", "TypeScript", "Three.js", "React Three Fiber", "Framer Motion", "Tailwind CSS"],
     href: "https://mindsigns.online",
     color: "#c49bff", color2: "#4a2a8f", x: 150, y: -20,
   },
   {
-    id: "mailhq", name: "MailHQ", group: "Web", year: "2026", highlight: true,
+    id: "mailhq", name: "MailHQ", group: "Web", year: "2026",
     summary: "Outreach manager that organises contacts, personalises bulk cold emails with Gemini and tracks opens, clicks and replies.",
     stack: ["Next.js", "TypeScript", "Supabase", "Gemini API", "Resend", "Tailwind CSS"],
     href: "https://mail-hq.vercel.app",
@@ -104,5 +102,3 @@ export const PROJECTS: Project[] = [
     color: "#ff7ab6", color2: "#8a2a5a", x: 170, y: -100,
   },
 ];
-
-export const HIGHLIGHTS = PROJECTS.filter((project) => project.highlight);
