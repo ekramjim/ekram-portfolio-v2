@@ -81,18 +81,8 @@
 .dot { display: inline-block; width: 8px; height: 8px; margin-right: 10px; border-radius: 50%; background: var(--c); box-shadow: 0 0 12px var(--c); }
 .rows[data-active] .row:not(.on) { opacity: 0.26; }
 .more { padding: 26px 0 0 56px; }
-.moreLink {
-  display: inline-block;
-  padding: 4px 0;
-  color: var(--ink);
-  font: 500 17px/1.2 var(--font-sans);
-  text-decoration: underline;
-  text-decoration-color: #ff6600;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 8px;
-}
-.moreLink:hover { text-decoration-color: var(--ink); }
-.moreLink:focus-visible, .cta:focus-visible, .ctaQuiet:focus-visible, .close:focus-visible, .pager button:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+.moreLink { display: inline-block; padding: 4px 0; font: 500 17px/1.2 var(--font-sans); }
+.close:focus-visible, .ctaQuiet:focus-visible, .pager button:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
 
 .preview { position: fixed; z-index: 30; left: 0; top: 0; pointer-events: none; will-change: transform; }
 
@@ -126,8 +116,6 @@
 .stack { margin: 12px 0 0; color: var(--ink-3); font-size: 14px; }
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px; margin-top: 22px; }
 .cta { display: inline-block; padding: 4px 0; font: 500 16px/1.2 var(--font-sans); }
-.cta { color: var(--ink); text-decoration: underline; text-decoration-color: #ff6600; text-decoration-thickness: 2px; text-underline-offset: 8px; }
-.cta:hover { text-decoration-color: var(--ink); }
 .ctaQuiet { display: inline-block; padding: 4px 0; color: var(--ink-2); font: 500 16px/1.2 var(--font-sans); text-decoration: none; transition: color 0.2s; }
 .ctaQuiet:hover { color: var(--ink); }
 .pager { display: inline-flex; gap: 2px; }

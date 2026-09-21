@@ -1,6 +1,6 @@
 "use client";
-import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type FocusEvent, type PointerEvent } from "react";
+import UnderlineLink from "@/components/ui/UnderlineLink";
 import type { Project } from "@/data/projects";
 import ProjectDevice from "./ProjectDevice";
 import ProjectsSky from "./ProjectsSky";
@@ -188,7 +188,7 @@ export default function Projects({ projects, heading, note, footer }: ProjectsPr
               </li>
             ))}
             <li className={styles.more}>
-              <Link href={footer.href} className={styles.moreLink}>{footer.label}</Link>
+              <UnderlineLink href={footer.href} className={styles.moreLink}>{footer.label}</UnderlineLink>
             </li>
           </ol>
         </div>
@@ -211,7 +211,7 @@ export default function Projects({ projects, heading, note, footer }: ProjectsPr
               <p className={styles.stack}>{project.stack.join("  ·  ")}</p>
               <div className={styles.actions}>
                 {project.href && (
-                  <a href={project.href} target="_blank" rel="noopener noreferrer" className={styles.cta}>{linkLabel(project.href)} ↗</a>
+                  <UnderlineLink href={project.href} className={styles.cta}>{linkLabel(project.href)} ↗</UnderlineLink>
                 )}
                 {project.github && (
                   <a href={project.github} target="_blank" rel="noopener noreferrer" className={styles.ctaQuiet}>GitHub ↗</a>

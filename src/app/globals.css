@@ -11,6 +11,8 @@
   --space: #04070b;
   --text-primary: #f7f9fc;
   --accent: #ff6600;
+  /* The resting colour of every link underline (see UnderlineLink). */
+  --underline: rgba(255, 255, 255, 0.4);
 }
 
 html {
