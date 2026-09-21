@@ -123,8 +123,8 @@ export function createSky(canvas: HTMLCanvasElement, projects: SkyProject[]) {
       tgt.x = 0; tgt.y = 0; tgt.z = zBase();
     }
     // Hovering a star moves it to the right edge, clear of the preview column that sits beside the list.
-    tgt.ax = (open ? (small ? 0.5 : 0.34) : small ? 0.5 : active >= 0 ? 0.88 : 0.68) * W;
-    tgt.ay = (open ? (small ? 0.3 : 0.4) : small ? 0.72 : 0.5) * H;
+    tgt.ax = (open ? (small ? 0.5 : 0.14) : small ? 0.5 : active >= 0 ? 0.88 : 0.68) * W;
+    tgt.ay = (open ? (small ? 0.2 : 0.5) : small ? 0.72 : 0.5) * H;
   }
 
   function draw() {

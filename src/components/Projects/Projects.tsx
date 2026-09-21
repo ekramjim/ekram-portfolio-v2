@@ -29,6 +29,34 @@ function useMedia(query: string) {
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
+/** A project's details, shown inside its window: compact on the hover preview, in full (with links) once opened. */
+function Details({ project, index, total, peek, onStep }: { project: Project; index: number; total: number; peek?: boolean; onStep?: (d: number) => void }) {
+  return (
+    <div className={styles.copy} data-peek={peek ? "" : undefined}>
+      <p className={styles.idx}><i className={styles.dot} />{pad(index + 1)} / {pad(total)} · {project.group} · {project.year}</p>
+      <h3 className={styles.title}>{project.name}</h3>
+      <p className={styles.summary}>{project.summary}</p>
+      <p className={styles.stack}>{project.stack.join("  ·  ")}</p>
+      {peek ? (
+        <p className={styles.hint}>Click to open →</p>
+      ) : (
+        <div className={styles.actions}>
+          {project.href && (
+            <UnderlineLink href={project.href} className={styles.cta}>{linkLabel(project.href)} ↗</UnderlineLink>
+          )}
+          {project.github && (
+            <a href={project.github} target="_blank" rel="noopener noreferrer" className={styles.ctaQuiet}>GitHub ↗</a>
+          )}
+          <span className={styles.pager}>
+            <button type="button" onClick={() => onStep?.(-1)} aria-label="Previous project">←</button>
+            <button type="button" onClick={() => onStep?.(1)} aria-label="Next project">→</button>
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /** Button text for a project's main link, based on where it points. */
 function linkLabel(href: string) {
   const host = new URL(href).hostname;
@@ -59,12 +87,14 @@ export default function Projects({ projects, heading, note, footer }: ProjectsPr
   const openRef = useRef(open);
   openRef.current = open;
   const lastOpen = useRef(-1);
+  const fromRect = useRef<DOMRect | null>(null);
 
   const isOpen = open >= 0;
   const current = isOpen ? open : hover;
   const project = isOpen ? projects[open] : null;
 
   const openProject = useCallback((i: number) => {
+    fromRect.current = previewRef.current?.getBoundingClientRect() ?? null;
     // The section goes fullscreen while open; hold its place in the page so nothing jumps.
     if (openRef.current < 0 && sectionRef.current) setHolder(sectionRef.current.offsetHeight);
     setOpen(i);
@@ -104,8 +134,8 @@ export default function Projects({ projects, heading, note, footer }: ProjectsPr
     if (!isOpen || !line || !scene || !device || small) return;
     const place = () => {
       const s = scene.getBoundingClientRect(), d = device.getBoundingClientRect();
-      line.setAttribute("x1", String(s.width * 0.34 + 20));
-      line.setAttribute("y1", String(s.height * 0.4));
+      line.setAttribute("x1", String(s.width * 0.14 + 20));
+      line.setAttribute("y1", String(s.height * 0.5));
       line.setAttribute("x2", String(d.left - s.left - 16));
       line.setAttribute("y2", String(d.top - s.top + d.height / 2));
     };
@@ -114,15 +144,23 @@ export default function Projects({ projects, heading, note, footer }: ProjectsPr
     return () => window.removeEventListener("resize", place);
   }, [isOpen, small, open]);
 
+  // The hover preview grows into the open window: animate the window's box from where the preview sat to its own.
+  useLayoutEffect(() => {
+    const el = deviceRef.current, from = fromRect.current;
+    fromRect.current = null;
+    if (!isOpen || !el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const easing = "cubic-bezier(0.2, 0.7, 0.2, 1)";
+    if (from) el.animate([{ left: `${from.left}px`, top: `${from.top}px`, width: `${from.width}px`, height: `${from.height}px` }, {}], { duration: 750, easing });
+    else el.animate([{ opacity: 0, transform: "translateY(24px)" }, {}], { duration: 600, easing });
+  }, [isOpen]);
+
   // Desktop hover preview: a column between the list and the galaxy that trails the pointer vertically.
   useEffect(() => {
     const el = previewRef.current;
     if (!el || current < 0 || tapMode || isOpen) return;
-    const phone = projects[current].kind === "phone";
-    const height = phone ? 360 : 300;
-    const width = phone ? (height * 9) / 19 : 380;
-    el.style.setProperty("--h", `${height}px`);
+    const width = 440, height = 400;
     el.style.setProperty("--w", `${width}px`);
+    el.style.setProperty("--h", `${height}px`);
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let raf = 0;
     const tick = () => {
@@ -195,7 +233,9 @@ export default function Projects({ projects, heading, note, footer }: ProjectsPr
 
         {!tapMode && !isOpen && current >= 0 && (
           <div ref={previewRef} className={styles.preview} aria-hidden="true">
-            <ProjectDevice project={projects[current]} />
+            <ProjectDevice project={projects[current]}>
+              <Details project={projects[current]} index={current} total={projects.length} peek />
+            </ProjectDevice>
           </div>
         )}
 
@@ -204,27 +244,10 @@ export default function Projects({ projects, heading, note, footer }: ProjectsPr
             <svg className={styles.tether} aria-hidden="true"><line ref={lineRef} x1="0" y1="0" x2="0" y2="0" /></svg>
             <button type="button" className={styles.close} onClick={close}>Close <span aria-hidden="true">✕</span></button>
 
-            <div className={styles.info} key={project.id}>
-              <p className={styles.idx}><i className={styles.dot} />{pad(open + 1)} / {pad(projects.length)} · {project.group} · {project.year}</p>
-              <h3 className={styles.title}>{project.name}</h3>
-              <p className={styles.summary}>{project.summary}</p>
-              <p className={styles.stack}>{project.stack.join("  ·  ")}</p>
-              <div className={styles.actions}>
-                {project.href && (
-                  <UnderlineLink href={project.href} className={styles.cta}>{linkLabel(project.href)} ↗</UnderlineLink>
-                )}
-                {project.github && (
-                  <a href={project.github} target="_blank" rel="noopener noreferrer" className={styles.ctaQuiet}>GitHub ↗</a>
-                )}
-                <span className={styles.pager}>
-                  <button type="button" onClick={() => step(-1)} aria-label="Previous project">←</button>
-                  <button type="button" onClick={() => step(1)} aria-label="Next project">→</button>
-                </span>
-              </div>
-            </div>
-
-            <div ref={deviceRef} className={styles.device} key={`d-${project.id}`}>
-              <ProjectDevice project={project} />
+            <div ref={deviceRef} className={styles.device}>
+              <ProjectDevice project={project} open key={project.id}>
+                <Details project={project} index={open} total={projects.length} onStep={step} />
+              </ProjectDevice>
             </div>
           </div>
         )}
