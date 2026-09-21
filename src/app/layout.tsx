@@ -10,7 +10,7 @@ const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", dis
 
 export const metadata: Metadata = {
   title: "Ekram — Portfolio",
-  description: "Co-founder · Bioinformatician · Computer scientist",
+  description: "I build software end to end, from iOS apps to 3D websites to data models.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
