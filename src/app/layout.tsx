@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import GalaxyCursor from "@/components/ui/GalaxyCursor";
+import { Navbar } from "@/components/Navbar";
 import "./globals.css";
 
 // The site's only typefaces. They are exposed as --font-sans / --font-mono in globals.css; nothing else loads a font.
@@ -17,6 +18,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" className={`${sans.variable} ${mono.variable}`}>
       <body>
         <GalaxyCursor />
+        <Navbar />
         {children}
       </body>
     </html>
