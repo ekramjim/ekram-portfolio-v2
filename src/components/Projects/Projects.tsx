@@ -228,6 +228,7 @@ export default function Projects({ projects, heading, note, footer }: ProjectsPr
     <div style={holder ? { height: holder } : undefined}>
       <section
         ref={sectionRef}
+        id="projects"
         className={styles.section}
         data-open={isOpen ? "" : undefined}
         aria-labelledby="projects-title"
