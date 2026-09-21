@@ -39,6 +39,13 @@ export const PROJECTS: Project[] = [
     color: "#5aa9ff", color2: "#2a3f8f", glyph: "L", x: -110, y: -80,
   },
   {
+    id: "lynksphere", name: "LynkSphere Website", group: "Web", year: "2026", kind: "browser", highlight: true,
+    summary: "Production marketing site for LynkSphere with rich 3D animation. It is the main customer acquisition channel, contributing $30K AUD revenue in 8 months.",
+    stack: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "GSAP", "Three.js"],
+    href: "https://lynksphere.com/",
+    color: "#ffb55e", color2: "#a2412b", glyph: "Ly", x: -20, y: -30,
+  },
+  {
     id: "timebreak", name: "TimeBreak", group: "Mobile", year: "2026", kind: "phone", highlight: true,
     summary: "Native Pomodoro timer for iPhone, iPad, Mac and the menu bar, with an analog clock, Live Activities, a WidgetKit widget and Reminders integration.",
     stack: ["Swift", "SwiftUI", "WidgetKit", "ActivityKit", "AppIntents", "EventKit"],
@@ -68,13 +75,6 @@ export const PROJECTS: Project[] = [
     href: "https://ekram.tech",
     github: "https://github.com/ekramjim/ekram-portfolio",
     color: "#dbe8ff", color2: "#33507a", glyph: "Ek", x: 95, y: 105,
-  },
-  {
-    id: "lynksphere", name: "LynkSphere Website", group: "Web", year: "2026", kind: "browser",
-    summary: "Production marketing site for LynkSphere with rich 3D animation. It is the main customer acquisition channel, contributing $30K AUD revenue in 8 months.",
-    stack: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "GSAP", "Three.js"],
-    href: "https://lynksphere.com/",
-    color: "#ffb55e", color2: "#a2412b", glyph: "Ly", x: -20, y: -30,
   },
   {
     id: "afl", name: "AFL Game Ranking System", group: "Data science", year: "2025", kind: "browser", chart: 1,
