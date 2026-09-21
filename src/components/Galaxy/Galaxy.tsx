@@ -2,6 +2,7 @@
 import { useRef } from "react";
 import dynamic from "next/dynamic";
 import GalaxyOverlay from "./GalaxyOverlay";
+import ShootingStars from "./ShootingStars";
 import type { GalaxyProps } from "./types";
 
 // three.js is client-only and heavy; keep it out of the server render and initial bundle.
@@ -23,6 +24,7 @@ export default function Galaxy({ scrollScreens = 5, flowSpeed = 0.02, title }: G
       style={{ position: "relative", height: `${scrollScreens * 100}vh`, clipPath: "inset(0)" }}
     >
       <GalaxyScene rootRef={rootRef} scrollScreens={scrollScreens} flowSpeed={flowSpeed} title={title} replayToken={0} onPhaseChange={noop} />
+      <ShootingStars rootRef={rootRef} />
       <GalaxyOverlay title={title.join(" ")} />
       {/* Fades the end of the hero into the next section's ground. */}
       <div
