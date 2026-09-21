@@ -7,20 +7,14 @@ export interface Project {
   year: string;
   summary: string;
   stack: string[];
-  /** Star colour and the secondary tint used by the placeholder screen. */
+  /** Star colour, and with `color2` the two colours of the project window's moving gradient. */
   color: string;
   color2: string;
-  /** Big letter(s) on the placeholder screen. */
-  glyph: string;
   /** Where the project's star sits in the sky, in sky units. (0, 0) is the middle of the overview; x grows right, y grows down. */
   x: number;
   y: number;
-  /** Adds a sample chart line to the placeholder screen. */
-  chart?: 1 | 2;
   /** Shown in the home page highlights. Every project appears on /projects. */
   highlight?: boolean;
-  /** Real screenshot, e.g. "/projects/linkedhive.png" (put the file in /public). Shown instead of the placeholder. */
-  image?: string;
   /** Live site, store page or repository. */
   href?: string;
   /** Source repository, when it is separate from `href`. */
@@ -34,14 +28,14 @@ export const PROJECTS: Project[] = [
     summary: "Cross-platform (iOS, Android, Web) community and business networking app for Australian suburbs, with real-time chat, events, jobs, local deals and AI translation.",
     stack: ["React Native", "Expo", "Next.js 16", "TypeScript", "Supabase", "Drizzle ORM", "Stripe"],
     href: "https://www.linkedhive.com.au/",
-    color: "#5aa9ff", color2: "#2a3f8f", glyph: "L", x: -110, y: -80,
+    color: "#5aa9ff", color2: "#2a3f8f", x: -110, y: -80,
   },
   {
     id: "lynksphere", name: "LynkSphere Website", group: "Web", year: "2026", highlight: true,
     summary: "Production marketing site for LynkSphere with rich 3D animation. It is the main customer acquisition channel, contributing $30K AUD revenue in 8 months.",
     stack: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "GSAP", "Three.js"],
     href: "https://lynksphere.com/",
-    color: "#ffb55e", color2: "#a2412b", glyph: "Ly", x: -20, y: -30,
+    color: "#ffb55e", color2: "#a2412b", x: -20, y: -30,
   },
   {
     id: "timebreak", name: "TimeBreak", group: "Mobile", year: "2026", highlight: true,
@@ -49,14 +43,14 @@ export const PROJECTS: Project[] = [
     stack: ["Swift", "SwiftUI", "WidgetKit", "ActivityKit", "AppIntents", "EventKit"],
     href: "https://apps.apple.com/au/app/timebreak-pomodoro/id6763444390",
     github: "https://github.com/ekramjim/timeBreak",
-    color: "#4fd0c4", color2: "#1d5a7a", glyph: "T", x: 40, y: -115,
+    color: "#4fd0c4", color2: "#1d5a7a", x: 40, y: -115,
   },
   {
     id: "mindsigns", name: "MindSigns Website", group: "Web", year: "2026", highlight: true,
     summary: "Official website for MindSigns, a Monash University Faculty of IT initiative, with a particle-built 3D hand that morphs between sign-language poses.",
     stack: ["Next.js", "React", "TypeScript", "Three.js", "React Three Fiber", "Framer Motion", "Tailwind CSS"],
     href: "https://mindsigns.online",
-    color: "#c49bff", color2: "#4a2a8f", glyph: "Ms", x: 150, y: -20,
+    color: "#c49bff", color2: "#4a2a8f", x: 150, y: -20,
   },
   {
     id: "mailhq", name: "MailHQ", group: "Web", year: "2026", highlight: true,
@@ -64,7 +58,7 @@ export const PROJECTS: Project[] = [
     stack: ["Next.js", "TypeScript", "Supabase", "Gemini API", "Resend", "Tailwind CSS"],
     href: "https://mail-hq.vercel.app",
     github: "https://github.com/ekramjim/MailHQ",
-    color: "#ff8a7a", color2: "#8a2f3d", glyph: "HQ", x: -60, y: 55,
+    color: "#ff8a7a", color2: "#8a2f3d", x: -60, y: 55,
   },
   {
     id: "portfolio", name: "Personal Portfolio Website", group: "Web", year: "2026",
@@ -72,42 +66,42 @@ export const PROJECTS: Project[] = [
     stack: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Three.js", "WebGL", "Nodemailer"],
     href: "https://ekram.tech",
     github: "https://github.com/ekramjim/ekram-portfolio",
-    color: "#dbe8ff", color2: "#33507a", glyph: "Ek", x: 95, y: 105,
+    color: "#dbe8ff", color2: "#33507a", x: 95, y: 105,
   },
   {
-    id: "afl", name: "AFL Game Ranking System", group: "Data science", year: "2025", chart: 1,
+    id: "afl", name: "AFL Game Ranking System", group: "Data science", year: "2025",
     summary: "CatBoost models trained on historical AFL data reach 78% match outcome accuracy, served through a REST API to a React frontend with interactive Plotly charts.",
     stack: ["Next.js", "React", "Python", "CatBoost", "MongoDB", "Pandas", "Scikit-learn", "Plotly.js"],
     href: "https://github.com/yeanle02/FYP",
-    color: "#7be495", color2: "#1c6a52", glyph: "AFL", x: 185, y: 70,
+    color: "#7be495", color2: "#1c6a52", x: 185, y: 70,
   },
   {
-    id: "renewable-energy", name: "Visualizing Renewable Energy", group: "Data science", year: "2024", chart: 2,
+    id: "renewable-energy", name: "Visualizing Renewable Energy", group: "Data science", year: "2024",
     summary: "Interactive dashboard exploring global renewable energy trends from World Bank data, with five chart idioms linked across views.",
     stack: ["Vega-Lite", "Vega-Embed", "TopoJSON", "Python", "HTML/CSS"],
     href: "https://ekramjim.github.io/visualizing-renewable-energy/",
-    color: "#b4e05f", color2: "#2e6b3a", glyph: "RE", x: -120, y: 20,
+    color: "#b4e05f", color2: "#2e6b3a", x: -120, y: 20,
   },
   {
-    id: "f1", name: "F1 Pinnacle Of Motor Sports", group: "Data science", year: "2024", chart: 2,
+    id: "f1", name: "F1 Pinnacle Of Motor Sports", group: "Data science", year: "2024",
     summary: "Interactive Tableau dashboards covering driver nationality, constructor performance and season-by-season comparisons across decades of F1 data.",
     stack: ["Tableau", "Data Visualisation", "Statistical Analysis"],
     href: "https://public.tableau.com/app/profile/ekramul.islam/viz/Visualization1F1/Dashboard1",
-    color: "#ff6b5e", color2: "#7a1f3d", glyph: "F1", x: 20, y: 135,
+    color: "#ff6b5e", color2: "#7a1f3d", x: 20, y: 135,
   },
   {
     id: "call-monitor", name: "Android Call State Monitor", group: "Mobile", year: "2024",
     summary: "Android app that listens for call state changes and shows the incoming caller ID in real time.",
     stack: ["Java", "Android SDK", "BroadcastReceiver", "TelephonyManager", "Gradle"],
     href: "https://github.com/ekramjim/MyCallReceiver",
-    color: "#6fd3ff", color2: "#1f5a8a", glyph: "A", x: -30, y: 100,
+    color: "#6fd3ff", color2: "#1f5a8a", x: -30, y: 100,
   },
   {
     id: "hearts", name: "Hearts Card Game", group: "Software", year: "2023",
     summary: "Terminal Hearts in Python with full game logic and score tracking, plus two AI opponent strategies.",
     stack: ["Python", "OOP", "AI Heuristics"],
     href: "https://github.com/ekramjim/Hearts-Game",
-    color: "#ff7ab6", color2: "#8a2a5a", glyph: "H", x: 170, y: -100,
+    color: "#ff7ab6", color2: "#8a2a5a", x: 170, y: -100,
   },
 ];
 

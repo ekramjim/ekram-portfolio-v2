@@ -1,4 +1,4 @@
-/* Preview frame for a project: a browser window holding a screenshot (or a placeholder until one is added) and the project details. */
+/* Preview frame for a project: a browser window holding a slow moving gradient in the project's colours and the project details. */
 .dev {
   position: relative;
   flex: none;
@@ -15,28 +15,30 @@
 .bar i { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.22); }
 .url { margin-left: 14px; padding: 0 12px; border-radius: 99px; background: rgba(255, 255, 255, 0.07); color: rgba(255, 255, 255, 0.55); font: 400 11px/18px var(--font-mono); letter-spacing: 0.01em; animation: fade 0.5s 0.4s both; }
 .screen { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 38%) minmax(0, 1fr); width: 100%; height: 100%; overflow: hidden; border-radius: 0 0 13px 13px; }
-.pane { position: relative; min-width: 0; min-height: 0; container-type: size; }
-.shot { object-fit: cover; object-position: top; }
-
-.art {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(90% 75% at 15% 5%, color-mix(in srgb, var(--c) 78%, #000) 0%, transparent 62%),
-    radial-gradient(80% 70% at 100% 100%, color-mix(in srgb, var(--c2) 60%, #000) 0%, transparent 65%),
-    #070c14;
+.pane { position: relative; min-width: 0; min-height: 0; }
+/* The window's picture: two soft blobs of the project's colours drifting over a dark ground, lighting up where they cross. */
+.art { position: absolute; inset: 0; overflow: hidden; isolation: isolate; background: #070c14; }
+.art::before, .art::after { content: ""; position: absolute; border-radius: 50%; mix-blend-mode: screen; will-change: transform; }
+.art::before {
+  left: -25%;
+  top: -45%;
+  width: 95%;
+  height: 130%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c) 82%, #000), transparent);
+  animation: driftA 17s ease-in-out infinite alternate;
 }
-.glyph {
-  position: absolute;
-  left: 5cqw;
-  bottom: 6cqh;
-  font: 500 22cqw/0.8 var(--font-sans);
-  letter-spacing: -0.05em;
-  color: rgba(255, 255, 255, 0.94);
+.art::after {
+  right: -30%;
+  bottom: -55%;
+  width: 105%;
+  height: 140%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c2) 90%, #000), transparent);
+  animation: driftB 23s ease-in-out infinite alternate;
 }
-.art svg { position: absolute; inset: 14% 6% 10% 6%; width: 88%; height: 76%; }
+@keyframes driftA { from { transform: translate(0, 0) scale(1); } to { transform: translate(52%, 34%) scale(1.25); } }
+@keyframes driftB { from { transform: translate(0, 0) scale(1); } to { transform: translate(-58%, -30%) scale(0.85); } }
 
-/* Open: the window fills its box, with the screenshot on one side and the details on the other. */
+/* Open: the window fills its box, with the gradient on one side and the details on the other. */
 .dev[data-open] { width: 100%; height: 100%; max-width: none; }
 .dev[data-open] .screen { grid-template-columns: minmax(0, 58fr) minmax(0, 42fr); grid-template-rows: minmax(0, 1fr); }
 .body {
@@ -65,5 +67,5 @@
   .dev[data-open] .body { border-left: 0; border-top: 1px solid rgba(255, 255, 255, 0.1); padding: 18px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .dev[data-open] .body, .url { animation: none; }
+  .dev[data-open] .body, .url, .art::before, .art::after { animation: none; }
 }

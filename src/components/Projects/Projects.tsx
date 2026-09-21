@@ -27,6 +27,9 @@ function useMedia(query: string) {
   return matches;
 }
 
+/** How long each project stays featured before the preview moves on to the next. */
+const AUTO_MS = 5000;
+
 const pad = (n: number) => String(n).padStart(2, "0");
 
 /** A project's details, shown inside its window: compact on the hover preview, in full (with links) once opened. */
@@ -66,23 +69,27 @@ function linkLabel(href: string) {
 }
 
 /**
- * Projects as a big type list over a galaxy. Hovering (or focusing) a name flies the galaxy to that project's star and
- * shows its preview. Clicking fuses into a full scene: the list fades away, the camera flies into the star, and the
- * project's title, preview and link set themselves on the sky. Arrow keys travel between stars; Escape returns.
+ * Projects as a compact list over a galaxy, with a desktop window beside it that is never empty: left alone, it features
+ * each project in turn (the galaxy drifts to that project's star). Hovering (or focusing) a name pauses the cycle and
+ * features that project. Clicking grows the window into a full scene: the list fades away, the camera flies into the
+ * star, and the project's details set themselves inside the window. Arrow keys travel between stars; Escape returns.
  */
 export default function Projects({ projects, heading, note, footer }: ProjectsProps) {
   const [hover, setHover] = useState(-1);
+  const [featured, setFeatured] = useState(0);
+  const [onCard, setOnCard] = useState(false);
+  const [visible, setVisible] = useState(true);
   const [open, setOpen] = useState(-1);
   const [holder, setHolder] = useState<number | undefined>(undefined);
   const small = useMedia("(max-width: 899px)");
   const tapMode = useMedia("(hover: none), (max-width: 899px)");
+  const reduced = useMedia("(prefers-reduced-motion: reduce)");
   const sectionRef = useRef<HTMLElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
   const deviceRef = useRef<HTMLDivElement>(null);
   const lineRef = useRef<SVGLineElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   const rowRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const pointerY = useRef(0);
   const position = useRef({ x: 0, y: 0, ready: false });
   const openRef = useRef(open);
   openRef.current = open;
@@ -90,7 +97,9 @@ export default function Projects({ projects, heading, note, footer }: ProjectsPr
   const fromRect = useRef<DOMRect | null>(null);
 
   const isOpen = open >= 0;
-  const current = isOpen ? open : hover;
+  // Left alone (desktop), the window features each project in turn; hovering a name or the window itself takes over.
+  const cycling = !isOpen && hover < 0 && !onCard && !tapMode && !reduced && visible && projects.length > 1;
+  const current = isOpen ? open : hover >= 0 ? hover : tapMode ? -1 : featured;
   const project = isOpen ? projects[open] : null;
 
   const openProject = useCallback((i: number) => {
@@ -99,8 +108,13 @@ export default function Projects({ projects, heading, note, footer }: ProjectsPr
     if (openRef.current < 0 && sectionRef.current) setHolder(sectionRef.current.offsetHeight);
     setOpen(i);
     setHover(i);
+    setFeatured(i);
+    setOnCard(false);
   }, []);
-  const close = useCallback(() => { setOpen(-1); setHover(-1); setHolder(undefined); }, []);
+  const close = useCallback(() => {
+    if (openRef.current >= 0) setFeatured(openRef.current);
+    setOpen(-1); setHover(-1); setOnCard(false); setHolder(undefined);
+  }, []);
   const step = useCallback((d: number) => {
     setOpen((o) => (o < 0 ? o : (o + d + projects.length) % projects.length));
   }, [projects.length]);
@@ -128,6 +142,22 @@ export default function Projects({ projects, heading, note, footer }: ProjectsPr
     wasOpen.current = isOpen;
   }, [isOpen]);
 
+  // Only run the cycle and the preview animation while the section is on screen.
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el || !("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold: 0.3 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // Feature the next project every AUTO_MS while nobody is hovering.
+  useEffect(() => {
+    if (!cycling) return;
+    const id = window.setTimeout(() => setFeatured((f) => (f + 1) % projects.length), AUTO_MS);
+    return () => window.clearTimeout(id);
+  }, [cycling, featured, projects.length]);
+
   // Dotted line from the star (fixed spot in the scene) to the preview frame.
   useLayoutEffect(() => {
     const line = lineRef.current, scene = sceneRef.current, device = deviceRef.current;
@@ -154,19 +184,21 @@ export default function Projects({ projects, heading, note, footer }: ProjectsPr
     else el.animate([{ opacity: 0, transform: "translateY(24px)" }, {}], { duration: 600, easing });
   }, [isOpen]);
 
-  // Desktop hover preview: a column between the list and the galaxy that trails the pointer vertically.
+  // Desktop preview: a column between the list and the galaxy, level with the middle of the section. It stays put so
+  // it can be clicked.
   useEffect(() => {
-    const el = previewRef.current;
-    if (!el || current < 0 || tapMode || isOpen) return;
+    const el = previewRef.current, section = sectionRef.current;
+    if (!el || !section || current < 0 || tapMode || isOpen || !visible) return;
     const width = 440, height = 400;
     el.style.setProperty("--w", `${width}px`);
     el.style.setProperty("--h", `${height}px`);
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    el.style.opacity = "1";
     let raf = 0;
     const tick = () => {
       raf = requestAnimationFrame(tick);
-      const wantX = window.innerWidth * 0.7 - width / 2;
-      const wantY = Math.max(76, Math.min(window.innerHeight - height - 28, (pointerY.current || window.innerHeight / 2) - height / 2));
+      const s = section.getBoundingClientRect();
+      const wantX = s.width * 0.7 - width / 2;
+      const wantY = Math.max(76, Math.min(s.height - height - 28, (s.height - height) / 2));
       const p = position.current;
       if (!p.ready || reduced) { p.x = wantX; p.y = wantY; p.ready = true; }
       p.x += (wantX - p.x) * 0.2;
@@ -175,16 +207,16 @@ export default function Projects({ projects, heading, note, footer }: ProjectsPr
     };
     tick();
     return () => cancelAnimationFrame(raf);
-  }, [current, isOpen, tapMode, projects]);
+  }, [current, isOpen, tapMode, visible, reduced, projects]);
 
   const hoverOn = useCallback((i: number) => (event: PointerEvent) => {
-    if (event.pointerType === "mouse" && openRef.current < 0) setHover(i);
+    if (event.pointerType === "mouse" && openRef.current < 0) { setHover(i); setFeatured(i); }
   }, []);
   const hoverOff = useCallback((i: number) => (event: PointerEvent) => {
     if (event.pointerType === "mouse" && openRef.current < 0) setHover((h) => (h === i ? -1 : h));
   }, []);
   const focusOn = useCallback((i: number) => (event: FocusEvent<HTMLElement>) => {
-    if (event.currentTarget.matches(":focus-visible") && openRef.current < 0) setHover(i);
+    if (event.currentTarget.matches(":focus-visible") && openRef.current < 0) { setHover(i); setFeatured(i); }
   }, []);
 
   return (
@@ -194,7 +226,6 @@ export default function Projects({ projects, heading, note, footer }: ProjectsPr
         className={styles.section}
         data-open={isOpen ? "" : undefined}
         aria-labelledby="projects-title"
-        onPointerMove={(e) => { pointerY.current = e.clientY; }}
         onPointerLeave={(e) => { if (e.pointerType === "mouse" && openRef.current < 0) setHover(-1); }}
       >
         <ProjectsSky projects={projects} active={current} open={isOpen} small={small} />
@@ -206,7 +237,7 @@ export default function Projects({ projects, heading, note, footer }: ProjectsPr
         </h2>
 
         <div className={styles.wrap} data-open={isOpen ? "" : undefined} inert={isOpen}>
-          <ol className={styles.rows} data-active={current >= 0 ? "" : undefined}>
+          <ol className={styles.rows} data-active={current >= 0 ? "" : undefined} data-auto={cycling ? "" : undefined}>
             {projects.map((p, i) => (
               <li key={p.id}>
                 <button
@@ -222,6 +253,7 @@ export default function Projects({ projects, heading, note, footer }: ProjectsPr
                 >
                   <span className={styles.num}>{pad(i + 1)}</span>
                   <span className={styles.name}>{p.name}</span>
+                  <span className={styles.meta}>{p.group} · {p.year}</span>
                 </button>
               </li>
             ))}
@@ -232,10 +264,19 @@ export default function Projects({ projects, heading, note, footer }: ProjectsPr
         </div>
 
         {!tapMode && !isOpen && current >= 0 && (
-          <div ref={previewRef} className={styles.preview} aria-hidden="true">
+          <div
+            ref={previewRef}
+            className={styles.preview}
+            aria-hidden="true"
+            style={{ opacity: 0 }}
+            onPointerEnter={(e) => { if (e.pointerType === "mouse") setOnCard(true); }}
+            onPointerLeave={(e) => { if (e.pointerType === "mouse") setOnCard(false); }}
+            onClick={() => openProject(current)}
+          >
             <ProjectDevice project={projects[current]}>
               <Details project={projects[current]} index={current} total={projects.length} peek />
             </ProjectDevice>
+            {cycling && <i key={featured} className={styles.progress} style={{ animationDuration: `${AUTO_MS}ms` }} />}
           </div>
         )}
 

@@ -1,12 +1,9 @@
 .section {
   --void: var(--space, #04070b);
-  --ink: #f4f7fb;
-  --ink-2: #b3c2d2;
-  --ink-3: #74869a;
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  min-height: 100vh;
+  min-height: min(100vh, 660px);
   background: var(--void);
   color: var(--ink);
   font-family: var(--font-sans);
@@ -41,6 +38,7 @@
   top: 32px;
   left: clamp(18px, 4vw, 56px);
   margin: 0;
+  color: var(--ink-head);
   font: 500 17px/1 var(--font-sans);
   letter-spacing: -0.01em;
 }
@@ -50,8 +48,7 @@
 .wrap {
   position: relative;
   z-index: 2;
-  min-height: 100vh;
-  padding: max(100px, 17vh) clamp(18px, 4vw, 56px) 90px;
+  padding: 112px clamp(18px, 4vw, 56px) 84px;
   transition: opacity 0.4s;
 }
 .wrap[data-open] { opacity: 0; pointer-events: none; }
@@ -59,10 +56,10 @@
 
 .row {
   display: grid;
-  grid-template-columns: 56px minmax(0, 1fr);
+  grid-template-columns: 56px auto minmax(0, 1fr);
   align-items: baseline;
   width: 100%;
-  padding: 5px 0;
+  padding: 7px 0;
   border: 0;
   background: none;
   color: inherit;
@@ -77,14 +74,20 @@
 .row { pointer-events: none; }
 .name { pointer-events: auto; justify-self: start; }
 .num { font: 400 12px/1 var(--font-mono); letter-spacing: 0.02em; color: var(--ink-3); }
-.name { font: var(--heading-weight) clamp(30px, 3.6vw, 56px)/1.1 var(--font-sans); letter-spacing: var(--heading-tracking); white-space: nowrap; }
+.name { font: var(--heading-weight) clamp(22px, 2.1vw, 30px)/1.15 var(--font-sans); letter-spacing: var(--heading-tracking); white-space: nowrap; }
 .dot { display: inline-block; width: 8px; height: 8px; margin-right: 10px; border-radius: 50%; background: var(--c); box-shadow: 0 0 12px var(--c); }
+.meta { margin-left: 16px; color: var(--ink-3); font: 400 13px/1 var(--font-sans); white-space: nowrap; pointer-events: none; }
 .rows[data-active] .row:not(.on) { opacity: 0.26; }
-.more { padding: 26px 0 0 56px; }
+/* Cycling on its own, the others only step back a little; hovering dims them properly. */
+.rows[data-auto] .row:not(.on) { opacity: 0.5; }
+.more { padding: 20px 0 0 56px; }
 .moreLink { display: inline-block; padding: 4px 0; font: 500 17px/1.2 var(--font-sans); }
 .close:focus-visible, .ctaQuiet:focus-visible, .pager button:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
 
-.preview { position: fixed; z-index: 30; left: 0; top: 0; pointer-events: none; will-change: transform; }
+.preview { position: absolute; z-index: 30; left: 0; top: 0; cursor: pointer; will-change: transform; }
+/* A thin line under the window that fills as the current project's turn runs out. */
+.progress { position: absolute; left: 0; right: 0; bottom: -16px; height: 2px; background: rgba(255, 255, 255, 0.12); }
+.progress::after { content: ""; position: absolute; inset: 0; background: var(--ink-2); transform-origin: left; animation: fill linear both; animation-duration: inherit; }
 
 /* ---------- open scene ---------- */
 .scene { position: absolute; inset: 0; z-index: 5; outline: none; animation: fade 0.5s both; }
@@ -134,13 +137,18 @@
   height: var(--dh);
 }
 
+@keyframes fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 
+@media (max-width: 1199px) {
+  .meta { display: none; }
+}
 @media (max-width: 899px) {
   .wrap { padding-top: 88px; padding-bottom: 110px; }
   .rows { max-width: 100%; }
   .row { grid-template-columns: 40px minmax(0, 1fr); }
-    .name { font-size: clamp(28px, 8vw, 44px); white-space: normal; }
+  .name { font-size: clamp(24px, 6.4vw, 32px); white-space: normal; }
+  .meta { display: none; }
   .scrim { background: linear-gradient(180deg, rgba(4, 7, 11, 0.85) 0%, rgba(4, 7, 11, 0.5) 45%, transparent 72%); }
   .more { padding-left: 40px; }
   .tether { display: none; }
@@ -149,4 +157,5 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .row, .wrap, .scrim, .scene, .tether line { transition: none; animation: none; }
+  .progress { display: none; }
 }
