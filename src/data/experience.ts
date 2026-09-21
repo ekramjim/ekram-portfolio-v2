@@ -15,6 +15,7 @@ export const MISSIONS: Mission[] = [
   {
     company: "CEALS Australia",
     role: "Full Stack Software Developer",
+    note: "Part-time",
     start: { year: 2026, month: 8 },
     objectives: [
       "Building a new e-commerce platform from the ground up with Next.js and TypeScript, including end-to-end payment integration and a REST API layer for catalog, cart, and order management",
