@@ -194,7 +194,11 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
     }
     renderer.setClearColor(0x000000, 0);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    // `false` keeps three.js from writing explicit pixel width/height styles onto the canvas: our own CSS
+    // (inset: 0, 100%) keeps it glued to the real viewport, so Safari's address-bar show/hide (which changes
+    // window.innerHeight without necessarily firing `resize` in step) can never leave a stale-sized canvas
+    // uncovering the page background as a black bar underneath the hero.
+    renderer.setSize(window.innerWidth, window.innerHeight, false);
     renderer.toneMapping = THREE.NoToneMapping;
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1800);
@@ -337,8 +341,8 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
     // Portrait screens frame the galaxy tighter than its full width: the outer arms run off the sides instead of the whole
     // galaxy shrinking to fit, so the dust stays large and sharp. The camera then slides down so the headline sits a margin
     // above the bottom edge, and backs off only as far as needed to keep the galaxy's top clear of the navbar.
-    const PORTRAIT_VISIBLE_WIDTH = 0.8; // share of the galaxy's half-width that fits across the screen
-    const PORTRAIT_MIN_FIT = 1.25;
+    const PORTRAIT_VISIBLE_WIDTH = 0.17; // share of the galaxy's half-width that fits across the screen — lower zooms in tighter, letting the arms run off-frame
+    const PORTRAIT_MIN_FIT = 0.35;
     const PORTRAIT_BOTTOM_MARGIN = 0.06; // share of the screen height kept clear below the headline
     const GALAXY_TOP = 205;
     // The spiral is lopsided: its left flank reaches farther out than its right, so on a cropped portrait screen it touches one
@@ -449,6 +453,9 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       inView = rect.bottom > 0 && rect.top < window.innerHeight;
     };
     const onPointerDown = (event: PointerEvent) => {
+      // Touch is left alone entirely: capturing it here would compete with the page's own scroll gesture
+      // (the overlay covers the full hero), so a swipe meant to scroll was also read as a rotate/tilt drag.
+      if (event.pointerType === "touch") return;
       const target = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-galaxy-interaction]") : null;
       if (!target || !root.contains(target) || event.button !== 0 || pointer) return;
       pointer = { id: event.pointerId, x: event.clientX, y: event.clientY, target };
@@ -456,6 +463,9 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       target.style.cursor = "grabbing";
     };
     const onPointerMove = (event: PointerEvent) => {
+      // Same reasoning: the cursor-wake reaction is a hover effect, which touch doesn't have. Feeding it
+      // scroll-swipe coordinates just made the dust visibly jump/react while the user was trying to scroll.
+      if (event.pointerType === "touch") return;
       wakeTarget.set((event.clientX / window.innerWidth * 2 - 1) * camera.aspect, -(event.clientY / stableHeight * 2 - 1));
       pointerInside = true;
       if (!hasPointer) {
@@ -497,7 +507,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       camera.aspect = window.innerWidth / stableHeight;
       camera.updateProjectionMatrix();
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.setSize(window.innerWidth, stableHeight);
+      renderer.setSize(window.innerWidth, stableHeight, false);
       uniforms.uPixelRatio.value = renderer.getPixelRatio();
       uniforms.uAspect.value = camera.aspect;
       layoutText();
@@ -521,7 +531,10 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
     function tick() {
       frame = requestAnimationFrame(tick);
       const dt = Math.min(clock.getDelta(), 0.05);
-      if (document.hidden) return;
+      // Once the hero has scrolled out of view, only `renderer.render` below was being skipped — every spring,
+      // shader uniform and camera update still ran on every frame for the rest of the page's life, competing
+      // with the main thread (e.g. delaying the navbar's own scroll handler on slower phones). Skip it all.
+      if (document.hidden || !inView) return;
       if (replayTokenRef.current !== seenReplayToken) { seenReplayToken = replayTokenRef.current; onReplay(); }
       elapsed += dt;
       const reduced = reducedMotion.matches;
