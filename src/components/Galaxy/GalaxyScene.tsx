@@ -5,7 +5,8 @@ import { getScrollProgress } from "./scrollProgress";
 import type { GalaxyPhase } from "./types";
 
 const INTRO_DURATION = 5.2;
-const ARM_COUNT = 3;
+const ARM_COUNT = 5;
+const ARM_ANGLE_STEP = (Math.PI * 2) / ARM_COUNT;
 // Background field (800) + core (CORE_COUNT) come first; arm stars are budgeted per arm so density holds as arms are added.
 const FIELD_COUNT = 800;
 const CORE_COUNT = 350;
@@ -235,12 +236,15 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
           float arm = 1.0 - step(0.5, aKind);
           float t = mod(aArm.x - uFlow, 1.0);
           float radius = 18.0 + 104.0 * pow(t, 0.94);
-          float angle = 1.55 + (1.0 - t) * 10.2 - aArm.y * (1.15 - 0.25 * t);
-          float spread = mix(1.0, 0.65, step(5.0, aSize)) * (1.1 + 4.0 * sin(t * 3.14159265));
-          float radial = radius + aNoise.x * spread;
+          // Distribute every strand around the full disc. The old partial fan made the five outer ends bunch up like claws.
+          float angle = 1.55 + (1.0 - t) * 10.2 - aArm.y * ${ARM_ANGLE_STEP.toFixed(8)};
+          float outer = smoothstep(0.68, 1.0, t);
+          // Let the tips fray into dust instead of tightening into crisp, finger-like lines.
+          float spread = mix(1.0, 0.65, step(5.0, aSize)) * (1.1 + 4.0 * sin(t * 3.14159265) + 5.0 * outer);
+          float outerReach = 34.0 * pow(max(0.0, (t - 0.72) / 0.28), 1.5);
+          float radial = radius + outerReach + aNoise.x * spread;
           float theta = angle + aNoise.y * spread / max(radius, 8.0);
-          float tail = 87.0 * pow(max(0.0, (t - 0.76) / 0.24), 1.6);
-          vec3 armPosition = vec3(cos(theta) * radial * 1.12, sin(theta) * radial + tail, aNoise.z * (2.0 + 5.0 * sin(t * 3.14159265)));
+          vec3 armPosition = vec3(cos(theta) * radial * 1.12, sin(theta) * radial, aNoise.z * (2.0 + 5.0 * sin(t * 3.14159265)));
           // Core stars swirl with differential rotation: fastest at the centre (~3 turns/min), slowing outward.
           // Negative so it turns the same way the arm stars travel (counter-clockwise on screen).
           float swirl = -uTime * 0.31 / (1.0 + length(position.xy) / 8.0) * core;
@@ -281,7 +285,8 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
           float twinkle = 0.9 + 0.1 * sin(uTime * 0.65 + aPhase);
           // Stars fade in at the rim and out into the core so the wrap-around is never seen.
           float seam = smoothstep(0.0, 0.05, t) * (1.0 - smoothstep(0.95, 1.0, t));
-          vAlpha = uFade * twinkle * (1.0 + 0.35 * near * uHover) * mix(1.0, 0.22 + 0.78 * f, core) * mix(1.0, seam, arm * uFlowFade) * mix(1.0, uTextFade * (1.0 - uTextSolid), text);
+          float tipFade = 1.0 - smoothstep(0.72, 0.97, t);
+          vAlpha = uFade * twinkle * (1.0 + 0.35 * near * uHover) * mix(1.0, 0.22 + 0.78 * f, core) * mix(1.0, seam * tipFade, arm * uFlowFade) * mix(1.0, uTextFade * (1.0 - uTextSolid), text);
         }
       `,
       fragmentShader: `
