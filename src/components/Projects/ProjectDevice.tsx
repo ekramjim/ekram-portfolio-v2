@@ -18,7 +18,11 @@ interface ProjectDeviceProps {
 export default function ProjectDevice({ project, open, children }: ProjectDeviceProps) {
   const { color, color2, href } = project;
   const frameStyle = { "--c": color, "--c2": color2 } as CSSProperties;
-  const host = href ? new URL(href).hostname.replace(/^www\./, "") : null;
+  const host = href
+    ? href.toLowerCase().endsWith(".pdf")
+      ? "PDF report"
+      : new URL(href, "https://ekram.tech").hostname.replace(/^www\./, "")
+    : null;
   return (
     <div className={styles.dev} data-open={open ? "" : undefined} style={frameStyle}>
       <div className={styles.bar} aria-hidden="true">

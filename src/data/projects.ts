@@ -1,4 +1,4 @@
-export type ProjectGroup = "Mobile" | "Web" | "Data science" | "Software";
+export type ProjectGroup = "Mobile" | "Web" | "Data science" | "Bioinformatics" | "Software";
 
 export interface Project {
   id: string;
@@ -21,6 +21,13 @@ export interface Project {
 
 /** Every project, in display order. */
 export const PROJECTS: Project[] = [
+  {
+    id: "colorectal-proteomics", name: "Colorectal Cancer Proteomics", group: "Bioinformatics", year: "2026",
+    summary: "Bioinformatics analysis of CPTAC proteomic data comparing colorectal tumours with healthy colon tissue across 54 samples, including preprocessing, imputation, normalisation and differential abundance testing.",
+    stack: ["Python", "Pandas", "NumPy", "SciPy", "Seaborn", "Matplotlib", "Proteomics"],
+    href: "/projects/proteomic-analysis-colorectal-cancer-cptac.pdf",
+    color: "#72d6c9", color2: "#245b70", x: 125, y: 35,
+  },
   {
     id: "linkedhive", name: "LinkedHive", group: "Mobile", year: "2025–2026",
     summary: "Cross-platform (iOS, Android, Web) community and business networking app for Australian suburbs, with real-time chat, events, jobs, local deals and AI translation.",
