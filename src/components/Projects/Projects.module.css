@@ -122,8 +122,8 @@
 .cta { display: inline-block; padding: 4px 0; font: 500 16px/1.2 var(--font-sans); }
 .ctaQuiet { display: inline-block; padding: 4px 0; color: var(--ink-2); font: 500 16px/1.2 var(--font-sans); text-decoration: none; transition: color 0.2s; }
 .ctaQuiet:hover { color: var(--ink); }
-.pager { display: inline-flex; gap: 2px; }
-.pager button { padding: 6px 10px; border: 0; background: none; color: var(--ink-2); font: 400 18px/1 var(--font-sans); cursor: pointer; transition: color 0.2s; }
+.pager { position: absolute; right: 18px; bottom: 16px; z-index: 2; display: inline-flex; gap: 2px; padding: 4px; border-radius: 8px; background: #060a10; }
+.pager button { width: 40px; height: 40px; padding: 0; border: 0; background: none; color: var(--ink-2); font: 400 18px/1 var(--font-sans); cursor: pointer; transition: color 0.2s; }
 .pager button:hover { color: var(--ink); }
 /* The open window: big, on the right, leaving the star and its dotted line visible on the left. */
 .device {

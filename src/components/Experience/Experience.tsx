@@ -28,6 +28,10 @@ function elapsed({ year, month }: Mission["start"], now: Date) {
   return months ? `${years} yr ${months} mo` : `${years} yr`;
 }
 
+function isUpcoming({ year, month }: Mission["start"], now: Date) {
+  return year * 12 + month > now.getFullYear() * 12 + now.getMonth() + 1;
+}
+
 /** Splits "a **b** c" into plain and bright runs. */
 function Bright({ text }: { text: string }) {
   return <>{text.split("**").map((part, i) => (i % 2 ? <strong key={i}>{part}</strong> : part))}</>;
@@ -55,16 +59,17 @@ export default function Experience() {
         {MISSIONS.map((m, i) => (
           <article key={m.company} className={styles.mission} data-reveal>
             <div className={styles.about}>
-              <p className={styles.tag}>Mission {pad(MISSIONS.length - i)}</p>
+              <p className={styles.tag}>{pad(i + 1)}</p>
               <h3 className={styles.company}>{m.company}</h3>
               <p className={styles.role}>{m.role}</p>
               {m.note && <p className={styles.note}>{m.note}</p>}
               {m.link && <UnderlineLink href={m.link.href} className={styles.link}>{m.link.label} ↗</UnderlineLink>}
 
               <dl className={styles.stats}>
-                <div><dt>Status</dt><dd><i className={styles.pulse} />In orbit</dd></div>
-                <div><dt>Launched</dt><dd>{MONTHS[m.start.month - 1]} {m.start.year}</dd></div>
-                <div><dt>Elapsed</dt><dd>{now ? elapsed(m.start, now) : "\u00a0"}</dd></div>
+                <div><dt>Status</dt><dd>{now ? (isUpcoming(m.start, now) ? "Upcoming" : "Current") : "\u00a0"}</dd></div>
+                <div><dt>Start date</dt><dd>{MONTHS[m.start.month - 1]} {m.start.year}</dd></div>
+                <div><dt>Location</dt><dd>Melbourne, VIC, Australia</dd></div>
+                <div><dt>Elapsed</dt><dd>{now ? (isUpcoming(m.start, now) ? "Starts soon" : elapsed(m.start, now)) : "\u00a0"}</dd></div>
               </dl>
             </div>
 

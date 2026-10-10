@@ -10,8 +10,17 @@ export interface Mission {
   objectives: string[];
 }
 
-/** Newest first. Every role is still under way. */
+/** Newest first, including upcoming roles. */
 export const MISSIONS: Mission[] = [
+  {
+    company: "Monash University",
+    role: "Summer Research Intern",
+    note: "Faculty of Information Technology · Summer Vacation Research Scholarship",
+    start: { year: 2026, month: 11 },
+    objectives: [
+      "Research project: Co-designing Policy-responsive Indigenous Knowledge Systems (PIKS) in the Global South",
+    ],
+  },
   {
     company: "CEALS Australia",
     role: "Full Stack Software Developer",
@@ -26,7 +35,6 @@ export const MISSIONS: Mission[] = [
   {
     company: "MindSigns",
     role: "Full Stack Software Developer",
-    note: "Monash University (FIT) Initiative",
     start: { year: 2026, month: 5 },
     link: { label: "mindsigns.online", href: "https://mindsigns.online" },
     objectives: [

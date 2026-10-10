@@ -55,6 +55,7 @@
 .dev[data-open] .body {
   overflow-y: auto;
   padding: clamp(20px, 2.6vw, 40px);
+  padding-bottom: 80px;
   border-top: 0;
   border-left: 1px solid rgba(255, 255, 255, 0.1);
   animation: fade 0.4s 0.25s both;
@@ -64,7 +65,7 @@
 
 @media (max-width: 899px) {
   .dev[data-open] .screen { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 30%) minmax(0, 1fr); }
-  .dev[data-open] .body { border-left: 0; border-top: 1px solid rgba(255, 255, 255, 0.1); padding: 18px; }
+  .dev[data-open] .body { border-left: 0; border-top: 1px solid rgba(255, 255, 255, 0.1); padding: 18px 18px 80px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .dev[data-open] .body, .url, .art::before, .art::after { animation: none; }

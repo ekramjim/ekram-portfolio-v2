@@ -13,8 +13,8 @@ export default function Home() {
     <main id="top">
       <Galaxy title={["Hi, I'm", "Ekram."]} scrollScreens={2.5} />
       <About />
-      <Projects projects={PROJECTS} heading="Projects" note="Highlights" />
       <Experience />
+      <Projects projects={PROJECTS} heading="Projects" note="Highlights" />
       <Skills />
       <Leadership />
       <Contact />
