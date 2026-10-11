@@ -208,7 +208,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       uTime: { value: 0 }, uFormation: { value: 0 }, uRotation: { value: 0 },
       uTilt: { value: 0 }, uFade: { value: 0 }, uFlow: { value: 0 }, uFlowFade: { value: 0 }, uPixelRatio: { value: renderer.getPixelRatio() },
       uAspect: { value: camera.aspect }, uHover: { value: 0 }, uWake: { value: WAKE_FREQUENCIES.map(() => new THREE.Vector4(9, 9, 0, 0)) },
-      uTextFade: { value: 1 }, uTextSolid: { value: 0 }, uTextScale: { value: 1 }, uTextSize: { value: 1 }, uAnchorL: { value: new THREE.Vector2() }, uAnchorR: { value: new THREE.Vector2() },
+      uBurst: { value: 0 }, uTextFade: { value: 1 }, uTextSolid: { value: 0 }, uTextScale: { value: 1 }, uTextSize: { value: 1 }, uAnchorL: { value: new THREE.Vector2() }, uAnchorR: { value: new THREE.Vector2() },
     };
     const material = new THREE.ShaderMaterial({
       uniforms, vertexColors: true, transparent: true, depthWrite: false,
@@ -218,7 +218,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
         attribute float aSize, aPhase, aKind;
         attribute vec2 aArm;
         attribute vec3 aNoise;
-        uniform float uTime, uFormation, uRotation, uTilt, uFade, uPixelRatio, uFlow, uFlowFade, uTextFade, uTextSolid, uTextScale, uTextSize;
+        uniform float uTime, uFormation, uRotation, uTilt, uFade, uPixelRatio, uFlow, uFlowFade, uBurst, uTextFade, uTextSolid, uTextScale, uTextSize;
         uniform vec2 uAnchorL, uAnchorR;
         uniform float uAspect, uHover;
         // Cursor wake springs: xy = position, zw = velocity, in screen-height units (y up, x scaled by aspect).
@@ -260,6 +260,17 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
           p.yz = mat2(cos(tilt), -sin(tilt), sin(tilt), cos(tilt)) * p.yz;
           vec4 viewPosition = modelViewMatrix * vec4(p, 1.0);
           gl_Position = projectionMatrix * viewPosition;
+          // Scroll burst: the dust streams outward from the core, mostly sideways, and settles as a scattered field across the screen.
+          // It is a radial expansion in screen space, so the galaxy opens up seamlessly instead of tearing along a line.
+          float burst = pow(uBurst, 1.4) * (1.0 - background) * (1.0 - text);
+          vec4 centre = projectionMatrix * modelViewMatrix * vec4(0.0, 0.0, 0.0, 1.0);
+          vec2 fromCore = (gl_Position.xy / gl_Position.w - centre.xy / centre.w) * vec2(uAspect, 1.0);
+          float coreDistance = length(fromCore);
+          vec2 outward = fromCore / max(coreDistance, 1e-4);
+          // A spread of speeds leaves a trail of slower dust behind the front, so the middle thins out gradually instead of emptying at once.
+          float burstSpeed = 0.35 + 0.9 * pow(fract(aPhase * 2.399 + aNoise.y * 0.17), 0.7);
+          vec2 burstOffset = outward * (coreDistance * 1.3 + 0.2 + 0.2 * uAspect) * burstSpeed * burst * vec2(1.0, 0.45);
+          gl_Position.xy += burstOffset / vec2(uAspect, 1.0) * gl_Position.w;
           // Cursor wake: work in screen space so stars at every depth react to the pointer the same way.
           vec2 screen = gl_Position.xy / gl_Position.w * vec2(uAspect, 1.0);
           vec2 push = vec2(0.0);
@@ -286,7 +297,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
           // Stars fade in at the rim and out into the core so the wrap-around is never seen.
           float seam = smoothstep(0.0, 0.05, t) * (1.0 - smoothstep(0.95, 1.0, t));
           float tipFade = 1.0 - smoothstep(0.72, 0.97, t);
-          vAlpha = uFade * twinkle * (1.0 + 0.35 * near * uHover) * mix(1.0, 0.22 + 0.78 * f, core) * mix(1.0, seam * tipFade, arm * uFlowFade) * mix(1.0, uTextFade * (1.0 - uTextSolid), text);
+          vAlpha = uFade * twinkle * (1.0 + 0.35 * near * uHover) * mix(1.0, 0.22 + 0.78 * f, core) * mix(1.0, seam * tipFade, arm * uFlowFade) * mix(1.0, uTextFade * (1.0 - uTextSolid), text) * (1.0 - 0.35 * smoothstep(0.3, 1.0, uBurst) * (1.0 - background));
         }
       `,
       fragmentShader: `
@@ -334,7 +345,8 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       scene.add(mesh);
       return mesh;
     });
-    // The camera never moves; scrolling tips the galaxy backwards (top edge away from the viewer) around the x axis.
+    // The camera never moves; scrolling tips the galaxy backwards (top edge away from the viewer) around the x axis
+    // while its dust spreads outward from the core.
     const CAMERA_Y = 44;
     const CAMERA_Z = 440;
     const SCROLL_TILT = 1.3;
@@ -546,7 +558,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       // Ease-out: begins moving immediately and glides into place.
       uniforms.uFormation.value = reduced ? 1 : 1 - Math.pow(1 - Math.min(elapsed / INTRO_DURATION, 1), 3);
       uniforms.uFade.value = reduced ? 1 : smoothstep(0, 0.7, elapsed);
-      glowMaterial.opacity = reduced ? 1 : smoothstep(1.5, 4.2, elapsed);
+      glowMaterial.opacity = (reduced ? 1 : smoothstep(1.5, 4.2, elapsed)) * (1 - uniforms.uBurst.value);
       report(reduced || elapsed >= INTRO_DURATION ? "settled" : elapsed >= 0.7 ? "title" : "stars");
       if (!reduced) uniforms.uTime.value += dt;
       const ease = reduced ? 1 : 1 - Math.exp(-5 * dt);
@@ -559,11 +571,12 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       const drift = reduced ? 0 : Math.sin(Math.max(0, elapsed - INTRO_DURATION) * 0.08) * 0.035;
       uniforms.uRotation.value += (dragRotation + drift - uniforms.uRotation.value) * ease;
       smoothScroll += (scroll - smoothScroll) * ease;
-      // The headline dissolves early in the scroll while the galaxy starts to tip back.
+      // The headline dissolves early in the scroll as the galaxy starts to tip back and spread apart.
       uniforms.uTextFade.value = 1 - smoothstep(0.03, 0.28, smoothScroll);
       // Once the stars have assembled, the headline sets into solid text and the star dust behind it fades away.
       uniforms.uTextSolid.value = reduced ? 1 : smoothstep(INTRO_DURATION + 0.2, INTRO_DURATION + 2.4, elapsed);
       for (const mesh of solidWords) (mesh.material as THREE.MeshBasicMaterial).opacity = uniforms.uTextSolid.value * uniforms.uTextFade.value * SOLID_HEADLINE_OPACITY;
+      uniforms.uBurst.value = smoothstep(0.04, 0.9, smoothScroll);
       const scrollTilt = SCROLL_TILT * smoothstep(0, 1, smoothScroll);
       uniforms.uTilt.value += (dragTilt + scrollTilt - uniforms.uTilt.value) * ease;
       // Cursor wake: underdamped springs chase the pointer, so the dust it shoves keeps drifting and rocks back after the cursor stops.

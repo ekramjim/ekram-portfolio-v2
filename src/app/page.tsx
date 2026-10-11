@@ -11,7 +11,7 @@ import { PROJECTS } from "@/data/projects";
 export default function Home() {
   return (
     <main id="top">
-      <Galaxy title={["Hi, I'm", "Ekram."]} scrollScreens={2.5} />
+      <Galaxy title={["Hi, I'm", "Ekram."]} scrollScreens={1.6} />
       <About />
       <Experience />
       <Projects projects={PROJECTS} heading="Projects" note="Highlights" />
