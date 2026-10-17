@@ -6,6 +6,15 @@
     <description>Updates for Shepherd</description>
     <language>en</language>
     <item>
+      <title>Version 0.3.0</title>
+      <pubDate>Sat, 17 Oct 2026 21:39:40 +0000</pubDate>
+      <sparkle:version>5</sparkle:version>
+      <sparkle:shortVersionString>0.3.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>Start sessions from Shepherd on iPhone: turn on Settings → iPhone → Let iPhone start sessions, then pick Claude Code or Codex, a project and a prompt on the phone. The Mac opens a tab in that project and starts the agent.</p><p>The iPhone app shows each session as a conversation, with the newest message last.</p><p>Codex sessions are listed only while they're running; finished threads no longer linger.</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/Shepherd-Releases/releases/download/v0.3.0/Shepherd.dmg" type="application/octet-stream" sparkle:edSignature="lWq1IabO9b+tG1CsqHzoiPcXfKPr2TcP+So35iksIgF5ZswapCtufVn/QAkwVPA/J6lDv76Z5AeC6Njhl58AAg==" length="6696387"/>
+    </item>
+    <item>
       <title>Version 0.2.0</title>
       <pubDate>Sat, 17 Oct 2026 15:02:34 +0000</pubDate>
       <sparkle:version>2</sparkle:version>
