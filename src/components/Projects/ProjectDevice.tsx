@@ -16,7 +16,8 @@ interface ProjectDeviceProps {
  * parent gives it and puts the details beside the gradient.
  */
 export default function ProjectDevice({ project, open, children }: ProjectDeviceProps) {
-  const { color, color2, href } = project;
+  const { color, color2, href, screenshots } = project;
+  const shots = screenshots ? (open ? screenshots : screenshots.slice(0, 1)) : [];
   const frameStyle = { "--c": color, "--c2": color2 } as CSSProperties;
   const host = href
     ? href.toLowerCase().endsWith(".pdf")
@@ -34,6 +35,14 @@ export default function ProjectDevice({ project, open, children }: ProjectDevice
       <div className={styles.screen}>
         <div className={styles.pane}>
           <div className={styles.art} aria-hidden="true" />
+          {shots.length > 0 && (
+            <div className={styles.shots} aria-hidden="true">
+              {shots.map((src, i) => (
+                // eslint-disable-next-line @next/next/no-img-element -- static WebP with transparent corners; no resizing needed
+                <img key={src} src={src} alt="" loading="lazy" decoding="async" style={{ "--i": i } as CSSProperties} />
+              ))}
+            </div>
+          )}
         </div>
         {children && <div className={styles.body}>{children}</div>}
       </div>

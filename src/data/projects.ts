@@ -17,6 +17,8 @@ export interface Project {
   href?: string;
   /** Source repository, when it is separate from `href`. */
   github?: string;
+  /** App screenshots shown over the gradient: the first in the preview, all of them in turn when open. */
+  screenshots?: string[];
 }
 
 /** Every project, in display order. */
@@ -27,6 +29,7 @@ export const PROJECTS: Project[] = [
     stack: ["Swift", "SwiftUI", "Swift Charts", "AppKit", "IOKit", "Sparkle"],
     href: "https://github.com/ekramjim/UsageFinder-Releases/releases/latest/download/UsageFinder.dmg",
     github: "https://github.com/ekramjim/UsageFinder-Releases",
+    screenshots: ["overview", "cpu", "memory", "power"].map((name) => `/projects/usage-finder/${name}.webp`),
     color: "#4f9dff", color2: "#3b2d8f", x: 55, y: 25,
   },
   {
