@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Usage Finder</title>
+    <link>https://www.ekram.tech/usagefinder/appcast.xml</link>
+    <description>Updates for Usage Finder</description>
+    <language>en</language>
+    <item>
+      <title>Version 1.0.1</title>
+      <pubDate>Sat, 17 Oct 2026 03:45:10 +0000</pubDate>
+      <sparkle:version>2</sparkle:version>
+      <sparkle:shortVersionString>1.0.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>First public release of Usage Finder.</p><p>Live CPU, memory, swap and power meters in the menu bar, with history charts in the main window.</p><p>Updates now install automatically from Settings → General.</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/UsageFinder-Releases/releases/download/v1.0.1/UsageFinder.dmg" type="application/octet-stream" sparkle:edSignature="IpN1wwZxkIA/AHSGPRIVZPIAfWpaZj+88zsjaTHihu0B+zFpLEmHgIIgh4Q+Zd5aMLY083RFEj+LkjoJ7evgBA==" length="3500588"/>
+    </item>
+  </channel>
+</rss>
