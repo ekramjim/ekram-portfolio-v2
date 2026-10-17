@@ -6,6 +6,15 @@
     <description>Updates for Usage Finder</description>
     <language>en</language>
     <item>
+      <title>Version 1.0.2</title>
+      <pubDate>Sat, 17 Oct 2026 04:25:36 +0000</pubDate>
+      <sparkle:version>3</sparkle:version>
+      <sparkle:shortVersionString>1.0.2</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>New welcome window that explains the menu bar meters: which bars are Efficiency and Performance cores, memory and swap, and what the percentages mean. Open it again from Help → Welcome to Usage Finder.</p><p>Smoother power history when power comes from the battery's power monitor.</p><p>Settings → General now shows which edition you're running.</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/UsageFinder-Releases/releases/download/v1.0.2/UsageFinder.dmg" type="application/octet-stream" sparkle:edSignature="H8+Rc2Y4goxBZn7V/aH+WulZLtMlxSRv/36f0oErtkLaDnPIsvlU50KzrgF2dOv/dCg6tr/BQRvivEbEX0x9CA==" length="3541564"/>
+    </item>
+    <item>
       <title>Version 1.0.1</title>
       <pubDate>Sat, 17 Oct 2026 03:45:10 +0000</pubDate>
       <sparkle:version>2</sparkle:version>
