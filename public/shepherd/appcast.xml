@@ -6,6 +6,15 @@
     <description>Updates for Shepherd</description>
     <language>en</language>
     <item>
+      <title>Version 0.3.1</title>
+      <pubDate>Sat, 17 Oct 2026 22:10:55 +0000</pubDate>
+      <sparkle:version>6</sparkle:version>
+      <sparkle:shortVersionString>0.3.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>Shepherd now shows only the agents running in its own tabs, in the menu bar, notifications and on iPhone.</p><p>Reply from the menu bar: hover a finished or working session and click the reply button to answer it, or queue a message while it works.</p><p>Notifications end with the start of the agent's latest reply.</p><p>On iPhone you can queue messages while an agent works, and see them until the agent picks them up.</p><p>The project panel's Files, Search and Commands switcher and its filter fields are tidier, the panel has a single show/hide button, and Settings keeps one size on every tab.</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/Shepherd-Releases/releases/download/v0.3.1/Shepherd.dmg" type="application/octet-stream" sparkle:edSignature="3HgFCMFm3R/AOhzLkg2TDamzsGX+UfHjyrEYV62o6yeS7F/fQv2KNkBYdsQTZzccz5GS+tC24A45BmuGTITkAA==" length="6746230"/>
+    </item>
+    <item>
       <title>Version 0.3.0</title>
       <pubDate>Sat, 17 Oct 2026 21:39:40 +0000</pubDate>
       <sparkle:version>5</sparkle:version>
