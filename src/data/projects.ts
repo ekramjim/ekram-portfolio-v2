@@ -1,4 +1,4 @@
-export type ProjectGroup = "Mobile" | "Web" | "Data science" | "Bioinformatics" | "Software";
+export type ProjectGroup = "Mobile" | "macOS" | "Web" | "Data science" | "Bioinformatics" | "Software";
 
 export interface Project {
   id: string;
@@ -24,7 +24,7 @@ export interface Project {
 /** Every project, in display order. */
 export const PROJECTS: Project[] = [
   {
-    id: "usage-finder", name: "Usage Finder", group: "Software", year: "2026",
+    id: "usage-finder", name: "Usage Finder", group: "macOS", year: "2026",
     summary: "Native macOS system monitor with live per-core CPU, memory and swap meters in the menu bar, history charts for CPU, memory pressure and power, signed auto-updates, and a sandboxed Mac App Store edition.",
     stack: ["Swift", "SwiftUI", "Swift Charts", "AppKit", "IOKit", "Sparkle"],
     href: "https://github.com/ekramjim/UsageFinder-Releases/releases/latest/download/UsageFinder.dmg",
