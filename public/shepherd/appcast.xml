@@ -6,6 +6,15 @@
     <description>Updates for Shepherd</description>
     <language>en</language>
     <item>
+      <title>Version 0.4.1</title>
+      <pubDate>Sat, 17 Oct 2026 23:28:49 +0000</pubDate>
+      <sparkle:version>8</sparkle:version>
+      <sparkle:shortVersionString>0.4.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>"By LynkSphere" credits in Settings and the About window.</p><p>Renaming a tab now renames its session in the menu bar, notifications and on your iPhone.</p><p>The desktop sheep now matches the app icon: a blue glass fleece in light mode, white in dark.</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/Shepherd-Releases/releases/download/v0.4.1/Shepherd.dmg" type="application/octet-stream" sparkle:edSignature="WNuIbqh1/jtuEp/uTyhOdVio+OmtEEYkWc89rc9Dx+LUPMEyV3D3dqSbVxScWN5J+Sfx471hBgEjupT9eRRKAw==" length="7254593"/>
+    </item>
+    <item>
       <title>Version 0.4.0</title>
       <pubDate>Sat, 17 Oct 2026 23:16:00 +0000</pubDate>
       <sparkle:version>7</sparkle:version>
