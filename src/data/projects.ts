@@ -22,6 +22,14 @@ export interface Project {
 /** Every project, in display order. */
 export const PROJECTS: Project[] = [
   {
+    id: "usage-finder", name: "Usage Finder", group: "Software", year: "2026",
+    summary: "Native macOS system monitor with live per-core CPU, memory and swap meters in the menu bar, history charts for CPU, memory pressure and power, signed auto-updates, and a sandboxed Mac App Store edition.",
+    stack: ["Swift", "SwiftUI", "Swift Charts", "AppKit", "IOKit", "Sparkle"],
+    href: "https://github.com/ekramjim/UsageFinder-Releases/releases/latest/download/UsageFinder.dmg",
+    github: "https://github.com/ekramjim/UsageFinder-Releases",
+    color: "#4f9dff", color2: "#3b2d8f", x: 55, y: 25,
+  },
+  {
     id: "colorectal-proteomics", name: "Colorectal Cancer Proteomics", group: "Bioinformatics", year: "2026",
     summary: "Bioinformatics analysis of CPTAC proteomic data comparing colorectal tumours with healthy colon tissue across 54 samples, including preprocessing, imputation, normalisation and differential abundance testing.",
     stack: ["Python", "Pandas", "NumPy", "SciPy", "Seaborn", "Matplotlib", "Proteomics"],

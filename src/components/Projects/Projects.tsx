@@ -66,6 +66,7 @@ function Details({ project, index, total, peek, onStep }: { project: Project; in
 /** Button text for a project's main link, based on where it points. */
 function linkLabel(href: string) {
   if (href.toLowerCase().endsWith(".pdf")) return "View PDF";
+  if (href.toLowerCase().endsWith(".dmg")) return "Download for Mac";
   const host = new URL(href, "https://ekram.tech").hostname;
   if (host.endsWith("github.com")) return "View on GitHub";
   if (host.endsWith("apple.com")) return "View on the App Store";

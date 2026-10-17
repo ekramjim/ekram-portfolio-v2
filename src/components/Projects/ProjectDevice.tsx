@@ -21,7 +21,9 @@ export default function ProjectDevice({ project, open, children }: ProjectDevice
   const host = href
     ? href.toLowerCase().endsWith(".pdf")
       ? "PDF report"
-      : new URL(href, "https://ekram.tech").hostname.replace(/^www\./, "")
+      : href.toLowerCase().endsWith(".dmg")
+        ? "macOS app"
+        : new URL(href, "https://ekram.tech").hostname.replace(/^www\./, "")
     : null;
   return (
     <div className={styles.dev} data-open={open ? "" : undefined} style={frameStyle}>
