@@ -6,6 +6,15 @@
     <description>Updates for Shepherd</description>
     <language>en</language>
     <item>
+      <title>Version 0.4.0</title>
+      <pubDate>Sat, 17 Oct 2026 23:16:00 +0000</pubDate>
+      <sparkle:version>7</sparkle:version>
+      <sparkle:shortVersionString>0.4.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>Git page: see what changed, stage files, view diffs and commit, right from the project panel.</p><p>Start Claude Code or Codex from any tab, picking the model and reasoning effort.</p><p>Desktop sheep: Shepherd's sheep floats on your desktop and shows how your agents are doing. Click it to jump to the one that needs you.</p><p>Fixed: a new tab could show the previous tab's terminal, and terminal text didn't switch between light and dark mode.</p><p>A quieter sidebar, a raised-hand icon in the menu bar, and Files marks new files with U.</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/Shepherd-Releases/releases/download/v0.4.0/Shepherd.dmg" type="application/octet-stream" sparkle:edSignature="IvOtq8AH5sdIjVNHRBT/tL/LcFhLBa3A4xAg9e6BM83zCbOBfQzFfUrqMY+EjevYrUfTgp9qTr+rsDkfKR9TCQ==" length="7227741"/>
+    </item>
+    <item>
       <title>Version 0.3.1</title>
       <pubDate>Sat, 17 Oct 2026 22:10:55 +0000</pubDate>
       <sparkle:version>6</sparkle:version>
