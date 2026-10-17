@@ -19,10 +19,29 @@ export interface Project {
   github?: string;
   /** App screenshots shown over the gradient: the first in the preview, all of them in turn when open. */
   screenshots?: string[];
+  /** Shown instead of a link while the project isn't out yet, e.g. "Coming soon". */
+  status?: string;
 }
 
 /** Every project, in display order. */
 export const PROJECTS: Project[] = [
+  {
+    id: "shepherd", name: "Shepherd", group: "macOS", year: "2026",
+    summary: "Native macOS menu bar dashboard and terminal for AI coding agents. Watches every Claude Code and Codex session, says when one finishes or needs you, and jumps to its terminal; with projects, tabs, split panes, a code editor and signed auto-updates.",
+    stack: ["Swift", "SwiftUI", "AppKit", "SwiftTerm", "CloudKit", "Sparkle"],
+    href: "https://github.com/ekramjim/Shepherd-Releases/releases/latest/download/Shepherd.dmg",
+    github: "https://github.com/ekramjim/Shepherd-Releases",
+    screenshots: ["agent", "editor", "panel"].map((name) => `/projects/shepherd/${name}.webp`),
+    color: "#2f8cff", color2: "#0b2a66", x: 100, y: -65,
+  },
+  {
+    id: "shepherd-companion", name: "Shepherd Companion", group: "Mobile", year: "2026",
+    summary: "iPhone companion for Shepherd that connects only while you use it: your Mac's agent sessions through your private iCloud, alerts and a Live Activity, and Approve, Deny or Reply from your pocket.",
+    stack: ["Swift", "SwiftUI", "CloudKit", "ActivityKit", "AppIntents", "WidgetKit"],
+    status: "Coming soon",
+    screenshots: ["1-list", "2-approve", "3-reply", "4-watch"].map((name) => `/projects/shepherd-companion/${name}.webp`),
+    color: "#6cb6ff", color2: "#1d3f8f", x: -170, y: -10,
+  },
   {
     id: "usage-finder", name: "Usage Finder", group: "macOS", year: "2026",
     summary: "Native macOS system monitor with live per-core CPU, memory and swap meters in the menu bar, history charts for CPU, memory pressure and power, signed auto-updates, and a sandboxed Mac App Store edition.",

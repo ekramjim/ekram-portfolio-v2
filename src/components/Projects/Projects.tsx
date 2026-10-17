@@ -52,6 +52,7 @@ function Details({ project, index, total, peek, onStep }: { project: Project; in
           {project.href && (
             <UnderlineLink href={project.href} className={styles.cta}>{linkLabel(project.href)} ↗</UnderlineLink>
           )}
+          {project.status && <span className={styles.status}>{project.status}</span>}
           {project.github && (
             <a href={project.github} target="_blank" rel="noopener noreferrer" className={styles.ctaQuiet}>GitHub ↗</a>
           )}
