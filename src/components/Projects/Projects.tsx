@@ -13,6 +13,8 @@ interface ProjectsProps {
   note?: string;
   /** Link shown under the list, if any. */
   footer?: { label: string; href: string };
+  /** Project to show open on arrival, from a /projects/[id] link. */
+  initialId?: string;
 }
 
 function useMedia(query: string) {
@@ -79,12 +81,12 @@ function linkLabel(href: string) {
  * features that project. Clicking grows the window into a full scene: the list fades away, the camera flies into the
  * star, and the project's details set themselves inside the window. Arrow keys travel between stars; Escape returns.
  */
-export default function Projects({ projects, heading, note, footer }: ProjectsProps) {
+export default function Projects({ projects, heading, note, footer, initialId }: ProjectsProps) {
   const [hover, setHover] = useState(-1);
   const [featured, setFeatured] = useState(0);
   const [onCard, setOnCard] = useState(false);
   const [visible, setVisible] = useState(true);
-  const [open, setOpen] = useState(-1);
+  const [open, setOpen] = useState(() => (initialId ? projects.findIndex((p) => p.id === initialId) : -1));
   const [holder, setHolder] = useState<number | undefined>(undefined);
   const small = useMedia("(max-width: 899px)");
   const tapMode = useMedia("(hover: none), (max-width: 899px)");
@@ -123,6 +125,43 @@ export default function Projects({ projects, heading, note, footer }: ProjectsPr
   const step = useCallback((d: number) => {
     setOpen((o) => (o < 0 ? o : (o + d + projects.length) % projects.length));
   }, [projects.length]);
+
+  // Each open project has its own address, /projects/[id]. Opening one pushes it (so Back closes it), travelling between
+  // stars replaces it, and closing returns to the page the visitor came from.
+  const pushedRef = useRef(false);
+  const fromPopRef = useRef(false);
+  const basePathRef = useRef<string | null>(null);
+  useEffect(() => {
+    const here = window.location.pathname;
+    if (open >= 0) {
+      const target = `/projects/${projects[open].id}`;
+      if (here !== target) {
+        if (here.startsWith("/projects/")) {
+          window.history.replaceState(null, "", target);
+        } else {
+          basePathRef.current = here + window.location.hash;
+          window.history.pushState(null, "", target);
+          pushedRef.current = true;
+        }
+      }
+    } else if (here.startsWith("/projects/") && !fromPopRef.current) {
+      if (pushedRef.current) window.history.back();
+      else window.history.replaceState(null, "", basePathRef.current ?? "/projects");
+      pushedRef.current = false;
+    }
+    fromPopRef.current = false;
+  }, [open, projects]);
+  useEffect(() => {
+    const onPop = () => {
+      fromPopRef.current = true;
+      const id = window.location.pathname.match(/^\/projects\/([^/]+)\/?$/)?.[1];
+      const index = id ? projects.findIndex((p) => p.id === id) : -1;
+      if (index >= 0) openProject(index);
+      else { pushedRef.current = false; close(); }
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [projects, openProject, close]);
 
   // Fullscreen while open: lock page scroll, close on Escape, arrows travel between stars.
   useEffect(() => {
