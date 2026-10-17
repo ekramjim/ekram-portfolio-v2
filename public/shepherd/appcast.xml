@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Shepherd</title>
+    <link>https://www.ekram.tech/shepherd/appcast.xml</link>
+    <description>Updates for Shepherd</description>
+    <language>en</language>
+    <item>
+      <title>Version 0.1.0</title>
+      <pubDate>Sat, 17 Oct 2026 14:04:53 +0000</pubDate>
+      <sparkle:version>1</sparkle:version>
+      <sparkle:shortVersionString>0.1.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>First release of Shepherd: a menu bar dashboard and terminal for Claude Code and Codex.</p><p>See what every agent is doing, get told when one finishes or needs you, and jump to its terminal in one click.</p><p>Terminal window with projects, tabs, split panes, files, search, saved commands and a code editor.</p><p>Updates itself: Shepherd → Check for Updates…</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/Shepherd-Releases/releases/download/v0.1.0/Shepherd.dmg" type="application/octet-stream" sparkle:edSignature="fzDyaBuhpGTOpWzsrdrI22JbTeymYyVCZYsVsqbPOSJAg1x/y5j+Qoq8JPLWkd8eNl6An2uBqsLltntAtDJ/Dg==" length="6547449"/>
+    </item>
+  </channel>
+</rss>
