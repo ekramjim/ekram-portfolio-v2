@@ -6,6 +6,15 @@
     <description>Updates for Shepherd</description>
     <language>en</language>
     <item>
+      <title>Version 0.6.0</title>
+      <pubDate>Sun, 18 Oct 2026 13:13:12 +0000</pubDate>
+      <sparkle:version>13</sparkle:version>
+      <sparkle:shortVersionString>0.6.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>A fresh start: a new welcome and a first-launch intro where the icon comes alive. Codex sessions now show when they need you, and you can approve them from the menu bar or your iPhone. Agents a session spawns are listed under it while they work (Settings › Agents › Spawned Agents). The Git page's Commit button turns into Push once you've committed. Plus many fixes: saving keeps a file's encoding, paths with [ ] or # work, and the sidebar's + no longer moves on hover.</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/Shepherd-Releases/releases/download/v0.6.0/Shepherd.dmg" type="application/octet-stream" sparkle:edSignature="U7GhJwlSkC+5FoMMhhbqVYEtG5W0zJGQ2rOvo9mtlWV+GEyumUBuW29i9HAWt0Ip0cA0SGkv/wFihbSUG+poBA==" length="8173137"/>
+    </item>
+    <item>
       <title>Version 0.5.1</title>
       <pubDate>Sun, 18 Oct 2026 02:05:59 +0000</pubDate>
       <sparkle:version>11</sparkle:version>
