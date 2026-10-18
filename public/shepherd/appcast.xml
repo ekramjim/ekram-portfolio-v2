@@ -6,6 +6,15 @@
     <description>Updates for Shepherd</description>
     <language>en</language>
     <item>
+      <title>Version 0.6.1</title>
+      <pubDate>Sun, 18 Oct 2026 13:24:33 +0000</pubDate>
+      <sparkle:version>17</sparkle:version>
+      <sparkle:shortVersionString>0.6.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>An update button: when a new version is out, a blue arrow appears beside Settings at the bottom of the sidebar; press it to update. Also a fresh look at the welcome and intro for everyone.</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/Shepherd-Releases/releases/download/v0.6.1/Shepherd.dmg" type="application/octet-stream" sparkle:edSignature="kpV6Kla19dlQjyKEkRKdP0YgLSwykVP6Y0g58CQJum3cdvAlmkgxmWl6SkA07amAi22oYdhTVgz7d+GjbH0CAA==" length="8178145"/>
+    </item>
+    <item>
       <title>Version 0.6.0</title>
       <pubDate>Sun, 18 Oct 2026 13:13:12 +0000</pubDate>
       <sparkle:version>13</sparkle:version>
