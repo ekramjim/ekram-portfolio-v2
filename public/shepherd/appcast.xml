@@ -6,6 +6,15 @@
     <description>Updates for Shepherd</description>
     <language>en</language>
     <item>
+      <title>Version 0.4.2</title>
+      <pubDate>Sun, 18 Oct 2026 00:25:51 +0000</pubDate>
+      <sparkle:version>9</sparkle:version>
+      <sparkle:shortVersionString>0.4.2</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>Fixes Shepherd freezing after a while: background Git checks could get stuck and stop the app from updating.</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/Shepherd-Releases/releases/download/v0.4.2/Shepherd.dmg" type="application/octet-stream" sparkle:edSignature="GnyogffRkEj/yS7X3y92RvkhhmEvTAUpQuBsmD+0k2BYzmG2yB7y94Q00MsESBIfdgN+Gf+qPfrdO5g8Hu6eCQ==" length="7265792"/>
+    </item>
+    <item>
       <title>Version 0.4.1</title>
       <pubDate>Sat, 17 Oct 2026 23:28:49 +0000</pubDate>
       <sparkle:version>8</sparkle:version>
