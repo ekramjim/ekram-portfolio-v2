@@ -6,6 +6,15 @@
     <description>Updates for Shepherd</description>
     <language>en</language>
     <item>
+      <title>Version 0.5.0</title>
+      <pubDate>Sun, 18 Oct 2026 01:25:55 +0000</pubDate>
+      <sparkle:version>10</sparkle:version>
+      <sparkle:shortVersionString>0.5.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>Git page: switch and create branches (local and remote) from the branch menu, and a commit graph like VS Code's.</p><p>Shepherd's notifications show its icon in dark mode again.</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/Shepherd-Releases/releases/download/v0.5.0/Shepherd.dmg" type="application/octet-stream" sparkle:edSignature="AjuhVQ+JzhcylJ3h7+CJvAOy0AA3vo+GdNrRy0e/VY5xQBW+s5zDpXfnCeakGN7YNKRbc2pSrsRUMyD0m+C0DQ==" length="7430312"/>
+    </item>
+    <item>
       <title>Version 0.4.2</title>
       <pubDate>Sun, 18 Oct 2026 00:25:51 +0000</pubDate>
       <sparkle:version>9</sparkle:version>
