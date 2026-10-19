@@ -1,0 +1,128 @@
+/* A project card: a picture that previews the project, and its details under it. The whole card opens the project. */
+.card { position: relative; display: flex; flex-direction: column; gap: 20px; height: 100%; }
+
+/* ---------- picture ---------- */
+.media {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #eef0f3;
+  box-shadow: 0 1px 2px rgba(16, 32, 52, 0.04);
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.5s;
+}
+.card[data-active] .media { transform: translateY(-4px); box-shadow: 0 26px 50px -26px rgba(16, 32, 52, 0.4); }
+.card:has(button:focus-visible) .media { outline: 2px solid var(--focus); outline-offset: 4px; }
+/* The ground: the project's two colours as soft washes on pale paper, the same pair as its open window. */
+.art {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(60% 85% at 12% 8%, color-mix(in srgb, var(--c) 62%, #fff), transparent 72%),
+    radial-gradient(70% 95% at 92% 100%, color-mix(in srgb, var(--c2) 42%, #fff), transparent 70%),
+    #f1f2f4;
+}
+
+/* A site: a browser window rising out of the bottom edge. Previewing scrolls the capture from top to bottom. */
+.browser {
+  position: absolute;
+  inset: 7% 7% -1px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(16, 32, 52, 0.1);
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
+  background: #fbfaf7;
+  box-shadow: 0 18px 40px -18px rgba(16, 32, 52, 0.35);
+}
+.card[data-wide] .browser { inset: 7% 9% -1px; }
+.bar { flex: none; display: flex; align-items: center; gap: 5px; height: 22px; padding: 0 10px; border-bottom: 1px solid var(--line-soft); }
+.bar i { width: 6px; height: 6px; border-radius: 50%; background: rgba(16, 32, 52, 0.16); }
+.bar span { margin-left: 8px; overflow: hidden; color: var(--ink-3); font: 400 10px/1 var(--font-mono); text-overflow: ellipsis; white-space: nowrap; }
+.viewport { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+.viewport img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 0;
+  /* Coming back up is quick; going down (below) is slow enough to read. */
+  transition: object-position 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.card[data-active] .viewport img { object-position: 50% 100%; transition-duration: 11s, 0.8s; transition-timing-function: cubic-bezier(0.45, 0, 0.55, 1), cubic-bezier(0.2, 0.7, 0.2, 1); }
+
+/* App windows: one screenshot at a time, crossfading while the card previews. */
+.shots { position: absolute; inset: 9% 8% 7%; }
+.shots img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 16px 26px rgba(16, 32, 52, 0.3));
+  opacity: 0;
+  transition: opacity 0.6s, transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.shots img[data-on] { opacity: 1; }
+.card[data-active] .shots img { transform: scale(1.03); }
+
+/* Phone screens: three side by side, standing on the bottom edge, fanning apart while the card previews. */
+.phones { position: absolute; inset: 0; }
+.phones img {
+  position: absolute;
+  left: 50%;
+  bottom: -14%;
+  height: 92%;
+  width: auto;
+  border-radius: 9%/4.4%;
+  filter: drop-shadow(0 14px 22px rgba(16, 32, 52, 0.32));
+  transform: translateX(calc(-50% + var(--k) * 62%)) rotate(calc(var(--k) * 5deg)) translateY(calc(var(--k) * var(--k) * 4%));
+  transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.phones img:nth-child(2) { z-index: 1; }
+.card[data-active] .phones img { transform: translateX(calc(-50% + var(--k) * 78%)) rotate(calc(var(--k) * 2deg)) translateY(-7%); }
+.card[data-wide] .phones img { height: 96%; }
+
+/* No pictures: the project's initials, set large in its own deep colour. */
+.mark { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+.mark b { color: color-mix(in srgb, var(--c2) 75%, #0d1724); font: 300 clamp(56px, 6vw, 92px)/1 var(--font-sans); letter-spacing: -0.05em; opacity: 0.85; transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.mark span { color: color-mix(in srgb, var(--c2) 60%, #45576b); font: 400 11px/1 var(--font-mono); letter-spacing: 0.04em; }
+.card[data-active] .mark b { transform: scale(1.06); }
+
+/* ---------- details ---------- */
+.text { display: flex; flex-direction: column; }
+.meta { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 0; margin: 0 0 10px; color: var(--ink-3); font: 400 12px/1.2 var(--font-mono); letter-spacing: 0.02em; }
+/* The star colour, deepened toward the second colour so it reads on paper (as in the list it replaced). */
+.dot { flex: none; width: 7px; height: 7px; margin-right: 9px; border-radius: 50%; background: color-mix(in srgb, var(--c) 55%, var(--c2)); }
+.status { margin-left: 12px; padding: 3px 9px; border: 1px solid var(--line-strong); border-radius: 999px; color: var(--ink-2); font: 500 11px/1 var(--font-sans); letter-spacing: 0.01em; }
+.name { margin: 0; color: var(--ink-head); font: var(--heading-weight) clamp(22px, 1.8vw, 26px)/1.15 var(--font-sans); letter-spacing: var(--heading-tracking); text-wrap: balance; }
+.card[data-wide] .name { font-size: clamp(24px, 2.3vw, 32px); }
+.name button { padding: 0; border: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; text-align: left; cursor: pointer; }
+.name button:focus-visible { outline: none; }
+/* The name's button covers the whole card. */
+.name button::after { content: ""; position: absolute; inset: 0; z-index: 2; }
+.summary {
+  display: -webkit-box;
+  margin: 10px 0 0;
+  overflow: hidden;
+  color: var(--ink-2);
+  font-size: 15px;
+  line-height: 1.5;
+  text-wrap: pretty;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.card[data-wide] .summary { max-width: 62ch; }
+.stack { margin: 12px 0 0; color: var(--ink-3); font: 400 12px/1.5 var(--font-mono); }
+
+@media (prefers-reduced-motion: reduce) {
+  .media, .viewport img, .shots img, .phones img, .mark b { transition: none; }
+  .card[data-active] .media { transform: none; }
+  .card[data-active] .viewport img { object-position: 50% 0; transform: none; }
+  .card[data-active] .phones img { transform: translateX(calc(-50% + var(--k) * 62%)) rotate(calc(var(--k) * 5deg)) translateY(calc(var(--k) * var(--k) * 4%)); }
+}

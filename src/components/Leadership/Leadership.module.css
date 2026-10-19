@@ -15,7 +15,7 @@
 
 /* ---------- narrow screens: the line runs down the left, icons on it, cards beside ---------- */
 .track { position: relative; list-style: none; margin: 0; padding: 0; display: grid; gap: 24px; }
-.track::before { content: ""; position: absolute; left: 20px; top: 0; bottom: 0; width: 1px; background: rgba(255, 255, 255, 0.14); }
+.track::before { content: ""; position: absolute; left: 20px; top: 0; bottom: 0; width: 1px; background: var(--line); }
 
 .item { position: relative; display: flex; gap: 20px; }
 
@@ -27,7 +27,7 @@
   place-items: center;
   width: 40px;
   height: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--line-strong);
   border-radius: 10px;
   background: var(--space);
   color: var(--ink-2);
@@ -39,16 +39,16 @@
   flex: 1;
   min-width: 0;
   padding: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--line);
   border-radius: 10px;
-  background: rgba(207, 227, 247, 0.03);
+  background: rgba(255, 255, 255, 0.45);
   transition: border-color 0.3s, transform 0.3s, background 0.3s;
 }
 /* The short line along the top edge stretches to the full width on hover. */
 .card::before { content: ""; position: absolute; left: 0; top: 0; width: 40px; height: 2px; border-radius: 2px; background: var(--ink-2); transition: width 0.5s, background 0.3s; }
 
 .item:hover .badge { background: var(--ink); border-color: var(--ink); color: var(--space); }
-.item:hover .card { border-color: rgba(207, 227, 247, 0.4); background: rgba(207, 227, 247, 0.05); transform: translateY(-4px); }
+.item:hover .card { border-color: var(--line-strong); background: rgba(255, 255, 255, 0.8); transform: translateY(-4px); }
 .item:hover .card::before { width: 100%; background: var(--ink); }
 
 .meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; color: var(--ink-3); font: 400 10px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; }

@@ -6,7 +6,7 @@ import { Galaxy } from "@/components/Galaxy";
 import { Leadership } from "@/components/Leadership";
 import { Projects } from "@/components/Projects";
 import { Skills } from "@/components/Skills";
-import { PROJECTS } from "@/data/projects";
+import { FEATURED_PROJECTS, PROJECTS } from "@/data/projects";
 
 export default function Home() {
   return (
@@ -14,7 +14,13 @@ export default function Home() {
       <Galaxy title={["Hi, I'm", "Ekram."]} scrollScreens={1.6} />
       <About />
       <Experience />
-      <Projects projects={PROJECTS} heading="Projects" note="Highlights" />
+      <Projects
+        projects={FEATURED_PROJECTS}
+        heading="Projects"
+        note="Highlights"
+        featured
+        footer={{ label: `See all ${PROJECTS.length} projects →`, href: "/projects" }}
+      />
       <Skills />
       <Leadership />
       <Contact />

@@ -1,5 +1,5 @@
 /**
- * Star field behind the projects list. Each project is a brighter star among ordinary ones; setActive() flies the
+ * Star field behind the projects list, inked onto the paper ground. Each project is a stronger star among ordinary ones; setActive() flies the
  * camera to it and setOpen() takes it in closer. Plain 2D canvas, drawn at device resolution.
  *
  * Two kinds of stars give the field depth: far layers tile the screen and barely move with the camera, and the near
@@ -8,12 +8,14 @@
 
 export interface SkyProject {
   color: string;
+  color2: string;
   x: number;
   y: number;
 }
 
-const PALETTE = [[116, 180, 238], [168, 216, 255], [230, 242, 255], [255, 228, 203], [217, 152, 97]];
-const LEVELS = [0.3, 0.48, 0.68, 0.95];
+// Ink colours: blue, steel blue, navy, sepia and rust, the paper versions of the night sky's blues, white, cream and amber.
+const PALETTE = [[37, 99, 168], [74, 127, 181], [29, 44, 61], [138, 106, 79], [176, 96, 42]];
+const LEVELS = [0.16, 0.26, 0.38, 0.55];
 const FAR_DEPTHS = [0.14, 0.3, 0.52];
 /** The near layer covers this many sky units either side of the centre. */
 const NEAR_HALF_WIDTH = 720;
@@ -36,9 +38,9 @@ function makeSprite(rgb: string) {
   c.width = c.height = 128;
   const g = c.getContext("2d")!;
   const gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
-  gr.addColorStop(0, "rgba(255,255,255,1)");
-  gr.addColorStop(0.08, `rgba(${rgb},.9)`);
-  gr.addColorStop(0.3, `rgba(${rgb},.28)`);
+  gr.addColorStop(0, `rgba(${rgb},1)`);
+  gr.addColorStop(0.08, `rgba(${rgb},.8)`);
+  gr.addColorStop(0.3, `rgba(${rgb},.2)`);
   gr.addColorStop(1, `rgba(${rgb},0)`);
   g.fillStyle = gr;
   g.fillRect(0, 0, 128, 128);
@@ -98,9 +100,11 @@ export function createSky(canvas: HTMLCanvasElement, projects: SkyProject[]) {
     return `rgba(${p[0]},${p[1]},${p[2]},${LEVELS[b % 4]})`;
   });
   const sprites = PALETTE.map((p) => makeSprite(p.join(",")));
+  // A project's colour was picked to glow on a night sky, so on paper it is deepened toward its second colour (as .dot is in CSS).
   const projectSprites = projects.map((p) => {
-    const c = parseInt(p.color.slice(1), 16);
-    return makeSprite(`${(c >> 16) & 255},${(c >> 8) & 255},${c & 255}`);
+    const a = parseInt(p.color.slice(1), 16), b = parseInt(p.color2.slice(1), 16);
+    const mix = (shift: number) => Math.round(((a >> shift) & 255) * 0.55 + ((b >> shift) & 255) * 0.45);
+    return makeSprite(`${mix(16)},${mix(8)},${mix(0)}`);
   });
 
   // --- camera ---
@@ -131,7 +135,6 @@ export function createSky(canvas: HTMLCanvasElement, projects: SkyProject[]) {
     const z = cam.z, zRef = zBase(), zr = z / zRef;
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     ctx.clearRect(0, 0, W, H);
-    ctx.globalCompositeOperation = "lighter";
 
     // Far layers: tile the screen, shift a little with the camera and drift slowly.
     const growFar = 1 + (0.12 * Math.log(Math.max(1, zr))) / Math.LN2;
@@ -158,23 +161,22 @@ export function createSky(canvas: HTMLCanvasElement, projects: SkyProject[]) {
       const rr = (9 + (7 * ((id * 7) % 5)) / 4) * Math.sqrt(grow);
       const X = NX[id] * z + ox, Y = NY[id] * z + oy;
       if (X < -rr || X > W + rr || Y < -rr || Y > H + rr) continue;
-      ctx.globalAlpha = 0.85;
+      ctx.globalAlpha = 0.6;
       ctx.drawImage(sprites[NEAR_BUCKET[id] >> 2], X - rr, Y - rr, rr * 2, rr * 2);
     }
     ctx.globalAlpha = 1;
 
-    // Project stars: understated until focused, then the glow swells. No ring.
+    // Project stars: understated until focused, then the wash of colour swells. No ring.
     for (let k = 0; k < projects.length; k++) {
       const X = projects[k].x * z + ox, Y = projects[k].y * z + oy, f = focus[k].value;
       const rad = 22 + 44 * f;
       ctx.globalAlpha = 0.4 + 0.6 * f;
       ctx.drawImage(projectSprites[k], X - rad, Y - rad, rad * 2, rad * 2);
       ctx.globalAlpha = 0.65 + 0.35 * f;
-      ctx.fillStyle = "#fff";
+      ctx.fillStyle = "#0d1724";
       ctx.beginPath(); ctx.arc(X, Y, 1.9 + 2.3 * f, 0, Math.PI * 2); ctx.fill();
       ctx.globalAlpha = 1;
     }
-    ctx.globalCompositeOperation = "source-over";
   }
 
   function tick(now: number) {

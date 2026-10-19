@@ -14,8 +14,8 @@
   position: absolute;
   z-index: 0;
   inset: 0;
-  border-bottom: 1px solid rgba(207, 227, 247, 0.12);
-  background: rgba(4, 7, 11, 0.86);
+  border-bottom: 1px solid var(--line);
+  background: rgba(245, 243, 238, 0.86);
   -webkit-backdrop-filter: blur(18px) saturate(125%);
   backdrop-filter: blur(18px) saturate(125%);
   opacity: 0;
@@ -55,8 +55,8 @@
   height: 6px;
   margin-left: 11px;
   border-radius: 50%;
-  background: #73d69b;
-  box-shadow: 0 0 10px rgba(115, 214, 155, 0.72);
+  background: var(--live);
+  box-shadow: 0 0 0 3px rgba(31, 157, 92, 0.16);
 }
 
 .desktopNav {
@@ -75,7 +75,7 @@
   bottom: 10px;
   left: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(207, 227, 247, 0.08) 8%, rgba(207, 227, 247, 0.16) 52%, rgba(207, 227, 247, 0.08) 92%, transparent);
+  background: linear-gradient(90deg, transparent, rgba(16, 32, 52, 0.08) 8%, rgba(16, 32, 52, 0.16) 52%, rgba(16, 32, 52, 0.08) 92%, transparent);
 }
 
 .desktopNav a {
@@ -94,7 +94,7 @@
 .desktopNav a:hover,
 .desktopNav a.active { color: var(--ink-head); }
 
-/* A short bright band that runs along the rail whenever the current section changes, like a transmitted signal. */
+/* A short dark band that runs along the rail whenever the current section changes, like a transmitted signal. */
 .signal {
   position: absolute;
   z-index: 1;
@@ -102,9 +102,8 @@
   bottom: 10px;
   left: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, #e9f6ff, transparent) no-repeat;
+  background: linear-gradient(90deg, transparent, var(--ink-head), transparent) no-repeat;
   background-size: 28% 100%;
-  filter: drop-shadow(0 0 4px rgba(207, 227, 247, 0.8));
   opacity: 0;
   pointer-events: none;
   animation: railSignal 0.95s cubic-bezier(0.35, 0.1, 0.25, 1);
@@ -124,7 +123,7 @@
   left: 0;
   width: var(--orbit-width);
   height: 14px;
-  color: #e9f6ff;
+  color: var(--ink-head);
   opacity: 0;
   transform: translate3d(var(--orbit-x), 0, 0);
   transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1), width 0.45s ease, opacity 0.25s;
@@ -139,8 +138,7 @@
   right: 2px;
   left: 2px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(207, 227, 247, 0.72), transparent);
-  filter: drop-shadow(0 0 3px rgba(207, 227, 247, 0.55));
+  background: linear-gradient(90deg, transparent, rgba(16, 32, 52, 0.6), transparent);
 }
 .orbit svg {
   position: absolute;
@@ -149,7 +147,6 @@
   left: calc(50% - 7px);
   width: 14px;
   height: 14px;
-  filter: drop-shadow(0 0 5px rgba(207, 227, 247, 0.85));
 }
 
 .menuButton,
@@ -159,7 +156,7 @@
 .desktopNav a:focus-visible,
 .menuButton:focus-visible,
 .mobilePanel a:focus-visible {
-  outline: 2px solid #fff;
+  outline: 2px solid var(--focus);
   outline-offset: 5px;
   border-radius: 2px;
 }
@@ -188,10 +185,10 @@
   .menuLabel > span:last-child { opacity: 0; transform: translateY(6px); }
   .header[data-open] .menuLabel > span:first-child { opacity: 0; transform: translateY(-6px); }
   .header[data-open] .menuLabel > span:last-child { opacity: 1; transform: none; }
-  .menuButton svg { width: 13px; height: 13px; color: var(--ink); filter: drop-shadow(0 0 4px rgba(207, 227, 247, 0.65)); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+  .menuButton svg { width: 13px; height: 13px; color: var(--ink); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
   .header[data-open] .menuButton svg { transform: rotate(135deg); }
 
-  /* The sky opens outward from the Menu star. It starts under the bar (z-index 1 vs the bar's 2) so there is no seam. */
+  /* The chart opens outward from the Menu star. It starts under the bar (z-index 1 vs the bar's 2) so there is no seam. */
   .mobilePanel {
     position: fixed;
     z-index: 1;
@@ -204,9 +201,9 @@
     overscroll-behavior: contain;
     padding: calc(66px + clamp(28px, 6vh, 64px)) var(--gutter) max(28px, env(safe-area-inset-bottom));
     background:
-      radial-gradient(circle at 88% 8%, rgba(116, 180, 238, 0.1), transparent 29%),
-      radial-gradient(circle at 14% 72%, rgba(207, 227, 247, 0.055), transparent 26%),
-      #030609;
+      radial-gradient(circle at 88% 8%, rgba(70, 120, 175, 0.08), transparent 29%),
+      radial-gradient(circle at 14% 72%, rgba(255, 255, 255, 0.6), transparent 26%),
+      var(--space);
     clip-path: circle(0px at var(--origin-x) var(--origin-y));
     visibility: hidden;
     transition: clip-path 0.5s cubic-bezier(0.65, 0, 0.35, 1), visibility 0s linear 0.5s;
@@ -233,7 +230,7 @@
     bottom: 30px;
     left: 8px;
     width: 1px;
-    background: linear-gradient(to bottom, transparent, rgba(157, 181, 205, 0.28) 10%, rgba(157, 181, 205, 0.28) 90%, transparent);
+    background: linear-gradient(to bottom, transparent, rgba(16, 32, 52, 0.2) 10%, rgba(16, 32, 52, 0.2) 90%, transparent);
     transform: scaleY(0);
     transform-origin: top;
     transition: transform 0.25s ease-in;
@@ -268,12 +265,12 @@
     place-items: center;
     width: 17px;
     height: 17px;
-    color: #536c84;
+    color: #a3afbc;
     transition: color 0.3s, filter 0.3s;
   }
   .mobilePanel nav a > span::before { content: ""; position: absolute; inset: 5px; border-radius: 50%; background: currentColor; transition: opacity 0.3s; }
   .mobilePanel nav a > span svg { width: 17px; height: 17px; opacity: 0; transform: scale(0.4); transition: opacity 0.3s, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
-  .mobilePanel nav a.mobileActive > span { color: #e9f6ff; filter: drop-shadow(0 0 6px rgba(207, 227, 247, 0.8)); }
+  .mobilePanel nav a.mobileActive > span { color: var(--ink-head); }
   .mobilePanel nav a.mobileActive > span::before { opacity: 0; }
   .mobilePanel nav a.mobileActive > span svg { opacity: 1; transform: none; }
 
@@ -283,7 +280,7 @@
     gap: 14px 24px;
     align-items: end;
     padding-top: 22px;
-    border-top: 1px solid rgba(207, 227, 247, 0.12);
+    border-top: 1px solid var(--line);
     color: var(--ink-3);
     font: 400 11px/1.5 var(--font-mono);
     opacity: 0;
@@ -292,7 +289,7 @@
   }
   .header[data-open] .mobileMeta { opacity: 1; transform: none; transition: opacity 0.6s ease-out 0.5s, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.5s; }
   .mobileMeta p { display: flex; align-items: center; gap: 9px; margin: 0; }
-  .mobileMeta p i { width: 6px; height: 6px; border-radius: 50%; background: #73d69b; box-shadow: 0 0 10px rgba(115, 214, 155, 0.6); }
+  .mobileMeta p i { width: 6px; height: 6px; border-radius: 50%; background: var(--live); box-shadow: 0 0 0 3px rgba(31, 157, 92, 0.16); }
   .mobileMeta a { color: var(--ink-2); font-family: var(--font-sans); text-decoration: none; }
   .mobileMeta a span { margin-left: 5px; }
   .mobileMeta small { grid-column: 1 / -1; font: inherit; }

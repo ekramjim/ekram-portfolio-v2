@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import GalaxyCursor from "@/components/ui/GalaxyCursor";
 import { Navbar } from "@/components/Navbar";
@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image" },
   alternates: { canonical: "./" },
 };
+
+// Browser chrome (e.g. Safari's address bar) matches the paper ground.
+export const viewport: Viewport = { themeColor: "#f5f3ee", colorScheme: "light" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (

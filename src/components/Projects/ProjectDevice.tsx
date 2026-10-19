@@ -10,22 +10,26 @@ interface ProjectDeviceProps {
   children?: ReactNode;
 }
 
+/** What a project's link is, for a window's address bar: the site's host, or the kind of download. */
+export function hostLabel(href?: string) {
+  if (!href) return null;
+  if (href.toLowerCase().endsWith(".pdf")) return "PDF report";
+  if (href.toLowerCase().endsWith(".dmg")) return "macOS app";
+  return new URL(href, "https://ekram.tech").hostname.replace(/^www\./, "");
+}
+
 /**
  * Desktop browser window for a project, holding a moving gradient in the project's colours and the project's details. Small (the hover preview), it is
  * sized by the --w and --h custom properties and stacks the details under the gradient. Open, it fills whatever box its
  * parent gives it and puts the details beside the gradient.
  */
 export default function ProjectDevice({ project, open, children }: ProjectDeviceProps) {
-  const { color, color2, href, screenshots } = project;
-  const shots = screenshots ? (open ? screenshots : screenshots.slice(0, 1)) : [];
+  const { color, color2, href, screenshots, preview } = project;
+  // Without app screenshots, the capture of the live site stands in.
+  const images = screenshots ?? (preview ? [preview] : []);
+  const shots = open ? images : images.slice(0, 1);
   const frameStyle = { "--c": color, "--c2": color2 } as CSSProperties;
-  const host = href
-    ? href.toLowerCase().endsWith(".pdf")
-      ? "PDF report"
-      : href.toLowerCase().endsWith(".dmg")
-        ? "macOS app"
-        : new URL(href, "https://ekram.tech").hostname.replace(/^www\./, "")
-    : null;
+  const host = hostLabel(href);
   return (
     <div className={styles.dev} data-open={open ? "" : undefined} style={frameStyle}>
       <div className={styles.bar} aria-hidden="true">

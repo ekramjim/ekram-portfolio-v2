@@ -9,7 +9,7 @@ export default function GalaxyOverlay({ title }: { title: string }) {
         type="button"
         data-galaxy-interaction
         aria-label="Rotate galaxy with drag or arrow keys. Press Home to reset."
-        className="absolute inset-0 h-full w-full border-0 bg-transparent focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white/60"
+        className="absolute inset-0 h-full w-full border-0 bg-transparent focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-[color:var(--ink-3)]"
         style={{ pointerEvents: "auto", touchAction: "pan-y", cursor: "grab" }}
       />
     </div>

@@ -111,7 +111,7 @@ export default function Contact() {
                         <Glyph size={19} weight="light" aria-hidden="true" />
                       ) : (
                         <Image
-                          src="/images/lynksphereLogo/lsLogoDark.png"
+                          src="/images/lynksphereLogo/lsLogoLight.png"
                           alt=""
                           width={22}
                           height={22}

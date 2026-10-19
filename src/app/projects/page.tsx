@@ -15,6 +15,7 @@ export default function AllProjects() {
         heading="All projects"
         note={`${PROJECTS.length} projects`}
         footer={{ label: "← Back to home", href: "/" }}
+        filters
       />
     </main>
   );

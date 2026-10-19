@@ -2,9 +2,9 @@
 .dev {
   position: relative;
   flex: none;
-  background: #060a10;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(0, 0, 0, 0.4);
+  background: #fbfaf7;
+  border: 1px solid var(--line);
+  box-shadow: 0 40px 90px -20px rgba(16, 32, 52, 0.28), 0 2px 8px rgba(16, 32, 52, 0.06);
   width: var(--w, 440px);
   height: var(--h, 400px);
   max-width: 100%;
@@ -12,19 +12,19 @@
   padding-top: 30px;
 }
 .bar { position: absolute; left: 14px; right: 14px; top: 5px; height: 20px; display: flex; align-items: center; gap: 6px; }
-.bar i { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.22); }
-.url { margin-left: 14px; padding: 0 12px; border-radius: 99px; background: rgba(255, 255, 255, 0.07); color: rgba(255, 255, 255, 0.55); font: 400 11px/18px var(--font-mono); letter-spacing: 0.01em; animation: fade 0.5s 0.4s both; }
+.bar i { width: 8px; height: 8px; border-radius: 50%; background: rgba(16, 32, 52, 0.16); }
+.url { margin-left: 14px; padding: 0 12px; border-radius: 99px; background: rgba(16, 32, 52, 0.05); color: var(--ink-3); font: 400 11px/18px var(--font-mono); letter-spacing: 0.01em; animation: fade 0.5s 0.4s both; }
 .screen { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 38%) minmax(0, 1fr); width: 100%; height: 100%; overflow: hidden; border-radius: 0 0 13px 13px; }
 .pane { position: relative; min-width: 0; min-height: 0; }
-/* The window's picture: two soft blobs of the project's colours drifting over a dark ground, lighting up where they cross. */
-.art { position: absolute; inset: 0; overflow: hidden; isolation: isolate; background: #070c14; }
-.art::before, .art::after { content: ""; position: absolute; border-radius: 50%; mix-blend-mode: screen; will-change: transform; }
+/* The window's picture: two soft blobs of the project's colours drifting over a pale ground, deepening where they cross. */
+.art { position: absolute; inset: 0; overflow: hidden; isolation: isolate; background: #eef0f3; }
+.art::before, .art::after { content: ""; position: absolute; border-radius: 50%; mix-blend-mode: multiply; will-change: transform; }
 .art::before {
   left: -25%;
   top: -45%;
   width: 95%;
   height: 130%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--c) 82%, #000), transparent);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c) 70%, #fff), transparent);
   animation: driftA 17s ease-in-out infinite alternate;
 }
 .art::after {
@@ -32,7 +32,7 @@
   bottom: -55%;
   width: 105%;
   height: 140%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--c2) 90%, #000), transparent);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c2) 45%, #fff), transparent);
   animation: driftB 23s ease-in-out infinite alternate;
 }
 @keyframes driftA { from { transform: translate(0, 0) scale(1); } to { transform: translate(52%, 34%) scale(1.25); } }
@@ -40,9 +40,11 @@
 
 /* App screenshots floating over the gradient. Open, they take turns (the keyframes assume four, 4s each). */
 .shots { position: absolute; inset: 10% 8%; animation: fade 0.5s 0.2s both; }
-.shots img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.55)); }
+.shots img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 18px 30px rgba(16, 32, 52, 0.3)); }
 .dev[data-open] .shots img { opacity: 0; animation: shot 16s calc(var(--i) * 4s) infinite; }
 @keyframes shot { 0% { opacity: 0; } 4%, 25% { opacity: 1; } 29%, 100% { opacity: 0; } }
+/* A single picture has nothing to take turns with, so it simply stays. */
+.dev[data-open] .shots img:only-child { opacity: 1; animation: none; }
 
 /* Open: the window fills its box, with the gradient on one side and the details on the other. */
 .dev[data-open] { width: 100%; height: 100%; max-width: none; }
@@ -55,15 +57,15 @@
   flex-direction: column;
   justify-content: center;
   padding: 16px 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(3, 6, 10, 0.55);
+  border-top: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.7);
 }
 .dev[data-open] .body {
   overflow-y: auto;
   padding: clamp(20px, 2.6vw, 40px);
   padding-bottom: 80px;
   border-top: 0;
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 1px solid var(--line);
   animation: fade 0.4s 0.25s both;
 }
 
@@ -71,7 +73,7 @@
 
 @media (max-width: 899px) {
   .dev[data-open] .screen { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 30%) minmax(0, 1fr); }
-  .dev[data-open] .body { border-left: 0; border-top: 1px solid rgba(255, 255, 255, 0.1); padding: 18px 18px 80px; }
+  .dev[data-open] .body { border-left: 0; border-top: 1px solid var(--line); padding: 18px 18px 80px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .dev[data-open] .body, .url, .art::before, .art::after, .shots { animation: none; }

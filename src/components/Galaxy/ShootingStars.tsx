@@ -11,11 +11,11 @@ interface Streak {
   life: number;
 }
 
-const HEAD = "233, 246, 255";
-const TAIL = "157, 200, 240";
+const HEAD = "20, 34, 54";
+const TAIL = "60, 98, 145";
 
 /**
- * Occasional shooting stars across the hero's night sky: a bright head trailing an icy-blue streak.
+ * Occasional shooting stars across the hero's paper sky: an ink-dark head trailing a fading blue streak.
  * A transparent 2D canvas sits over the galaxy canvas and only draws (and spawns) while the hero is on screen.
  */
 export default function ShootingStars({ rootRef }: { rootRef: RefObject<HTMLElement | null> }) {
@@ -112,7 +112,7 @@ export default function ShootingStars({ rootRef }: { rootRef: RefObject<HTMLElem
         context.stroke();
 
         const glow = context.createRadialGradient(s.x, s.y, 0, s.x, s.y, 7);
-        glow.addColorStop(0, `rgba(255, 255, 255, ${envelope})`);
+        glow.addColorStop(0, `rgba(${HEAD}, ${envelope})`);
         glow.addColorStop(0.3, `rgba(${HEAD}, ${0.55 * envelope})`);
         glow.addColorStop(1, `rgba(${HEAD}, 0)`);
         context.fillStyle = glow;

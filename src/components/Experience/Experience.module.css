@@ -1,5 +1,5 @@
 .section {
-  --void: var(--space, #04070b);
+  --void: var(--space, #f5f3ee);
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -26,9 +26,9 @@
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
   gap: 32px clamp(40px, 6vw, 96px);
   padding: 44px 0 48px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid var(--line);
 }
-.mission:last-child { border-bottom: 1px solid rgba(255, 255, 255, 0.12); }
+.mission:last-child { border-bottom: 1px solid var(--line); }
 
 .tag { margin: 0 0 14px; color: var(--ink-3); font: 400 12px/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
 .company { margin: 0; font: var(--heading-weight) clamp(30px, 3.4vw, 48px)/1.05 var(--font-sans); letter-spacing: var(--heading-tracking); text-wrap: balance; }
@@ -37,10 +37,10 @@
 .link { display: inline-block; margin-top: 14px; padding: 2px 0; font: 500 15px/1.2 var(--font-sans); }
 
 .stats { display: grid; gap: 10px; margin: 30px 0 0; padding: 0; max-width: 300px; }
-.stats div { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.08); }
+.stats div { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding-top: 10px; border-top: 1px solid var(--line-soft); }
 .stats dt { color: var(--ink-3); font: 400 11px/1.4 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
 .stats dd { display: inline-flex; align-items: center; margin: 0; color: var(--ink); font: 400 14px/1.4 var(--font-mono); }
-.pulse { width: 7px; height: 7px; margin-right: 9px; border-radius: 50%; background: #5be3a0; box-shadow: 0 0 8px #5be3a0; animation: pulse 2.4s ease-in-out infinite; }
+.pulse { width: 7px; height: 7px; margin-right: 9px; border-radius: 50%; background: var(--live); box-shadow: 0 0 0 3px rgba(31, 157, 92, 0.16); animation: pulse 2.4s ease-in-out infinite; }
 
 .objectives h4 { margin: 0 0 18px; color: var(--ink-3); font: 400 11px/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
 .objectives ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }

@@ -1,5 +1,5 @@
 .section {
-  --contact-accent: #cfe3f7;
+  --contact-accent: #14243a;
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -16,8 +16,9 @@
   width: min(760px, 80vw);
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(120, 166, 210, 0.1), rgba(120, 166, 210, 0.025) 38%, transparent 68%);
-  filter: blur(12px);
+  /* One even falloff: a two-step tint shows banding rings on a light ground. */
+  background: radial-gradient(circle, rgba(70, 120, 175, 0.06), transparent 68%);
+  filter: blur(24px);
   pointer-events: none;
 }
 
@@ -35,7 +36,7 @@
 }
 
 .kicker { display: flex; align-items: center; gap: 10px; margin: 0 0 18px; color: var(--ink-2); font: 400 13px/1 var(--font-mono); }
-.kicker span { width: 7px; height: 7px; border-radius: 50%; background: #73d69b; box-shadow: 0 0 12px rgba(115, 214, 155, 0.65); }
+.kicker span { width: 7px; height: 7px; border-radius: 50%; background: var(--live); box-shadow: 0 0 0 3px rgba(31, 157, 92, 0.16); }
 .intro h2 { margin: 0; color: var(--ink-head); font: var(--heading-weight) clamp(40px, 5vw, 72px)/1 var(--font-sans); letter-spacing: var(--heading-tracking); text-wrap: balance; }
 .lede { max-width: 650px; margin: 28px 0 0; color: var(--ink-2); font-size: clamp(16px, 1.4vw, 19px); line-height: 1.65; text-wrap: pretty; }
 
@@ -43,7 +44,7 @@
 .panelTitle { margin: 0; color: var(--ink-head); font: 500 15px/1.2 var(--font-sans); }
 
 .channels { min-width: 0; }
-.linkList { margin-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.14); }
+.linkList { margin-top: 20px; border-top: 1px solid var(--line); }
 .contactLink {
   display: grid;
   grid-template-columns: 38px minmax(0, 1fr) 18px;
@@ -51,15 +52,15 @@
   gap: 14px;
   min-height: 72px;
   padding: 10px 3px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom: 1px solid var(--line);
   color: inherit;
   text-decoration: none;
   transition: border-color 0.2s, padding 0.25s;
 }
-.contactLink:hover { padding-left: 8px; border-color: rgba(207, 227, 247, 0.7); }
-.contactLink:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
-.contactIcon { display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid rgba(207, 227, 247, 0.18); border-radius: 50%; color: var(--ink-2); transition: color 0.2s, border-color 0.2s; }
-.contactLink:hover .contactIcon { color: var(--ink-head); border-color: rgba(207, 227, 247, 0.55); }
+.contactLink:hover { padding-left: 8px; border-color: var(--ink-3); }
+.contactLink:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
+.contactIcon { display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid var(--line-strong); border-radius: 50%; color: var(--ink-2); transition: color 0.2s, border-color 0.2s; }
+.contactLink:hover .contactIcon { color: var(--ink-head); border-color: var(--ink-3); }
 .brandIcon { width: 21px; height: 21px; object-fit: contain; }
 .contactText { min-width: 0; }
 .contactText span { display: block; margin-bottom: 5px; color: var(--ink-3); font: 400 11px/1 var(--font-mono); }
@@ -71,20 +72,20 @@
 .form {
   position: relative;
   padding: clamp(24px, 4vw, 44px);
-  border: 1px solid rgba(207, 227, 247, 0.18);
+  border: 1px solid var(--line);
   border-radius: 18px;
-  background: linear-gradient(145deg, rgba(207, 227, 247, 0.065), rgba(207, 227, 247, 0.018));
-  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.26);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.5));
+  box-shadow: 0 28px 70px -24px rgba(16, 32, 52, 0.22);
 }
 .form::before { content: ""; position: absolute; left: 44px; right: 44px; top: -1px; height: 1px; background: linear-gradient(90deg, transparent, var(--contact-accent), transparent); }
 .formHead { display: flex; align-items: flex-start; margin-bottom: 16px; }
 .constellation { position: absolute; top: clamp(24px, 4vw, 44px); right: clamp(24px, 4vw, 44px); width: 180px; }
 .constellation svg { display: block; width: 100%; height: auto; overflow: visible; }
-.starLine { stroke: rgba(207, 227, 247, 0.13); stroke-width: 1; transition: stroke 0.45s, filter 0.45s; }
-.starLine.active { stroke: rgba(207, 227, 247, 0.62); filter: drop-shadow(0 0 3px rgba(207, 227, 247, 0.35)); }
-.starNode { fill: #304358; stroke: rgba(207, 227, 247, 0.18); stroke-width: 5; transition: fill 0.35s, stroke 0.35s, filter 0.35s; }
-.starNode.active { fill: var(--contact-accent); stroke: rgba(207, 227, 247, 0.1); filter: drop-shadow(0 0 5px rgba(207, 227, 247, 0.7)); }
-.starNode.complete { fill: #73d69b; stroke: rgba(115, 214, 155, 0.18); filter: drop-shadow(0 0 6px rgba(115, 214, 155, 0.7)); }
+.starLine { stroke: rgba(16, 32, 52, 0.14); stroke-width: 1; transition: stroke 0.45s, filter 0.45s; }
+.starLine.active { stroke: rgba(20, 36, 58, 0.6); }
+.starNode { fill: #c3ccd6; stroke: rgba(16, 32, 52, 0.07); stroke-width: 5; transition: fill 0.35s, stroke 0.35s, filter 0.35s; }
+.starNode.active { fill: var(--contact-accent); stroke: rgba(20, 36, 58, 0.1); }
+.starNode.complete { fill: var(--live); stroke: rgba(31, 157, 92, 0.16); }
 .twoColumns { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 .form label { position: relative; display: block; margin-bottom: 22px; }
 .form label > span { display: flex; justify-content: space-between; margin-bottom: 9px; color: var(--ink-2); font-size: 12px; }
@@ -92,9 +93,9 @@
 .form input, .form textarea {
   width: 100%;
   border: 0;
-  border-bottom: 1px solid rgba(207, 227, 247, 0.2);
+  border-bottom: 1px solid var(--line-strong);
   border-radius: 0;
-  background: rgba(4, 7, 11, 0.55);
+  background: rgba(255, 255, 255, 0.7);
   color: var(--ink-head);
   font: 400 14px/1.5 var(--font-sans);
   outline: none;
@@ -104,17 +105,17 @@
 .form textarea { min-height: 146px; padding: 13px 14px; resize: vertical; }
 .messagePrompt > span { color: var(--ink) !important; font-size: 15px !important; }
 .messagePrompt textarea { min-height: 162px; font-size: 16px; line-height: 1.65; }
-.form input::placeholder, .form textarea::placeholder { color: #59728b; }
-.form input:focus, .form textarea:focus { border-color: var(--contact-accent); background: rgba(4, 7, 11, 0.9); }
+.form input::placeholder, .form textarea::placeholder { color: #75859a; }
+.form input:focus, .form textarea:focus { border-color: var(--contact-accent); background: #fff; }
 .form label small { position: absolute; right: 10px; bottom: 8px; color: var(--ink-3); font: 400 9px/1 var(--font-mono); }
 .details { display: block; }
 .detailsRule { display: flex; align-items: center; gap: 14px; margin: 12px 0 25px; color: var(--ink-3); font: 400 10px/1 var(--font-mono); }
-.detailsRule::before, .detailsRule::after { content: ""; height: 1px; flex: 1; background: rgba(207, 227, 247, 0.13); }
+.detailsRule::before, .detailsRule::after { content: ""; height: 1px; flex: 1; background: var(--line); }
 .honeypot { position: absolute !important; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 .formFooter { display: flex; align-items: center; gap: 22px; min-height: 48px; }
 .form button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-width: 164px; min-height: 48px; padding: 0 22px; border: 1px solid var(--contact-accent); border-radius: 999px; background: var(--contact-accent); color: var(--space); font: 600 13px/1 var(--font-sans); cursor: pointer; transition: background 0.2s, color 0.2s, transform 0.2s; }
 .form button:hover:not(:disabled) { background: transparent; color: var(--contact-accent); transform: translateY(-2px); }
-.form button:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+.form button:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
 .form button:disabled { cursor: wait; opacity: 0.65; }
 .status { display: flex; align-items: center; gap: 8px; color: var(--ink-2); font-size: 12px; }
 .status svg { flex: none; color: var(--contact-accent); }

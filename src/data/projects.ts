@@ -17,8 +17,14 @@ export interface Project {
   href?: string;
   /** Source repository, when it is separate from `href`. */
   github?: string;
-  /** App screenshots shown over the gradient: the first in the preview, all of them in turn when open. */
+  /** App screenshots shown over the gradient: on the card (in turn, or side by side for phones) and in turn when open. */
   screenshots?: string[];
+  /** The screenshots are portrait phone screens, so the card shows three side by side. */
+  phone?: boolean;
+  /** One-screen capture of the live site or report, used when there are no app screenshots. */
+  preview?: string;
+  /** Full-length capture of the site; previewing the card scrolls through it. */
+  page?: string;
   /** Shown instead of a link while the project isn't out yet, e.g. "Coming soon". */
   status?: string;
 }
@@ -39,6 +45,7 @@ export const PROJECTS: Project[] = [
     stack: ["Swift", "SwiftUI", "CloudKit", "ActivityKit", "AppIntents", "WidgetKit"],
     status: "Coming soon",
     screenshots: ["1-list", "2-approve", "3-reply", "4-watch"].map((name) => `/projects/shepherd-companion/${name}.webp`),
+    phone: true,
     color: "#6cb6ff", color2: "#1d3f8f", x: -170, y: -10,
   },
   {
@@ -55,6 +62,7 @@ export const PROJECTS: Project[] = [
     summary: "Bioinformatics analysis of CPTAC proteomic data comparing colorectal tumours with healthy colon tissue across 54 samples, including preprocessing, imputation, normalisation and differential abundance testing.",
     stack: ["Python", "Pandas", "NumPy", "SciPy", "Seaborn", "Matplotlib", "Proteomics"],
     href: "/projects/proteomic-analysis-colorectal-cancer-cptac.pdf",
+    preview: "/projects/colorectal-proteomics/volcano.webp",
     color: "#72d6c9", color2: "#245b70", x: 125, y: 35,
   },
   {
@@ -62,6 +70,7 @@ export const PROJECTS: Project[] = [
     summary: "Cross-platform (iOS, Android, Web) community and business networking app for Australian suburbs, with real-time chat, events, jobs, local deals and AI translation.",
     stack: ["React Native", "Expo", "Next.js 16", "TypeScript", "Supabase", "Drizzle ORM", "Stripe"],
     href: "https://www.linkedhive.com.au/",
+    preview: "/projects/linkedhive/home.webp",
     color: "#5aa9ff", color2: "#2a3f8f", x: -110, y: -80,
   },
   {
@@ -69,6 +78,7 @@ export const PROJECTS: Project[] = [
     summary: "Production marketing site for LynkSphere with rich 3D animation. It is the main customer acquisition channel, contributing $30K AUD revenue in 8 months.",
     stack: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "GSAP", "Three.js"],
     href: "https://lynksphere.com/",
+    preview: "/projects/lynksphere/home.webp", page: "/projects/lynksphere/page.webp",
     color: "#ffb55e", color2: "#a2412b", x: -20, y: -30,
   },
   {
@@ -77,6 +87,8 @@ export const PROJECTS: Project[] = [
     stack: ["Swift", "SwiftUI", "WidgetKit", "ActivityKit", "AppIntents", "EventKit"],
     href: "https://apps.apple.com/au/app/timebreak-pomodoro/id6763444390",
     github: "https://github.com/ekramjim/timeBreak",
+    screenshots: ["1-focus", "2-history", "3-reminders", "4-settings"].map((name) => `/projects/timebreak/${name}.webp`),
+    phone: true,
     color: "#4fd0c4", color2: "#1d5a7a", x: 40, y: -115,
   },
   {
@@ -84,6 +96,7 @@ export const PROJECTS: Project[] = [
     summary: "Official website for MindSigns, a Monash University Faculty of IT initiative, with a particle-built 3D hand that morphs between sign-language poses.",
     stack: ["Next.js", "React", "TypeScript", "Three.js", "React Three Fiber", "Framer Motion", "Tailwind CSS"],
     href: "https://mindsigns.online",
+    preview: "/projects/mindsigns/home.webp", page: "/projects/mindsigns/page.webp",
     color: "#c49bff", color2: "#4a2a8f", x: 150, y: -20,
   },
   {
@@ -91,6 +104,7 @@ export const PROJECTS: Project[] = [
     summary: "Outreach manager that organises contacts, personalises bulk cold emails with Gemini and tracks opens, clicks and replies.",
     stack: ["Next.js", "TypeScript", "Supabase", "Gemini API", "Resend", "Tailwind CSS"],
     href: "https://mail-hq.vercel.app",
+    preview: "/projects/mailhq/home.webp",
     github: "https://github.com/ekramjim/MailHQ",
     color: "#ff8a7a", color2: "#8a2f3d", x: -60, y: 55,
   },
@@ -99,6 +113,7 @@ export const PROJECTS: Project[] = [
     summary: "This portfolio, built around a Three.js galaxy with scroll-driven camera motion and a contact form.",
     stack: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Three.js", "WebGL", "Nodemailer"],
     href: "https://ekram.tech",
+    preview: "/projects/portfolio/home.webp",
     github: "https://github.com/ekramjim/ekram-portfolio",
     color: "#dbe8ff", color2: "#33507a", x: 95, y: 105,
   },
@@ -114,6 +129,7 @@ export const PROJECTS: Project[] = [
     summary: "Interactive dashboard exploring global renewable energy trends from World Bank data, with five chart idioms linked across views.",
     stack: ["Vega-Lite", "Vega-Embed", "TopoJSON", "Python", "HTML/CSS"],
     href: "https://ekramjim.github.io/visualizing-renewable-energy/",
+    preview: "/projects/renewable-energy/home.webp", page: "/projects/renewable-energy/page.webp",
     color: "#b4e05f", color2: "#2e6b3a", x: -120, y: 20,
   },
   {
@@ -121,6 +137,7 @@ export const PROJECTS: Project[] = [
     summary: "Interactive Tableau dashboards covering driver nationality, constructor performance and season-by-season comparisons across decades of F1 data.",
     stack: ["Tableau", "Data Visualisation", "Statistical Analysis"],
     href: "https://public.tableau.com/app/profile/ekramul.islam/viz/Visualization1F1/Dashboard1",
+    preview: "/projects/f1/dashboard.webp",
     color: "#ff6b5e", color2: "#7a1f3d", x: 20, y: 135,
   },
   {
@@ -138,3 +155,11 @@ export const PROJECTS: Project[] = [
     color: "#ff7ab6", color2: "#8a2a5a", x: 170, y: -100,
   },
 ];
+
+/**
+ * The eight projects on the home page, in the order shown: the Mac apps first (the first two get the wide cards), then
+ * the rest, mixing apps and sites so neighbouring cards don't look alike.
+ */
+const FEATURED_IDS = ["shepherd", "shepherd-companion", "usage-finder", "lynksphere", "mindsigns", "timebreak", "linkedhive", "mailhq"];
+
+export const FEATURED_PROJECTS: Project[] = FEATURED_IDS.map((id) => PROJECTS.find((p) => p.id === id)!);

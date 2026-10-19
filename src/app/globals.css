@@ -6,15 +6,26 @@
   --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, monospace;
   --heading-weight: 400;
   --heading-tracking: -0.03em;
-  --bg-primary: #0d0d0d;
-  /* Night-sky ground shared by the hero's fade-out and the projects section, so the seam between them disappears. */
-  --space: #04070b;
-  --text-primary: #f7f9fc;
-  /* Text on the night sky is icy blue, not white. Only the section headings ("About", "Projects") stay white. */
-  --ink: #cfe3f7;
-  --ink-2: #9db5cd;
-  --ink-3: #6a86a3;
+  /* The site is a star chart printed on paper: a warm off-white ground with stars and text in navy ink. */
+  --bg-primary: #f5f3ee;
+  /* Paper ground shared by the hero's fade-out and the projects section, so the seam between them disappears. */
+  --space: #f5f3ee;
+  /* Slightly deeper paper for the footer, the way a chart's margin is a shade darker than its face. */
+  --space-2: #ece9e2;
+  --text-primary: #0d1724;
+  /* Text is navy ink, not black. Only the section headings ("About", "Projects") use the darkest ink. */
+  --ink: #1d2c3d;
+  --ink-2: #45576b;
+  --ink-3: #5e6f83;
   --ink-head: var(--text-primary);
+  /* Hairlines and rules, in the same ink at low strength. */
+  --line: rgba(16, 32, 52, 0.13);
+  --line-soft: rgba(16, 32, 52, 0.08);
+  --line-strong: rgba(16, 32, 52, 0.24);
+  /* Keyboard focus ring. */
+  --focus: var(--ink-head);
+  /* "Available" status dots: a green deep enough to read on paper. */
+  --live: #1f9d5c;
   --accent: #ff6600;
   /* Page layout: content never grows wider than --content-max (side gutters included) and sits centred in the window.
      --gutter is the side margin on small screens; --pad is the distance from a full-width section's edge to its content
@@ -23,10 +34,11 @@
   --gutter: clamp(18px, 4vw, 56px);
   --pad: max(var(--gutter), calc((100% - var(--content-max)) / 2 + var(--gutter)));
   /* The resting colour of every link underline (see UnderlineLink). */
-  --underline: rgba(255, 255, 255, 0.4);
+  --underline: rgba(16, 32, 52, 0.3);
 }
 
 html {
+  color-scheme: light;
   background: var(--bg-primary);
   scroll-behavior: smooth;
   scroll-padding-top: 74px;

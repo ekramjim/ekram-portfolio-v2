@@ -137,7 +137,7 @@ const GalaxyCursor = () => {
         const size = p.size * (0.4 + t * 0.6);
 
         ctx.beginPath();
-        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+        ctx.fillStyle = `rgba(29,44,61,${alpha * 0.7})`;
         ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
         ctx.fill();
       }

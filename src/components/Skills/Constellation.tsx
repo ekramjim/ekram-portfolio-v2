@@ -4,13 +4,13 @@ import { levelOf, type SkillGroup } from "@/data/skills";
 import styles from "./Skills.module.css";
 
 /**
- * The star field's own colours (see sky.ts): the ordinary stars are blues, icy white, cream and amber, and the project
- * stars add orange, teal, purple, coral and green. Each entry is a colour and how likely it is. Each star is a flat dot
- * in one of them, with no glow.
+ * The star field's own ink colours (see sky.ts): the ordinary stars are blues, navy, sepia and rust, and the project
+ * stars add orange, teal, purple, coral and green, all deep enough to read on paper. Each entry is a colour and how
+ * likely it is. Each star is a flat dot in one of them, with no glow.
  */
 const PALETTE: [number, number, number, number][] = [
-  [116, 180, 238, 0.16], [168, 216, 255, 0.28], [230, 242, 255, 0.4], [255, 228, 203, 0.48], [217, 152, 97, 0.58],
-  [255, 181, 94, 0.68], [79, 208, 196, 0.77], [196, 155, 255, 0.86], [255, 138, 122, 0.93], [123, 228, 149, 1],
+  [37, 99, 168, 0.16], [74, 127, 181, 0.28], [29, 44, 61, 0.4], [138, 106, 79, 0.48], [176, 96, 42, 0.58],
+  [201, 120, 24, 0.68], [22, 132, 122, 0.77], [116, 78, 196, 0.86], [200, 76, 60, 0.93], [36, 140, 76, 1],
 ];
 /** Dot radius by strength level (index 1–5). */
 const RADIUS = [0, 2.4, 3, 3.8, 4.7, 5.8];
@@ -22,7 +22,7 @@ const CHAR = 7.3;
 /** How far the pointer reaches, and how far it drags a star, in map units. */
 const REACH = 120, PULL = 7;
 
-/** Brighter for stronger: mixes the icy text colour toward the dim one. */
+/** Darker for stronger: mixes the ink text colour toward the faint one. */
 const shade = (level: number) => `color-mix(in srgb, var(--ink) ${[0, 28, 46, 64, 82, 100][level]}%, var(--ink-3))`;
 
 interface Star { name: string; x: number; y: number; r: number; color: string; opacity: number; left: boolean; labelBase: string }

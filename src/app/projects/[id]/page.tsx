@@ -43,6 +43,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         heading="All projects"
         note={`${PROJECTS.length} projects`}
         footer={{ label: "← Back to home", href: "/" }}
+        filters
         initialId={id}
       />
     </main>

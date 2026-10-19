@@ -60,7 +60,7 @@ const SOLID_SCALE = 3; // texture pixels per sampled text pixel
 const SOLID_PAD = 8; // sampled text pixels of room around the word, so antialiased edges are not clipped
 const SOLID_TEXT_WIDTH = 640, SOLID_TEXT_HEIGHT = 180; // sampleWord's canvas
 const SOLID_FONT_WEIGHT = 300; // lighter than the medium weight the stars are sampled from, so the solid words read as thin, not bold
-const SOLID_HEADLINE_OPACITY = 0.55; // well see-through, so the headline sits back in the sky instead of competing with the galaxy
+const SOLID_HEADLINE_OPACITY = 0.7; // see-through, so the headline sits back on the paper instead of competing with the galaxy
 
 function solidWordTexture(word: string, font: string) {
   const k = SOLID_SCALE;
@@ -71,7 +71,7 @@ function solidWordTexture(word: string, font: string) {
   ctx.font = font.replace(/^\d+/, String(SOLID_FONT_WEIGHT)).replace(/(\d+)px/, (_, size) => `${Number(size) * k}px`);
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillStyle = "#9db5cd"; // the site's muted secondary blue
+  ctx.fillStyle = "#45576b"; // the site's secondary ink (--ink-2)
   ctx.fillText(word, canvas.width / 2, canvas.height / 2);
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
@@ -94,6 +94,8 @@ function buildStars(mobile: boolean, title: [string, string], font: string) {
   const position = new Float32Array(count * 3);
   const scatter = new Float32Array(count * 3);
   const color = new Float32Array(count * 3);
+  // How much ink a star lays down: the old brightness, now the strength of its dot on the paper.
+  const density = new Float32Array(count);
   const size = new Float32Array(count);
   const phase = new Float32Array(count);
   const kind = new Float32Array(count);
@@ -101,8 +103,9 @@ function buildStars(mobile: boolean, title: [string, string], font: string) {
   const noise = new Float32Array(count * 3);
   // Small clusters interrupt the trails, avoiding evenly spaced beads or solid arms.
   const knots = Array.from({ length: 110 }, () => random());
-  const palette = [new THREE.Color("#74b4ee"), new THREE.Color("#a8d8ff"),
-    new THREE.Color("#e6f2ff"), new THREE.Color("#ffe4cb"), new THREE.Color("#d99861")];
+  // Ink colours, matching the projects sky (sky.ts): blue, steel blue, navy (the core), sepia and rust.
+  const palette = [new THREE.Color("#2563a8"), new THREE.Color("#4a7fb5"),
+    new THREE.Color("#1d2c3d"), new THREE.Color("#8a6a4f"), new THREE.Color("#b0602a")];
   for (let i = 0; i < count; i++) {
     const field = i < FIELD_COUNT;
     const core = i >= FIELD_COUNT && i < FIELD_AND_CORE;
@@ -129,7 +132,8 @@ function buildStars(mobile: boolean, title: [string, string], font: string) {
     const pick = random();
     const tone = core ? palette[2] : text ? palette[random() < 0.5 ? 0 : 1] : palette[pick < 0.3 ? 0 : pick < 0.55 ? 1 : pick < 0.78 ? 2 : pick < 0.91 ? 3 : 4];
     const intensity = field ? 0.2 + random() * 0.5 : core && !bright ? 0.7 + random() * 0.9 : text && !spark ? 0.5 + random() * 0.45 : hot ? 1.6 + random() * 1.8 : 0.32 + random() * 0.65;
-    color.set([tone.r * intensity, tone.g * intensity, tone.b * intensity], i * 3);
+    color.set([tone.r, tone.g, tone.b], i * 3);
+    density[i] = intensity;
     size[i] = text ? (spark ? 5.5 + random() * 3 : 1.2 + random() * 1.2) : core ? (bright ? 6 + random() * 13 : 1.4 + random() * 2.6) : field ? (random() < 0.025 ? 12 : 0.8 + random() * 2) : hot ? 15 + Math.pow(random(), 2) * 25 : 0.8 + random() * 1.8;
     phase[i] = random() * Math.PI * 2;
     kind[i] = field ? 1 : core ? 2 : text ? 3 + word : 0;
@@ -138,6 +142,7 @@ function buildStars(mobile: boolean, title: [string, string], font: string) {
   geometry.setAttribute("position", new THREE.BufferAttribute(position, 3));
   geometry.setAttribute("aScatter", new THREE.BufferAttribute(scatter, 3));
   geometry.setAttribute("color", new THREE.BufferAttribute(color, 3));
+  geometry.setAttribute("aDensity", new THREE.BufferAttribute(density, 1));
   geometry.setAttribute("aSize", new THREE.BufferAttribute(size, 1));
   geometry.setAttribute("aPhase", new THREE.BufferAttribute(phase, 1));
   geometry.setAttribute("aKind", new THREE.BufferAttribute(kind, 1));
@@ -198,7 +203,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
     // `false` keeps three.js from writing explicit pixel width/height styles onto the canvas: our own CSS
     // (inset: 0, 100%) keeps it glued to the real viewport, so Safari's address-bar show/hide (which changes
     // window.innerHeight without necessarily firing `resize` in step) can never leave a stale-sized canvas
-    // uncovering the page background as a black bar underneath the hero.
+    // uncovering the page background as a mismatched bar underneath the hero.
     renderer.setSize(window.innerWidth, window.innerHeight, false);
     renderer.toneMapping = THREE.NoToneMapping;
     const scene = new THREE.Scene();
@@ -212,10 +217,11 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
     };
     const material = new THREE.ShaderMaterial({
       uniforms, vertexColors: true, transparent: true, depthWrite: false,
-      blending: THREE.AdditiveBlending,
+      // Ink on paper: plain alpha blending, so overlapping stars build up toward their ink colour instead of adding light.
+      blending: THREE.NormalBlending,
       vertexShader: `
         attribute vec3 aScatter;
-        attribute float aSize, aPhase, aKind;
+        attribute float aSize, aPhase, aKind, aDensity;
         attribute vec2 aArm;
         attribute vec3 aNoise;
         uniform float uTime, uFormation, uRotation, uTilt, uFade, uPixelRatio, uFlow, uFlowFade, uBurst, uTextFade, uTextSolid, uTextScale, uTextSize;
@@ -224,7 +230,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
         // Cursor wake springs: xy = position, zw = velocity, in screen-height units (y up, x scaled by aspect).
         uniform vec4 uWake[4];
         varying vec3 vColor;
-        varying float vAlpha, vHot;
+        varying float vAlpha, vHot, vDensity;
         void main() {
           float background = 1.0 - step(0.1, abs(aKind - 1.0));
           // Kinds: 0 arm, 1 background, 2 core, 3/4 left/right headline word.
@@ -292,6 +298,7 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
           // Headline stars grow with camera distance so the letters stay solid on small screens.
           gl_PointSize = clamp(aSize * uPixelRatio * 440.0 / max(100.0, -viewPosition.z) * mix(1.0, uTextSize, text), 0.8, 80.0);
           vColor = color;
+          vDensity = aDensity;
           vHot = step(5.0, aSize);
           float twinkle = 0.9 + 0.1 * sin(uTime * 0.65 + aPhase);
           // Stars fade in at the rim and out into the core so the wrap-around is never seen.
@@ -302,16 +309,19 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       `,
       fragmentShader: `
         varying vec3 vColor;
-        varying float vAlpha, vHot;
+        varying float vAlpha, vHot, vDensity;
         void main() {
           vec2 p = (gl_PointCoord - 0.5) * 2.0;
           float r2 = dot(p, p);
           if (r2 > 1.0) discard;
-          float dust = exp(-r2 * 3.0);
-          // Tight white center and a local colored halo; no full-screen bloom fog.
-          float star = exp(-r2 * 32.0) + 0.16 * exp(-r2 * 5.0);
-          float light = mix(dust, star, vHot) * (1.0 - smoothstep(0.75, 1.0, sqrt(r2)));
-          gl_FragColor = vec4(vColor, vAlpha * light);
+          // Dust is a firmer dot than it was on the night sky: a wide soft falloff reads as a blur on paper, not a glow.
+          float dust = exp(-r2 * 5.0);
+          // Big stars are crisp printed dots with a faint wash around them, like a star chart; a soft halo would read as a blot.
+          float r = sqrt(r2);
+          float star = 1.0 - smoothstep(0.13, 0.22, r) + 0.05 * exp(-r2 * 5.0);
+          float ink = mix(dust, star, vHot) * (1.0 - smoothstep(0.75, 1.0, r));
+          // Ink saturates softly instead of clipping. The fine dust carries the spiral, so it is laid down heavier than the big stars.
+          gl_FragColor = vec4(vColor, 1.0 - exp(-mix(3.2, 1.2, vHot) * vAlpha * ink * vDensity));
           #include <tonemapping_fragment>
           #include <colorspace_fragment>
         }
@@ -324,14 +334,15 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
     glowCanvas.width = glowCanvas.height = 128;
     const ctx = glowCanvas.getContext("2d")!;
     const glow = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
-    glow.addColorStop(0, "rgba(228,240,255,0.55)");
-    glow.addColorStop(0.12, "rgba(208,226,255,0.32)");
-    glow.addColorStop(0.4, "rgba(184,207,242,0.1)");
-    glow.addColorStop(1, "rgba(184,207,242,0)");
+    // A faint wash of blue ink behind the core, the paper version of its glow.
+    glow.addColorStop(0, "rgba(37,72,120,0.18)");
+    glow.addColorStop(0.12, "rgba(37,72,120,0.1)");
+    glow.addColorStop(0.4, "rgba(37,72,120,0.03)");
+    glow.addColorStop(1, "rgba(37,72,120,0)");
     ctx.fillStyle = glow;
     ctx.fillRect(0, 0, 128, 128);
     const glowTexture = new THREE.CanvasTexture(glowCanvas);
-    const glowMaterial = new THREE.SpriteMaterial({ map: glowTexture, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0 });
+    const glowMaterial = new THREE.SpriteMaterial({ map: glowTexture, transparent: true, depthWrite: false, opacity: 0 });
     const coreGlow = new THREE.Sprite(glowMaterial);
     coreGlow.scale.set(65, 65, 1);
     scene.add(coreGlow);
@@ -622,5 +633,5 @@ export default function GalaxyScene({ rootRef, scrollScreens, flowSpeed, title, 
       geometry.dispose(); material.dispose(); glowTexture.dispose(); glowMaterial.dispose(); renderer.dispose();
     };
   }, [rootRef, scrollScreens, flowSpeed, titleLeft, titleRight, font]);
-  return <canvas ref={canvasRef} aria-hidden="true" style={{ position: "fixed", inset: 0, width: "100%", height: "100%", zIndex: 0, pointerEvents: "none", background: "radial-gradient(ellipse at 50% 48%, #010204 10%, #060c12 72%, #09121a 100%)" }} />;
+  return <canvas ref={canvasRef} aria-hidden="true" style={{ position: "fixed", inset: 0, width: "100%", height: "100%", zIndex: 0, pointerEvents: "none", background: "radial-gradient(ellipse at 50% 48%, #fbfaf7 10%, #f7f5f1 72%, var(--space) 100%)" }} />;
 }
