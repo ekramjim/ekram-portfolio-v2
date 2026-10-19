@@ -6,6 +6,15 @@
     <description>Updates for Shepherd</description>
     <language>en</language>
     <item>
+      <title>Version 0.6.5</title>
+      <pubDate>Mon, 19 Oct 2026 11:43:58 +0000</pubDate>
+      <sparkle:version>22</sparkle:version>
+      <sparkle:shortVersionString>0.6.5</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>Drag a project up or down the sidebar by its name to reorder your projects: a line shows where it will land.</p><p>Clicking an empty part of the sidebar no longer turns the selected tab blue; your terminal keeps the keyboard.</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/Shepherd-Releases/releases/download/v0.6.5/Shepherd.dmg" type="application/octet-stream" sparkle:edSignature="2dGt+fHXqXVJsN+pzTbLMsa5+59Jh1aCAv4KMbjxxIBP6u4gu3Hn/orTzF6frsrLJDfwxD/qjzQljSijsz9gBA==" length="8421003"/>
+    </item>
+    <item>
       <title>Version 0.6.4</title>
       <pubDate>Mon, 19 Oct 2026 11:13:30 +0000</pubDate>
       <sparkle:version>21</sparkle:version>
