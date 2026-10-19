@@ -6,6 +6,15 @@
     <description>Updates for Shepherd</description>
     <language>en</language>
     <item>
+      <title>Version 0.6.4</title>
+      <pubDate>Mon, 19 Oct 2026 11:13:30 +0000</pubDate>
+      <sparkle:version>21</sparkle:version>
+      <sparkle:shortVersionString>0.6.4</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>Answer your agents' questions from iPhone: when Claude Code or Codex asks you to choose, the phone shows the question with its options (pick one or several, or write your own answer) instead of Approve and Deny, which only picked the first option for you. Claude's question waits for your phone while you're away from the Mac, and moves back to the terminal as soon as you use the Mac.</p><p>Codex started with Start Agent now stays connected to Shepherd, so its approvals and questions show up, with the effort you picked.</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/Shepherd-Releases/releases/download/v0.6.4/Shepherd.dmg" type="application/octet-stream" sparkle:edSignature="7quBD4W5qhqEoxsfIu7GgeoxzVd7ZD5+0F9E32+3nnKu+Y4Br+zBcS7EDx4E2/Tbwn8UXd/vsgw1FlZaZwuhCg==" length="8360836"/>
+    </item>
+    <item>
       <title>Version 0.6.3</title>
       <pubDate>Mon, 19 Oct 2026 00:08:07 +0000</pubDate>
       <sparkle:version>20</sparkle:version>
