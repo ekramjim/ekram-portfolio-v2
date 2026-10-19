@@ -100,15 +100,6 @@ export const PROJECTS: Project[] = [
     color: "#c49bff", color2: "#4a2a8f", x: 150, y: -20,
   },
   {
-    id: "mailhq", name: "MailHQ", group: "Web", year: "2026",
-    summary: "Outreach manager that organises contacts, personalises bulk cold emails with Gemini and tracks opens, clicks and replies.",
-    stack: ["Next.js", "TypeScript", "Supabase", "Gemini API", "Resend", "Tailwind CSS"],
-    href: "https://mail-hq.vercel.app",
-    preview: "/projects/mailhq/home.webp",
-    github: "https://github.com/ekramjim/MailHQ",
-    color: "#ff8a7a", color2: "#8a2f3d", x: -60, y: 55,
-  },
-  {
     id: "portfolio", name: "Personal Portfolio Website", group: "Web", year: "2026",
     summary: "This portfolio, built around a Three.js galaxy with scroll-driven camera motion and a contact form.",
     stack: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Three.js", "WebGL", "Nodemailer"],
@@ -160,6 +151,6 @@ export const PROJECTS: Project[] = [
  * The eight projects on the home page, in the order shown: the Mac apps first (the first two get the wide cards), then
  * the rest, mixing apps and sites so neighbouring cards don't look alike.
  */
-const FEATURED_IDS = ["shepherd", "shepherd-companion", "usage-finder", "lynksphere", "mindsigns", "timebreak", "linkedhive", "mailhq"];
+const FEATURED_IDS = ["shepherd", "shepherd-companion", "usage-finder", "lynksphere", "mindsigns", "timebreak", "linkedhive", "colorectal-proteomics"];
 
 export const FEATURED_PROJECTS: Project[] = FEATURED_IDS.map((id) => PROJECTS.find((p) => p.id === id)!);
