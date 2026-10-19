@@ -6,6 +6,15 @@
     <description>Updates for Shepherd</description>
     <language>en</language>
     <item>
+      <title>Version 0.6.6</title>
+      <pubDate>Mon, 19 Oct 2026 12:54:03 +0000</pubDate>
+      <sparkle:version>23</sparkle:version>
+      <sparkle:shortVersionString>0.6.6</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>Needs You now shows an orange alert bubble everywhere. Notifications play Shepherd's own sound, with a Sound setting (Shepherd, System Default or None) and a play button in Settings › Agents.</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/Shepherd-Releases/releases/download/v0.6.6/Shepherd.dmg" type="application/octet-stream" sparkle:edSignature="yijP2pZ04wF/IV3yAXAyKNdEsu4k7bN+PLiNDKSawMb1q2gz3EHcuk7Ri9xaai0oRqYZEugOf4tJDkr93iwkCA==" length="8472673"/>
+    </item>
+    <item>
       <title>Version 0.6.5</title>
       <pubDate>Mon, 19 Oct 2026 11:43:58 +0000</pubDate>
       <sparkle:version>22</sparkle:version>
