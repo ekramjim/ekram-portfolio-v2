@@ -6,6 +6,15 @@
     <description>Updates for Shepherd</description>
     <language>en</language>
     <item>
+      <title>Version 0.7.0</title>
+      <pubDate>Tue, 20 Oct 2026 01:41:53 +0000</pubDate>
+      <sparkle:version>25</sparkle:version>
+      <sparkle:shortVersionString>0.7.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>Your iPhone now connects straight to this Mac on the same network: updates are instant, answers land at once, and whole conversations load on the phone. Encrypted with a key only your devices have; iCloud is still used elsewhere.</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/Shepherd-Releases/releases/download/v0.7.0/Shepherd.dmg" type="application/octet-stream" sparkle:edSignature="9Vzajr0oMpYDmmuvqeyWa1zqQ4B++GXjl1kaHI0DYKT9nqmZytFF8E9JL5rtH4b/H9Re0oIBVJ1tlVDqG+5HAw==" length="8645906"/>
+    </item>
+    <item>
       <title>Version 0.6.6</title>
       <pubDate>Mon, 19 Oct 2026 12:54:03 +0000</pubDate>
       <sparkle:version>23</sparkle:version>
