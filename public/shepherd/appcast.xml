@@ -6,6 +6,15 @@
     <description>Updates for Shepherd</description>
     <language>en</language>
     <item>
+      <title>Version 0.7.5</title>
+      <pubDate>Tue, 20 Oct 2026 15:04:16 +0000</pubDate>
+      <sparkle:version>30</sparkle:version>
+      <sparkle:shortVersionString>0.7.5</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>A new app icon, Lambda: a >_ whose cursor is a little lamb. Pick Ramdisk, Ewenix or the original Flock in Settings › Agents › App Icon. Shepherd's notification sound plays again (macOS was playing its default ding instead).</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/Shepherd-Releases/releases/download/v0.7.5/Shepherd.dmg" type="application/octet-stream" sparkle:edSignature="w5sA0nYqLHUvAALDwDTtn25iJpUiWo1Ae1D7pHQexWWbo/DOgqFYJyGHBL1iEa9yyPdZ6cc1AMJ7VuyLZ555AA==" length="10555450"/>
+    </item>
+    <item>
       <title>Version 0.7.4</title>
       <pubDate>Tue, 20 Oct 2026 14:03:33 +0000</pubDate>
       <sparkle:version>29</sparkle:version>
