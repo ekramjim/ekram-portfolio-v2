@@ -6,6 +6,15 @@
     <description>Updates for Shepherd</description>
     <language>en</language>
     <item>
+      <title>Version 0.7.4</title>
+      <pubDate>Tue, 20 Oct 2026 14:03:33 +0000</pubDate>
+      <sparkle:version>29</sparkle:version>
+      <sparkle:shortVersionString>0.7.4</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>A third app icon, Ewenix: the sheep with the >_ on its fleece, over soft sage grass. Baash and Ewenix get a deeper dark-mode tile. Settings › Agents › App Icon.</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/Shepherd-Releases/releases/download/v0.7.4/Shepherd.dmg" type="application/octet-stream" sparkle:edSignature="HXJBXEksm9y06ZOLtda63ksrNyz0bf11LCB2uVpprj07lkIr7oZSPtVfD7YJR/uv/4yzo828uSAcQvEKiQtcDw==" length="10122266"/>
+    </item>
+    <item>
       <title>Version 0.7.3</title>
       <pubDate>Tue, 20 Oct 2026 13:31:30 +0000</pubDate>
       <sparkle:version>28</sparkle:version>
