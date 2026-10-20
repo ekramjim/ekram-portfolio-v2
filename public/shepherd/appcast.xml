@@ -6,6 +6,15 @@
     <description>Updates for Shepherd</description>
     <language>en</language>
     <item>
+      <title>Version 0.7.6</title>
+      <pubDate>Tue, 20 Oct 2026 15:17:42 +0000</pubDate>
+      <sparkle:version>31</sparkle:version>
+      <sparkle:shortVersionString>0.7.6</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>The app icons have new names: Sudo Sheep (the default), Grep Sheep, Ewenix and Dolly (the original two sheep). If you used the default icon, you now get Sudo Sheep, and the Dock shows it right away.</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/Shepherd-Releases/releases/download/v0.7.6/Shepherd.dmg" type="application/octet-stream" sparkle:edSignature="CITL+aXauuc4LxdGNzterCB5wvwRzkZTrbsVg5OJ0AWjAlNjfP7PYmeUocVYmy9dzAa8hQDkbW+Yz2etzN6zDw==" length="10894411"/>
+    </item>
+    <item>
       <title>Version 0.7.5</title>
       <pubDate>Tue, 20 Oct 2026 15:04:16 +0000</pubDate>
       <sparkle:version>30</sparkle:version>
