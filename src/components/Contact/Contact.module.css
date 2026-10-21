@@ -17,7 +17,7 @@
   aspect-ratio: 1;
   border-radius: 50%;
   /* One even falloff: a two-step tint shows banding rings on a light ground. */
-  background: radial-gradient(circle, rgba(70, 120, 175, 0.06), transparent 68%);
+  background: radial-gradient(circle, rgb(var(--sage-rgb) / 0.1), transparent 68%);
   filter: blur(24px);
   pointer-events: none;
 }
@@ -57,10 +57,10 @@
   text-decoration: none;
   transition: border-color 0.2s, padding 0.25s;
 }
-.contactLink:hover { padding-left: 8px; border-color: var(--ink-3); }
+.contactLink:hover { padding-left: 8px; border-color: var(--sage-deep); }
 .contactLink:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
 .contactIcon { display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid var(--line-strong); border-radius: 50%; color: var(--ink-2); transition: color 0.2s, border-color 0.2s; }
-.contactLink:hover .contactIcon { color: var(--ink-head); border-color: var(--ink-3); }
+.contactLink:hover .contactIcon { color: var(--ink-head); border-color: var(--sage-deep); }
 .brandIcon { width: 21px; height: 21px; object-fit: contain; }
 .contactText { min-width: 0; }
 .contactText span { display: block; margin-bottom: 5px; color: var(--ink-3); font: 400 11px/1 var(--font-mono); }
@@ -81,9 +81,9 @@
 .formHead { display: flex; align-items: flex-start; margin-bottom: 16px; }
 .constellation { position: absolute; top: clamp(24px, 4vw, 44px); right: clamp(24px, 4vw, 44px); width: 180px; }
 .constellation svg { display: block; width: 100%; height: auto; overflow: visible; }
-.starLine { stroke: rgba(16, 32, 52, 0.14); stroke-width: 1; transition: stroke 0.45s, filter 0.45s; }
+.starLine { stroke: rgb(var(--sage-rgb) / 0.45); stroke-width: 1; transition: stroke 0.45s, filter 0.45s; }
 .starLine.active { stroke: rgba(20, 36, 58, 0.6); }
-.starNode { fill: #c3ccd6; stroke: rgba(16, 32, 52, 0.07); stroke-width: 5; transition: fill 0.35s, stroke 0.35s, filter 0.35s; }
+.starNode { fill: #b9cbb2; stroke: rgb(var(--sage-rgb) / 0.14); stroke-width: 5; transition: fill 0.35s, stroke 0.35s, filter 0.35s; }
 .starNode.active { fill: var(--contact-accent); stroke: rgba(20, 36, 58, 0.1); }
 .starNode.complete { fill: var(--live); stroke: rgba(31, 157, 92, 0.16); }
 .twoColumns { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }

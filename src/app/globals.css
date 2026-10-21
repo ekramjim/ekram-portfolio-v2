@@ -18,10 +18,16 @@
   --ink-2: #45576b;
   --ink-3: #5e6f83;
   --ink-head: var(--text-primary);
-  /* Hairlines and rules, in the same ink at low strength. */
-  --line: rgba(16, 32, 52, 0.13);
-  --line-soft: rgba(16, 32, 52, 0.08);
-  --line-strong: rgba(16, 32, 52, 0.24);
+  /* Sage green for everything drawn on the chart that isn't text: rules, rails, bars and constellation lines.
+     --sage-rgb is a channel list so components can use it at their own strength: rgb(var(--sage-rgb) / 0.4). */
+  --sage: #7f9c76;
+  --sage-deep: #5b7853;
+  --sage-rgb: 127 156 118;
+  --sage-deep-rgb: 91 120 83;
+  /* Hairlines and rules. */
+  --line: rgb(var(--sage-rgb) / 0.42);
+  --line-soft: rgb(var(--sage-rgb) / 0.26);
+  --line-strong: rgb(var(--sage-deep-rgb) / 0.55);
   /* Keyboard focus ring. */
   --focus: var(--ink-head);
   /* "Available" status dots: a green deep enough to read on paper. */
@@ -34,11 +40,12 @@
   --gutter: clamp(18px, 4vw, 56px);
   --pad: max(var(--gutter), calc((100% - var(--content-max)) / 2 + var(--gutter)));
   /* The resting colour of every link underline (see UnderlineLink). */
-  --underline: rgba(16, 32, 52, 0.3);
+  --underline: rgb(var(--sage-deep-rgb) / 0.5);
 }
 
 html {
   color-scheme: light;
+  scrollbar-color: rgb(var(--sage-rgb) / 0.65) transparent;
   background: var(--bg-primary);
   scroll-behavior: smooth;
   scroll-padding-top: 74px;

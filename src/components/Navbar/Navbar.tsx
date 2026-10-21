@@ -202,7 +202,7 @@ export default function Navbar() {
           aria-label="Ekram — home"
           onClick={closeMenu}
         >
-          EKRAM<span>.</span><i aria-hidden="true" />
+          EKRAM<span>.</span>
         </a>
 
         <nav

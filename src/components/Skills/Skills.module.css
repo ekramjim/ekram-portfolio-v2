@@ -19,9 +19,9 @@
 .card { margin: 0; }
 .card figcaption { margin-bottom: 6px; color: var(--ink-3); font: 400 12px/1.4 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
 .card svg { display: block; width: 100%; height: auto; overflow: visible; }
-.line { stroke: rgba(16, 32, 52, 0.2); stroke-width: 1; }
+.line { stroke: rgb(var(--sage-rgb) / 0.55); stroke-width: 1; }
 /* The pointer's dotted lines to the nearest stars, and the pointer itself. Both are moved by Constellation.tsx. */
-.beam { stroke: rgba(16, 32, 52, 0.7); stroke-width: 1; stroke-dasharray: 2 4; opacity: 0; pointer-events: none; }
+.beam { stroke: rgb(var(--sage-deep-rgb) / 0.9); stroke-width: 1; stroke-dasharray: 2 4; opacity: 0; pointer-events: none; }
 .cursor { fill: var(--ink); opacity: 0; pointer-events: none; }
 /* The stroke keeps a label readable where a line passes behind it. Font size goes with CHAR in Constellation.tsx. */
 .label { font: 400 13.5px var(--font-sans); paint-order: stroke; stroke: var(--space); stroke-width: 4px; stroke-linejoin: round; }

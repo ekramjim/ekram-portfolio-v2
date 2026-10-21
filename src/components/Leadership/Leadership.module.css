@@ -45,11 +45,11 @@
   transition: border-color 0.3s, transform 0.3s, background 0.3s;
 }
 /* The short line along the top edge stretches to the full width on hover. */
-.card::before { content: ""; position: absolute; left: 0; top: 0; width: 40px; height: 2px; border-radius: 2px; background: var(--ink-2); transition: width 0.5s, background 0.3s; }
+.card::before { content: ""; position: absolute; left: 0; top: 0; width: 40px; height: 2px; border-radius: 2px; background: var(--sage); transition: width 0.5s, background 0.3s; }
 
-.item:hover .badge { background: var(--ink); border-color: var(--ink); color: var(--space); }
+.item:hover .badge { background: var(--sage-deep); border-color: var(--sage-deep); color: var(--space); }
 .item:hover .card { border-color: var(--line-strong); background: rgba(255, 255, 255, 0.8); transform: translateY(-4px); }
-.item:hover .card::before { width: 100%; background: var(--ink); }
+.item:hover .card::before { width: 100%; background: var(--sage-deep); }
 
 .meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; color: var(--ink-3); font: 400 10px/1 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; }
 .meta span:first-child { color: var(--ink-2); }

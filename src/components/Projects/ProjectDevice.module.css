@@ -12,8 +12,8 @@
   padding-top: 30px;
 }
 .bar { position: absolute; left: 14px; right: 14px; top: 5px; height: 20px; display: flex; align-items: center; gap: 6px; }
-.bar i { width: 8px; height: 8px; border-radius: 50%; background: rgba(16, 32, 52, 0.16); }
-.url { margin-left: 14px; padding: 0 12px; border-radius: 99px; background: rgba(16, 32, 52, 0.05); color: var(--ink-3); font: 400 11px/18px var(--font-mono); letter-spacing: 0.01em; animation: fade 0.5s 0.4s both; }
+.bar i { width: 8px; height: 8px; border-radius: 50%; background: rgb(var(--sage-rgb) / 0.5); }
+.url { margin-left: 14px; padding: 0 12px; border-radius: 99px; background: rgb(var(--sage-rgb) / 0.14); color: var(--ink-3); font: 400 11px/18px var(--font-mono); letter-spacing: 0.01em; animation: fade 0.5s 0.4s both; }
 .screen { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 38%) minmax(0, 1fr); width: 100%; height: 100%; overflow: hidden; border-radius: 0 0 13px 13px; }
 .pane { position: relative; min-width: 0; min-height: 0; }
 /* The window's picture: two soft blobs of the project's colours drifting over a pale ground, deepening where they cross. */

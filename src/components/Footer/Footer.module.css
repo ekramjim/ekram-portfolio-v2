@@ -13,7 +13,7 @@
   z-index: 0;
   inset: 0;
   background:
-    radial-gradient(circle at 20% 85%, rgba(70, 120, 175, 0.08), transparent 28%),
+    radial-gradient(circle at 20% 85%, rgb(var(--sage-rgb) / 0.12), transparent 28%),
     radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.5), transparent 25%);
   pointer-events: none;
 }
@@ -28,8 +28,8 @@
   height: 10px;
   clip-path: polygon(0 50%, 80% 18%, 100% 50%, 80% 82%);
   background:
-    radial-gradient(circle at 91% 50%, #0d1724 0 2px, #1d2c3d 3px, rgba(29, 44, 61, 0.35) 6px, transparent 9px),
-    linear-gradient(90deg, transparent, rgba(29, 44, 61, 0.04) 30%, rgba(29, 44, 61, 0.16) 72%, rgba(29, 44, 61, 0.45) 92%, transparent);
+    radial-gradient(circle at 91% 50%, var(--sage-deep) 0 2px, var(--sage) 3px, rgb(var(--sage-rgb) / 0.4) 6px, transparent 9px),
+    linear-gradient(90deg, transparent, rgb(var(--sage-rgb) / 0.08) 30%, rgb(var(--sage-rgb) / 0.3) 72%, rgb(var(--sage-rgb) / 0.6) 92%, transparent);
   pointer-events: none;
   animation: footerSignal 7s linear infinite;
 }
@@ -40,8 +40,8 @@
 }
 
 .starMap { position: absolute; z-index: 0; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-.starMap path { fill: none; stroke: rgba(16, 32, 52, 0.12); stroke-width: 1; }
-.starMap circle { fill: rgba(29, 44, 61, 0.5); stroke: rgba(29, 44, 61, 0.06); stroke-width: 7; }
+.starMap path { fill: none; stroke: rgb(var(--sage-rgb) / 0.4); stroke-width: 1; }
+.starMap circle { fill: rgb(var(--sage-deep-rgb) / 0.7); stroke: rgb(var(--sage-rgb) / 0.12); stroke-width: 7; }
 .clusterOne { opacity: 0.38; }
 .clusterTwo { opacity: 0.46; }
 .clusterThree { opacity: 0.3; }
