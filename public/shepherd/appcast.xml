@@ -6,6 +6,15 @@
     <description>Updates for Shepherd</description>
     <language>en</language>
     <item>
+      <title>Version 0.9.5</title>
+      <pubDate>Wed, 21 Oct 2026 21:39:21 +0000</pubDate>
+      <sparkle:version>41</sparkle:version>
+      <sparkle:shortVersionString>0.9.5</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>Shepherd Mini opens on the screen your pointer is on, where you left it on that screen.</p><p>Clicking Shepherd Mini's header no longer puts it away, and after Pin then Unpin a click elsewhere puts it away again.</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/Shepherd-Releases/releases/download/v0.9.5/Shepherd.dmg" type="application/octet-stream" sparkle:edSignature="3vrdzWD7Nv+gwEIt40iBzA6FekWA4ExNVkoklXwGmVJwDuZY0e/IUFHVTJm09tT4iyhyKYShcxBZT75d9vTZDg==" length="12566472"/>
+    </item>
+    <item>
       <title>Version 0.9.4</title>
       <pubDate>Wed, 21 Oct 2026 10:17:40 +0000</pubDate>
       <sparkle:version>40</sparkle:version>
