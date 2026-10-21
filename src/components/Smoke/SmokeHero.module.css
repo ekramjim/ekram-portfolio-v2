@@ -54,8 +54,8 @@
 .roles {
   display: block;
   margin: clamp(20px, 3.2vh, 36px) 0 0;
-  color: rgba(234, 245, 242, 0.68);
-  font: 400 clamp(12px, 1.05vw, 15px)/1.5 var(--font-mono);
+  color: rgba(234, 245, 242, 0.8);
+  font: 400 clamp(15px, 1.5vw, 22px)/1.5 var(--font-mono);
   letter-spacing: 0.06em;
 }
 .role { white-space: nowrap; }
