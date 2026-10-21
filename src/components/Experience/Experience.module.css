@@ -36,8 +36,9 @@
 .note { margin: 4px 0 0; color: var(--ink-3); font-size: 14px; line-height: 1.4; }
 .link { display: inline-block; margin-top: 14px; padding: 2px 0; font: 500 15px/1.2 var(--font-sans); }
 
-.stats { display: grid; gap: 10px; margin: 30px 0 0; padding: 0; max-width: 300px; }
-.stats div { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding-top: 10px; border-top: 1px solid var(--line-soft); }
+/* Two by two, each label sitting right above its value. */
+.stats { display: grid; grid-template-columns: repeat(2, max-content); gap: 18px 44px; margin: 30px 0 0; padding: 0; }
+.stats div { display: flex; flex-direction: column; gap: 5px; }
 .stats dt { color: var(--ink-3); font: 400 11px/1.4 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
 .stats dd { display: inline-flex; align-items: center; margin: 0; color: var(--ink); font: 400 14px/1.4 var(--font-mono); }
 .pulse { width: 7px; height: 7px; margin-right: 9px; border-radius: 50%; background: var(--live); box-shadow: 0 0 0 3px rgba(31, 157, 92, 0.16); animation: pulse 2.4s ease-in-out infinite; }
@@ -55,5 +56,4 @@
 @media (max-width: 899px) {
   .inner { padding-top: 88px; }
   .mission { grid-template-columns: minmax(0, 1fr); padding: 36px 0 40px; }
-  .stats { max-width: none; }
 }

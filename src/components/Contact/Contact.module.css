@@ -44,20 +44,22 @@
 .panelTitle { margin: 0; color: var(--ink-head); font: 500 15px/1.2 var(--font-sans); }
 
 .channels { min-width: 0; }
-.linkList { margin-top: 20px; border-top: 1px solid var(--line); }
+.linkList { margin-top: 12px; }
 .contactLink {
   display: grid;
   grid-template-columns: 38px minmax(0, 1fr) 18px;
   align-items: center;
   gap: 14px;
-  min-height: 72px;
-  padding: 10px 3px;
-  border-bottom: 1px solid var(--line);
+  min-height: 62px;
+  margin: 0 -12px;
+  padding: 6px 12px;
+  border-radius: 999px;
   color: inherit;
   text-decoration: none;
-  transition: border-color 0.2s, padding 0.25s;
+  transition: background-color 0.25s;
 }
-.contactLink:hover { padding-left: 8px; border-color: var(--sage-deep); }
+/* No rules between rows: the row you point at sits on the navbar's sage selection capsule instead. */
+.contactLink:hover { background: rgb(var(--sage-rgb) / 0.2); }
 .contactLink:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
 .contactIcon { display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid var(--line-strong); border-radius: 50%; color: var(--ink-2); transition: color 0.2s, border-color 0.2s; }
 .contactLink:hover .contactIcon { color: var(--ink-head); border-color: var(--sage-deep); }
@@ -139,5 +141,4 @@
 
 @media (prefers-reduced-motion: reduce) {
   .contactLink, .contactIcon, .linkArrow, .starLine, .starNode { transition: none; }
-  .contactLink:hover { padding-left: 3px; }
 }
