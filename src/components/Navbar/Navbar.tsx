@@ -1,7 +1,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { Fragment, useEffect, useRef, useState, type CSSProperties } from "react";
+import { capsuleDisplacementMap, GLASS_SCALES, supportsRefraction } from "./liquidGlass";
 import styles from "./Navbar.module.css";
 
 const LINKS = [
@@ -15,6 +16,15 @@ const LINKS = [
 
 type SectionId = (typeof LINKS)[number]["id"];
 
+// The floating pieces of the liquid-glass bar, each with its own refraction map sized to it.
+const PILLS = ["wordmark", "links", "menu"] as const;
+type Pill = (typeof PILLS)[number];
+type GlassMap = { width: number; height: number; href: string };
+// Keeps only the red, green or blue channel (alpha untouched), so each can be bent separately.
+const CHANNEL_MATRICES = [0, 1, 2].map((channel) =>
+  [0, 1, 2].map((row) => [0, 1, 2, 3, 4].map((column) => (row === channel && column === row ? 1 : 0)).join(" ")).concat("0 0 0 1 0").join(" "),
+);
+
 function Spark() {
   return (
     <svg viewBox="0 0 16 16" aria-hidden="true">
@@ -27,6 +37,12 @@ export default function Navbar() {
   const pathname = usePathname();
   const [active, setActive] = useState<SectionId | null>(null);
   const [scrolled, setScrolled] = useState(false);
+  // True while the bar sits over the dark top of a dark hero, so it switches to light ink.
+  const [onDark, setOnDark] = useState(false);
+  // Liquid-glass pills by default; ?nav=classic shows the full-width paper bar for comparison.
+  const [glass, setGlass] = useState(true);
+  const [glassMaps, setGlassMaps] = useState<Partial<Record<Pill, GlassMap>>>({});
+  const pillRefs = useRef(new Map<Pill, HTMLElement>());
   const [open, setOpen] = useState(false);
   const [indicator, setIndicator] = useState({ x: 0, width: 0, visible: false });
   // Bumped whenever the active section changes, restarting the rail's signal sweep.
@@ -38,11 +54,46 @@ export default function Navbar() {
   const hrefFor = (id: SectionId) => (pathname === "/" ? `#${id}` : `/#${id}`);
 
   useEffect(() => {
-    const updateScroll = () => setScrolled(window.scrollY > 36);
+    setGlass(new URLSearchParams(window.location.search).get("nav") !== "classic");
+  }, []);
+
+  useEffect(() => {
+    const updateScroll = () => {
+      setScrolled(window.scrollY > 36);
+      // A dark hero is midnight over roughly its top 40%; below that it pales into mist, where dark ink reads again.
+      const hero = document.querySelector<HTMLElement>("[data-hero-dark]");
+      setOnDark(hero ? hero.getBoundingClientRect().top + hero.offsetHeight * 0.42 > 37 : false);
+    };
     updateScroll();
     window.addEventListener("scroll", updateScroll, { passive: true });
-    return () => window.removeEventListener("scroll", updateScroll);
-  }, []);
+    window.addEventListener("resize", updateScroll);
+    return () => {
+      window.removeEventListener("scroll", updateScroll);
+      window.removeEventListener("resize", updateScroll);
+    };
+  }, [pathname]);
+
+  // Refraction maps follow each pill's size, which changes as fonts load and at breakpoints.
+  useEffect(() => {
+    if (!glass || !supportsRefraction()) return;
+    const observer = new ResizeObserver(() => {
+      const maps: Partial<Record<Pill, GlassMap>> = {};
+      for (const pill of PILLS) {
+        const element = pillRefs.current.get(pill);
+        const width = Math.round(element?.offsetWidth ?? 0), height = Math.round(element?.offsetHeight ?? 0);
+        if (width && height) maps[pill] = { width, height, href: capsuleDisplacementMap(width, height) };
+      }
+      setGlassMaps(maps);
+    });
+    pillRefs.current.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, [glass]);
+
+  const pillRef = (pill: Pill) => (element: HTMLElement | null) => {
+    if (element) pillRefs.current.set(pill, element);
+    else pillRefs.current.delete(pill);
+  };
+  const glassFilter = (pill: Pill) => (glassMaps[pill] ? ({ "--glass-filter": `url(#nav-glass-${pill})` } as CSSProperties) : undefined);
 
   useEffect(() => {
     if (pathname !== "/") {
@@ -114,13 +165,55 @@ export default function Navbar() {
   const closeMenu = () => setOpen(false);
 
   return (
-    <header className={styles.header} data-scrolled={scrolled ? "" : undefined} data-open={open ? "" : undefined}>
+    <header
+      className={styles.header}
+      data-scrolled={scrolled ? "" : undefined}
+      data-open={open ? "" : undefined}
+      data-on-dark={onDark ? "" : undefined}
+      data-glass={glass ? "" : undefined}
+    >
+      {glass && (
+        <svg className={styles.glassFilters} aria-hidden="true">
+          {PILLS.map((pill) => {
+            const map = glassMaps[pill];
+            return map && (
+              <filter key={pill} id={`nav-glass-${pill}`} x="0" y="0" width={map.width} height={map.height} filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+                <feImage href={map.href} x="0" y="0" width={map.width} height={map.height} preserveAspectRatio="none" result="map" />
+                {/* Each colour channel is bent by its own amount, then the three are screened back together. */}
+                {GLASS_SCALES.map((scale, channel) => (
+                  <Fragment key={channel}>
+                    <feDisplacementMap in="SourceGraphic" in2="map" scale={scale} xChannelSelector="R" yChannelSelector="G" result={`shift${channel}`} />
+                    <feColorMatrix in={`shift${channel}`} type="matrix" values={CHANNEL_MATRICES[channel]} result={`channel${channel}`} />
+                  </Fragment>
+                ))}
+                <feBlend in="channel0" in2="channel1" mode="screen" result="redGreen" />
+                <feBlend in="redGreen" in2="channel2" mode="screen" />
+              </filter>
+            );
+          })}
+        </svg>
+      )}
       <div className={styles.inner}>
-        <a href={pathname === "/" ? "#top" : "/"} className={styles.wordmark} aria-label="Ekram — home" onClick={closeMenu}>
+        <a
+          ref={pillRef("wordmark")}
+          href={pathname === "/" ? "#top" : "/"}
+          className={styles.wordmark}
+          style={glassFilter("wordmark")}
+          aria-label="Ekram — home"
+          onClick={closeMenu}
+        >
           EKRAM<span>.</span><i aria-hidden="true" />
         </a>
 
-        <nav ref={navRef} className={styles.desktopNav} aria-label="Main navigation">
+        <nav
+          ref={(element) => {
+            navRef.current = element;
+            pillRef("links")(element);
+          }}
+          className={styles.desktopNav}
+          style={glassFilter("links")}
+          aria-label="Main navigation"
+        >
           {LINKS.map(({ id, label }) => (
             <a
               key={id}
@@ -147,8 +240,10 @@ export default function Navbar() {
         </nav>
 
         <button
+          ref={pillRef("menu")}
           type="button"
           className={styles.menuButton}
+          style={glassFilter("menu")}
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           aria-controls="mobile-navigation"

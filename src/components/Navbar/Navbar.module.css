@@ -19,11 +19,88 @@
   -webkit-backdrop-filter: blur(18px) saturate(125%);
   backdrop-filter: blur(18px) saturate(125%);
   opacity: 0;
-  transition: opacity 0.35s;
+  transition: opacity 0.35s, background-color 0.35s;
   pointer-events: none;
 }
 
 .header[data-scrolled]::before { opacity: 1; }
+
+/* Over the dark top of a dark hero (SmokeHero), the bar uses light ink and its glass turns smoky instead of paper. */
+.header[data-on-dark]:not([data-open]) {
+  --ink-head: #eef6f4;
+  --ink: rgba(238, 246, 244, 0.9);
+  --ink-2: rgba(238, 246, 244, 0.72);
+  --ink-3: rgba(238, 246, 244, 0.55);
+  --line: rgba(238, 246, 244, 0.12);
+  --focus: #eef6f4;
+}
+.header[data-on-dark]:not([data-open])::before { background: rgba(1, 14, 24, 0.38); }
+
+/* Liquid glass, after Apple's iOS 27 kit (Liquid Glass components and Tab Bar): the bar breaks into floating
+   capsules that frost, saturate and (in Chromium) refract what is behind them. Over paper they use the kit's
+   Tab Bar glass; over the dark hero, its Clear glass, which Apple uses over rich media. */
+.glassFilters { position: absolute; width: 0; height: 0; pointer-events: none; }
+
+.header[data-glass]::before,
+.header[data-glass] .desktopNav::after,
+.header[data-glass] .signal { display: none; }
+
+.header[data-glass] .wordmark,
+.header[data-glass] .desktopNav,
+.header[data-glass] .menuButton {
+  /* The kit's Tab Bar glass: about 40% white once its layered fills are flattened, Frost 6. */
+  --glass-tint: rgba(255, 255, 255, 0.42);
+  --glass-frost: 3px;
+  /* The kit's top and bottom inner glows (#282828, Linear Dodge) and the faint burn under the top edge. */
+  --glass-glint: rgba(255, 255, 255, 0.16);
+  --glass-burn: transparent;
+  /* A 0.5px hairline plus 1.25px side edges that give the capsule its thickness (#E8E8E8 / #D0D0D0, Linear Burn). */
+  --glass-edge: rgba(0, 0, 0, 0.09);
+  --glass-side: rgba(0, 0, 0, 0.18);
+  height: 46px;
+  border-radius: 999px;
+  background: var(--glass-tint);
+  -webkit-backdrop-filter: blur(var(--glass-frost)) saturate(150%);
+  backdrop-filter: var(--glass-filter,) blur(var(--glass-frost)) saturate(150%);
+  box-shadow:
+    inset 0 20px 10px -20px var(--glass-glint),
+    inset 0 -20px 10px -20px var(--glass-glint),
+    inset 0 20px 30px -20px var(--glass-burn),
+    0 0 0 0.5px var(--glass-edge),
+    -1.25px 0 0 -0.75px var(--glass-side),
+    1.25px 0 0 -0.75px var(--glass-side),
+    0 8px 15px rgba(0, 0, 0, 0.02);
+  transition: background-color 0.4s, box-shadow 0.4s, color 0.3s;
+}
+.header[data-glass][data-on-dark]:not([data-open]) .wordmark,
+.header[data-glass][data-on-dark]:not([data-open]) .desktopNav,
+.header[data-glass][data-on-dark]:not([data-open]) .menuButton {
+  /* Clear: barely tinted (#101010 Linear Dodge, white 4%), lightly frosted, and a brighter light (0.4 vs 0.25). */
+  --glass-tint: rgba(255, 255, 255, 0.05);
+  --glass-frost: 1.5px;
+  --glass-glint: rgba(255, 255, 255, 0.26);
+  --glass-burn: rgba(0, 0, 0, 0.1);
+  --glass-edge: rgba(255, 255, 255, 0.14);
+  --glass-side: rgba(255, 255, 255, 0.1);
+}
+
+.header[data-glass] .wordmark { padding-inline: 20px; }
+.header[data-glass] .desktopNav { justify-self: end; gap: 0; padding-inline: 4px; }
+.header[data-glass] .desktopNav a { padding-inline: 15px; }
+
+/* The active link sits on the tab bar's Selection capsule (#EDEDED, inset 4px), which slides between links. */
+.header[data-glass] .orbit {
+  z-index: 1;
+  top: 4px;
+  bottom: 4px;
+  height: auto;
+  border-radius: 999px;
+  background: #ededed;
+  transition: transform 0.55s cubic-bezier(0.3, 1.3, 0.5, 1), width 0.45s cubic-bezier(0.3, 1.3, 0.5, 1), opacity 0.25s, background-color 0.4s;
+}
+.header[data-glass][data-on-dark] .orbit { background: rgba(255, 255, 255, 0.14); }
+.header[data-glass] .orbit::before,
+.header[data-glass] .orbit svg { display: none; }
 
 .inner {
   position: relative;
@@ -187,6 +264,30 @@
   .header[data-open] .menuLabel > span:last-child { opacity: 1; transform: none; }
   .menuButton svg { width: 13px; height: 13px; color: var(--ink); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
   .header[data-open] .menuButton svg { transform: rotate(135deg); }
+  /* On phones the wordmark is plain text that fades away once you scroll, leaving one glass Menu capsule, frostier
+     than on desktop so the page reads less through it. The panel opens out from the capsule's star. */
+  .header[data-glass] { --origin-x: calc(100% - var(--gutter) - 24px); }
+  .header[data-glass] .wordmark {
+    height: auto;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    transition: opacity 0.35s, transform 0.35s, color 0.3s, visibility 0s;
+  }
+  .header[data-glass][data-scrolled]:not([data-open]) .wordmark {
+    opacity: 0;
+    transform: translateY(-8px);
+    visibility: hidden;
+    transition: opacity 0.35s, transform 0.35s, color 0.3s, visibility 0s linear 0.35s;
+  }
+  .header[data-glass] .menuButton {
+    --glass-tint: rgba(255, 255, 255, 0.6);
+    --glass-frost: 6px;
+    height: 44px;
+    padding: 0 17px 0 18px;
+  }
 
   /* The chart opens outward from the Menu star. It starts under the bar (z-index 1 vs the bar's 2) so there is no seam. */
   .mobilePanel {

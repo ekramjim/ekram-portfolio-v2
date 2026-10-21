@@ -1,0 +1,84 @@
+.hero {
+  position: relative;
+  height: 135svh;
+  overflow: hidden;
+  /* Stands in for the smoke before WebGL draws, or if it can't. */
+  background: linear-gradient(to bottom, #010c15 0%, #002236 30%, #0f8087 55%, #6cc0b1 72%, var(--space) 100%);
+}
+
+.stage {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.title {
+  width: 100%;
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  color: #eaf5f2;
+  will-change: transform, opacity, filter;
+}
+
+.title h1 {
+  margin: 0;
+  font: 300 clamp(56px, 9.5vw, 168px)/0.95 var(--font-sans);
+  letter-spacing: var(--heading-tracking);
+}
+
+/* Each word condenses out of the mist: blurred and faint, then sharp, one after another. */
+.word,
+.star,
+.roles {
+  display: inline-block;
+  animation: condense 1.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(0.25s + var(--i) * 0.14s);
+}
+
+/* The site's four-point star stands in for the full stop, and twinkles once it has formed. */
+.star {
+  width: 0.26em;
+  height: 0.26em;
+  margin-left: 0.05em;
+  animation: condense 1.4s cubic-bezier(0.2, 0.7, 0.2, 1) both, twinkle 5s ease-in-out infinite;
+  animation-delay: calc(0.25s + var(--i) * 0.14s), calc(1.6s + var(--i) * 0.14s);
+}
+.star svg { display: block; width: 100%; height: 100%; }
+
+.roles {
+  display: block;
+  margin: clamp(20px, 3.2vh, 36px) 0 0;
+  color: rgba(234, 245, 242, 0.68);
+  font: 400 clamp(12px, 1.05vw, 15px)/1.5 var(--font-mono);
+  letter-spacing: 0.06em;
+}
+.role { white-space: nowrap; }
+.dot { margin-inline: 0.7em; opacity: 0.6; }
+
+/* On narrow screens the roles stack, one per line, instead of wrapping mid-role. */
+@media (max-width: 599px) {
+  .role { display: block; }
+  .dot { display: none; }
+}
+
+@keyframes condense {
+  from { opacity: 0; filter: blur(18px); transform: translateY(0.15em); }
+  to { opacity: 1; filter: none; transform: none; }
+}
+
+@keyframes twinkle {
+  0%, 100% { transform: none; opacity: 1; }
+  50% { transform: scale(0.82) rotate(45deg); opacity: 0.75; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .word,
+  .star,
+  .roles { animation: none; }
+}

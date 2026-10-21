@@ -2,16 +2,16 @@ import { About } from "@/components/About";
 import { Contact } from "@/components/Contact";
 import { Experience } from "@/components/Experience";
 import { Footer } from "@/components/Footer";
-import { Galaxy } from "@/components/Galaxy";
 import { Leadership } from "@/components/Leadership";
 import { Projects } from "@/components/Projects";
 import { Skills } from "@/components/Skills";
+import { SmokeHero } from "@/components/Smoke";
 import { FEATURED_PROJECTS, PROJECTS } from "@/data/projects";
 
 export default function Home() {
   return (
     <main id="top">
-      <Galaxy title={["Hi, I'm", "Ekram."]} scrollScreens={1.6} />
+      <SmokeHero greeting="Hi, I'm" name="Ekram" roles={["Software Developer", "Data Scientist", "Entrepreneur"]} />
       <About />
       <Experience />
       <Projects
