@@ -1,8 +1,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Fragment, useEffect, useRef, useState, type CSSProperties } from "react";
-import { capsuleDisplacementMap, GLASS_SCALES, supportsRefraction } from "./liquidGlass";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useLiquidGlass } from "@/components/ui/liquidGlass";
 import styles from "./Navbar.module.css";
 
 const LINKS = [
@@ -15,15 +15,6 @@ const LINKS = [
 ] as const;
 
 type SectionId = (typeof LINKS)[number]["id"];
-
-// The floating pieces of the liquid-glass bar, each with its own refraction map sized to it.
-const PILLS = ["wordmark", "links", "menu"] as const;
-type Pill = (typeof PILLS)[number];
-type GlassMap = { width: number; height: number; href: string };
-// Keeps only the red, green or blue channel (alpha untouched), so each can be bent separately.
-const CHANNEL_MATRICES = [0, 1, 2].map((channel) =>
-  [0, 1, 2].map((row) => [0, 1, 2, 3, 4].map((column) => (row === channel && column === row ? 1 : 0)).join(" ")).concat("0 0 0 1 0").join(" "),
-);
 
 function Spark() {
   return (
@@ -41,8 +32,8 @@ export default function Navbar() {
   const [onDark, setOnDark] = useState(false);
   // Liquid-glass pills by default; ?nav=classic shows the full-width paper bar for comparison.
   const [glass, setGlass] = useState(true);
-  const [glassMaps, setGlassMaps] = useState<Partial<Record<Pill, GlassMap>>>({});
-  const pillRefs = useRef(new Map<Pill, HTMLElement>());
+  const wordmarkRef = useRef<HTMLAnchorElement>(null);
+  const menuRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
   const [indicator, setIndicator] = useState({ x: 0, width: 0, visible: false });
   // Bumped whenever the active section changes, restarting the rail's signal sweep.
@@ -73,27 +64,10 @@ export default function Navbar() {
     };
   }, [pathname]);
 
-  // Refraction maps follow each pill's size, which changes as fonts load and at breakpoints.
-  useEffect(() => {
-    if (!glass || !supportsRefraction()) return;
-    const observer = new ResizeObserver(() => {
-      const maps: Partial<Record<Pill, GlassMap>> = {};
-      for (const pill of PILLS) {
-        const element = pillRefs.current.get(pill);
-        const width = Math.round(element?.offsetWidth ?? 0), height = Math.round(element?.offsetHeight ?? 0);
-        if (width && height) maps[pill] = { width, height, href: capsuleDisplacementMap(width, height) };
-      }
-      setGlassMaps(maps);
-    });
-    pillRefs.current.forEach((element) => observer.observe(element));
-    return () => observer.disconnect();
-  }, [glass]);
-
-  const pillRef = (pill: Pill) => (element: HTMLElement | null) => {
-    if (element) pillRefs.current.set(pill, element);
-    else pillRefs.current.delete(pill);
-  };
-  const glassFilter = (pill: Pill) => (glassMaps[pill] ? ({ "--glass-filter": `url(#nav-glass-${pill})` } as CSSProperties) : undefined);
+  // Each floating glass piece bends what is behind it (Chromium only).
+  const wordmarkGlass = useLiquidGlass(wordmarkRef);
+  const linksGlass = useLiquidGlass(navRef);
+  const menuGlass = useLiquidGlass(menuRef);
 
   useEffect(() => {
     if (pathname !== "/") {
@@ -173,32 +147,18 @@ export default function Navbar() {
       data-glass={glass ? "" : undefined}
     >
       {glass && (
-        <svg className={styles.glassFilters} aria-hidden="true">
-          {PILLS.map((pill) => {
-            const map = glassMaps[pill];
-            return map && (
-              <filter key={pill} id={`nav-glass-${pill}`} x="0" y="0" width={map.width} height={map.height} filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-                <feImage href={map.href} x="0" y="0" width={map.width} height={map.height} preserveAspectRatio="none" result="map" />
-                {/* Each colour channel is bent by its own amount, then the three are screened back together. */}
-                {GLASS_SCALES.map((scale, channel) => (
-                  <Fragment key={channel}>
-                    <feDisplacementMap in="SourceGraphic" in2="map" scale={scale} xChannelSelector="R" yChannelSelector="G" result={`shift${channel}`} />
-                    <feColorMatrix in={`shift${channel}`} type="matrix" values={CHANNEL_MATRICES[channel]} result={`channel${channel}`} />
-                  </Fragment>
-                ))}
-                <feBlend in="channel0" in2="channel1" mode="screen" result="redGreen" />
-                <feBlend in="redGreen" in2="channel2" mode="screen" />
-              </filter>
-            );
-          })}
-        </svg>
+        <>
+          {wordmarkGlass.filter}
+          {linksGlass.filter}
+          {menuGlass.filter}
+        </>
       )}
       <div className={styles.inner}>
         <a
-          ref={pillRef("wordmark")}
+          ref={wordmarkRef}
           href={pathname === "/" ? "#top" : "/"}
           className={styles.wordmark}
-          style={glassFilter("wordmark")}
+          style={wordmarkGlass.style}
           aria-label="Ekram — home"
           onClick={closeMenu}
         >
@@ -206,12 +166,9 @@ export default function Navbar() {
         </a>
 
         <nav
-          ref={(element) => {
-            navRef.current = element;
-            pillRef("links")(element);
-          }}
+          ref={navRef}
           className={styles.desktopNav}
-          style={glassFilter("links")}
+          style={linksGlass.style}
           aria-label="Main navigation"
         >
           {LINKS.map(({ id, label }) => (
@@ -240,10 +197,10 @@ export default function Navbar() {
         </nav>
 
         <button
-          ref={pillRef("menu")}
+          ref={menuRef}
           type="button"
           className={styles.menuButton}
-          style={glassFilter("menu")}
+          style={menuGlass.style}
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           aria-controls="mobile-navigation"

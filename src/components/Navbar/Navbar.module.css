@@ -39,8 +39,6 @@
 /* Liquid glass, after Apple's iOS 27 kit (Liquid Glass components and Tab Bar): the bar breaks into floating
    capsules that frost, saturate and (in Chromium) refract what is behind them. Over paper they use the kit's
    Tab Bar glass; over the dark hero, its Clear glass, which Apple uses over rich media. */
-.glassFilters { position: absolute; width: 0; height: 0; pointer-events: none; }
-
 .header[data-glass]::before,
 .header[data-glass] .desktopNav::after,
 .header[data-glass] .signal { display: none; }
