@@ -6,6 +6,15 @@
     <description>Updates for Shepherd</description>
     <language>en</language>
     <item>
+      <title>Version 0.9.0</title>
+      <pubDate>Wed, 21 Oct 2026 09:20:29 +0000</pubDate>
+      <sparkle:version>36</sparkle:version>
+      <sparkle:shortVersionString>0.9.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>Shepherd's terminal from any app: press ⌥Space (or click a session) and your tabs drop down over your IDE, with every project's tabs on the left. Replies sent from the menu bar now stay in view. Choose the menu bar icon's colour (Normal, Sage or Blue) in Settings › General. Two Codex sessions in one folder are no longer mixed up. Fixes across the Git page (no lost files on Discard, # lines kept in commit messages), iPhone sync, the shell integration and more.</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/Shepherd-Releases/releases/download/v0.9.0/Shepherd.dmg" type="application/octet-stream" sparkle:edSignature="9ldtkPmDdbWkgLm7PIh3LFqS+qrPVcA+k0LgO4nFMyI+J+cLIMg+sYDyOOS69khSnze/lZO0Ln0ER/JeZ1zTBQ==" length="13204460"/>
+    </item>
+    <item>
       <title>Version 0.8.0</title>
       <pubDate>Wed, 21 Oct 2026 02:41:39 +0000</pubDate>
       <sparkle:version>35</sparkle:version>
