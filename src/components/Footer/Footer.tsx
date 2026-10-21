@@ -1,3 +1,4 @@
+import GlassButton from "@/components/ui/GlassButton";
 import styles from "./Footer.module.css";
 
 const NAV_LINKS = [
@@ -46,7 +47,7 @@ export default function Footer() {
       <div className={styles.inner}>
         <div className={styles.topline}>
           <a href="#top" className={styles.wordmark} aria-label="Ekram — back to top">EKRAM<span>.</span></a>
-          <a href="#top" className={styles.backToTop}>Back to top <span aria-hidden="true">↑</span></a>
+          <GlassButton href="#top" size="small">Back to top <span aria-hidden="true">↑</span></GlassButton>
         </div>
 
         <div className={styles.main}>

@@ -113,10 +113,9 @@
 .detailsRule::before, .detailsRule::after { content: ""; height: 1px; flex: 1; background: var(--line); }
 .honeypot { position: absolute !important; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 .formFooter { display: flex; align-items: center; gap: 22px; min-height: 48px; }
-.form button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-width: 164px; min-height: 48px; padding: 0 22px; border: 1px solid var(--contact-accent); border-radius: 999px; background: var(--contact-accent); color: var(--space); font: 600 13px/1 var(--font-sans); cursor: pointer; transition: background 0.2s, color 0.2s, transform 0.2s; }
-.form button:hover:not(:disabled) { background: transparent; color: var(--contact-accent); transform: translateY(-2px); }
-.form button:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; }
-.form button:disabled { cursor: wait; opacity: 0.65; }
+/* Send is the shared GlassButton; this only sets its width and the wait cursor while sending. */
+.send { min-width: 164px; }
+.form .send:disabled { cursor: wait; }
 .status { display: flex; align-items: center; gap: 8px; color: var(--ink-2); font-size: 12px; }
 .status svg { flex: none; color: var(--contact-accent); }
 
@@ -135,11 +134,10 @@
   .formHead { margin-bottom: 16px; }
   .constellation { top: 25px; right: 18px; width: 128px; }
   .formFooter { align-items: flex-start; flex-direction: column; }
-  .form button { width: 100%; }
+  .send { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .contactLink, .contactIcon, .linkArrow, .form button, .starLine, .starNode { transition: none; }
+  .contactLink, .contactIcon, .linkArrow, .starLine, .starNode { transition: none; }
   .contactLink:hover { padding-left: 3px; }
-  .form button:hover:not(:disabled) { transform: none; }
 }

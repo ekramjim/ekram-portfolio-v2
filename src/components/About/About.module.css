@@ -81,7 +81,6 @@
 
 
 .links { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 32px; margin-top: 26px; }
-.cta { display: inline-block; padding: 4px 0; font: 500 17px/1.2 var(--font-sans); }
 .open { display: inline-flex; align-items: center; color: var(--ink-2); font-size: 15px; }
 .pulse { width: 8px; height: 8px; margin-right: 10px; border-radius: 50%; background: var(--live); box-shadow: 0 0 0 3px rgba(31, 157, 92, 0.16); animation: pulse 2.4s ease-in-out infinite; }
 

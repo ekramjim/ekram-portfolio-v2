@@ -50,11 +50,7 @@
 .topline { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-bottom: 8px; }
 .wordmark { color: var(--ink-head); font: 600 22px/1 var(--font-sans); letter-spacing: -0.04em; text-decoration: none; }
 .wordmark span { color: var(--ink-2); }
-.backToTop { display: inline-flex; gap: 9px; align-items: center; color: var(--ink-2); font-size: 12px; text-decoration: none; transition: color 0.2s; }
-.backToTop span { font-size: 15px; transition: transform 0.2s; }
-.backToTop:hover { color: var(--ink-head); }
-.backToTop:hover span { transform: translateY(-3px); }
-.wordmark:focus-visible, .backToTop:focus-visible, .links a:focus-visible, .email:focus-visible { outline: 2px solid var(--focus); outline-offset: 5px; border-radius: 2px; }
+.wordmark:focus-visible, .links a:focus-visible, .email:focus-visible { outline: 2px solid var(--focus); outline-offset: 5px; border-radius: 2px; }
 
 .main { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(360px, 0.8fr); gap: clamp(60px, 9vw, 140px); padding: 20px 0 48px; }
 .closing { align-self: start; }
@@ -95,6 +91,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .footer::after { display: none; }
-  .backToTop, .backToTop span, .links a, .links a span, .email { transition: none; }
-  .backToTop:hover span, .links a:hover, .links a:hover span { transform: none; }
+  .links a, .links a span, .email { transition: none; }
+  .links a:hover, .links a:hover span { transform: none; }
 }

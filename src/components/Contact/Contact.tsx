@@ -14,6 +14,7 @@ import {
 } from "@phosphor-icons/react";
 import Image from "next/image";
 import { useRef, useState, type CSSProperties, type FormEvent } from "react";
+import GlassButton from "@/components/ui/GlassButton";
 import StarBackdrop from "@/components/ui/StarBackdrop";
 import { useReveal } from "@/components/ui/useReveal";
 import { CONTACT_LINKS, type ContactIcon } from "@/data/contact";
@@ -215,10 +216,10 @@ export default function Contact() {
               </label>
 
               <div className={styles.formFooter}>
-                <button type="submit" disabled={status === "sending"}>
+                <GlassButton type="submit" size="large" className={styles.send} disabled={status === "sending"}>
                   <span>{status === "sending" ? "Transmitting…" : "Send message"}</span>
                   <PaperPlaneTilt size={18} weight="fill" aria-hidden="true" />
-                </button>
+                </GlassButton>
                 <div className={styles.status} role="status" aria-live="polite">
                   {status === "sent" && <><CheckCircle size={18} weight="fill" />Signal received. I&apos;ll be in touch.</>}
                   {status === "error" && <><WarningCircle size={18} weight="fill" />Couldn&apos;t send. Try email instead.</>}

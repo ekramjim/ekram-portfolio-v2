@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 import StarBackdrop from "@/components/ui/StarBackdrop";
+import GlassButton from "@/components/ui/GlassButton";
 import UnderlineLink from "@/components/ui/UnderlineLink";
 import { useReveal } from "@/components/ui/useReveal";
 import workspace from "./workspace.jpeg";
@@ -118,7 +119,7 @@ export default function About() {
           </div>
 
           <div className={styles.links} data-reveal>
-            <UnderlineLink href="#contact" className={styles.cta}>Get in touch →</UnderlineLink>
+            <GlassButton href="#contact" size="large">Get in touch →</GlassButton>
             <span className={styles.open}><i className={styles.pulse} />Open to hire</span>
           </div>
         </div>

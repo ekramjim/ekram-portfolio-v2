@@ -1,7 +1,6 @@
 "use client";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import Link from "next/link";
-import UnderlineLink from "@/components/ui/UnderlineLink";
+import GlassButton from "@/components/ui/GlassButton";
 import { useReveal } from "@/components/ui/useReveal";
 import type { Project, ProjectGroup } from "@/data/projects";
 import ProjectCard from "./ProjectCard";
@@ -47,16 +46,12 @@ function Details({ project, index, total, onStep }: { project: Project; index: n
       <p className={styles.summary}>{project.summary}</p>
       <p className={styles.stack}>{project.stack.join("  ·  ")}</p>
       <div className={styles.actions}>
-        {project.href && (
-          <UnderlineLink href={project.href} className={styles.cta}>{linkLabel(project.href)} ↗</UnderlineLink>
-        )}
+        {project.href && <GlassButton href={project.href}>{linkLabel(project.href)} ↗</GlassButton>}
         {project.status && <span className={styles.status}>{project.status}</span>}
-        {project.github && (
-          <a href={project.github} target="_blank" rel="noopener noreferrer" className={styles.ctaQuiet}>GitHub ↗</a>
-        )}
+        {project.github && <GlassButton href={project.github}>GitHub ↗</GlassButton>}
         <span className={styles.pager}>
-          <button type="button" onClick={() => onStep(-1)} aria-label="Previous project">←</button>
-          <button type="button" onClick={() => onStep(1)} aria-label="Next project">→</button>
+          <GlassButton icon onClick={() => onStep(-1)} aria-label="Previous project">←</GlassButton>
+          <GlassButton icon onClick={() => onStep(1)} aria-label="Next project">→</GlassButton>
         </span>
       </div>
     </div>
@@ -234,12 +229,12 @@ export default function Projects({ projects, heading, note, footer, featured, fi
         </h2>
 
         <div ref={gridRef} className={styles.wrap} data-open={isOpen ? "" : undefined} inert={isOpen}>
-          {footer && <UnderlineLink href={footer.href} className={styles.topLink}>{footer.label}</UnderlineLink>}
+          {footer && <GlassButton href={footer.href} className={styles.topLink}>{footer.label}</GlassButton>}
           {filters && groups.length > 1 && (
             <div className={styles.filters} role="group" aria-label="Show one kind of project">
-              <button type="button" aria-pressed={!group} onClick={() => setGroup(null)}>All <span>{projects.length}</span></button>
+              <GlassButton size="small" aria-pressed={!group} onClick={() => setGroup(null)}>All <span className={styles.count}>{projects.length}</span></GlassButton>
               {groups.map(([name, count]) => (
-                <button key={name} type="button" aria-pressed={group === name} onClick={() => setGroup(name)}>{name} <span>{count}</span></button>
+                <GlassButton key={name} size="small" aria-pressed={group === name} onClick={() => setGroup(name)}>{name} <span className={styles.count}>{count}</span></GlassButton>
               ))}
             </div>
           )}
@@ -259,7 +254,7 @@ export default function Projects({ projects, heading, note, footer, featured, fi
           </ul>
           {footer && (
             <p className={styles.more}>
-              <Link href={footer.href} className={styles.moreLink}>{footer.label}</Link>
+              <GlassButton href={footer.href} size="large">{footer.label}</GlassButton>
             </p>
           )}
         </div>
@@ -267,7 +262,7 @@ export default function Projects({ projects, heading, note, footer, featured, fi
         {project && (
           <div ref={sceneRef} className={styles.scene} role="dialog" aria-label={project.name} tabIndex={-1} style={{ "--c": project.color, "--c2": project.color2 } as CSSProperties}>
             <svg className={styles.tether} aria-hidden="true"><line ref={lineRef} x1="0" y1="0" x2="0" y2="0" /></svg>
-            <button type="button" className={styles.close} onClick={close}>Close <span aria-hidden="true">✕</span></button>
+            <GlassButton className={styles.close} onClick={close}>Close <span aria-hidden="true">✕</span></GlassButton>
 
             <div ref={deviceRef} className={styles.device}>
               <ProjectDevice project={project} open key={project.id}>
