@@ -6,6 +6,15 @@
     <description>Updates for Shepherd</description>
     <language>en</language>
     <item>
+      <title>Version 0.9.6</title>
+      <pubDate>Thu, 22 Oct 2026 00:39:25 +0000</pubDate>
+      <sparkle:version>42</sparkle:version>
+      <sparkle:shortVersionString>0.9.6</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>Shepherd Mini shrinks into a small floating bubble when you put it away: it shows how your agents are doing, and a click brings Mini back (Settings › Terminal).</p><p>The sidebar shows each project's own app icon, lines up the times, keeps idle terminals to one line, and tints the rows that need you or are working.</p><p>The tab header keeps its text centred with the state under the title, and times under a minute say "just now".</p><p>"Answer agents' questions from iPhone" now covers Codex as well as Claude Code.</p><p>The menu bar icon's Sage colour is brighter.</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/Shepherd-Releases/releases/download/v0.9.6/Shepherd.dmg" type="application/octet-stream" sparkle:edSignature="l9jFWcmo/62B5LeNDxKxBr0s4raJf6rFFOmO+AuHFRPzY8vCV/yU6dntfzbZgDKZ+iMKvJCLDlMhQeGSbjMjBA==" length="12689022"/>
+    </item>
+    <item>
       <title>Version 0.9.5</title>
       <pubDate>Wed, 21 Oct 2026 21:39:21 +0000</pubDate>
       <sparkle:version>41</sparkle:version>
