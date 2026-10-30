@@ -6,6 +6,15 @@
     <description>Updates for Usage Finder</description>
     <language>en</language>
     <item>
+      <title>Version 1.1.0</title>
+      <pubDate>Fri, 30 Oct 2026 02:44:58 +0000</pubDate>
+      <sparkle:version>7</sparkle:version>
+      <sparkle:shortVersionString>1.1.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[<p>• A new Apps pane shows what each app is using, with its helper processes added in, and the busiest apps appear in the menu bar panel.</p><p>• Charts go back 3 minutes, 1 hour or 24 hours, show the time, and show readings as you hover. History is kept between launches.</p><p>• New GPU, Disk and Network panes, plus thermal state, CPU and GPU temperatures and fan speeds.</p><p>• A desktop widget, and Shortcuts actions for CPU, memory, GPU, power and the busiest apps.</p><p>• The CPU meter can show every core, one bar for each type of core, or just the total.</p><p>• Charts no longer draw a line across times Usage Finder wasn't measuring.</p>]]></description>
+      <enclosure url="https://github.com/ekramjim/UsageFinder-Releases/releases/download/v1.1.0/UsageFinder.dmg" type="application/octet-stream" sparkle:edSignature="pEAYAxbDJ3yfQ5fLK9kjGF31jBaSTWG6NebSPn3sl+Mfe7epHNYydgAbxzuMuwOCB4KeXDIv7KQhT7LPKhZPBg==" length="3869394"/>
+    </item>
+    <item>
       <title>Version 1.0.5</title>
       <pubDate>Sun, 25 Oct 2026 10:52:56 +0000</pubDate>
       <sparkle:version>6</sparkle:version>
