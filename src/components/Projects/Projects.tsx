@@ -62,7 +62,9 @@ function Details({ project, index, total, onStep }: { project: Project; index: n
 function linkLabel(href: string) {
   if (href.toLowerCase().endsWith(".pdf")) return "View PDF";
   if (href.toLowerCase().endsWith(".dmg")) return "Download for Mac";
-  const host = new URL(href, "https://ekram.tech").hostname;
+  const url = new URL(href, "https://ekram.tech");
+  if (url.pathname.endsWith("/download")) return "Download for Mac";
+  const host = url.hostname;
   if (host.endsWith("github.com")) return "View on GitHub";
   if (host.endsWith("apple.com")) return "View on the App Store";
   return "Open project";
