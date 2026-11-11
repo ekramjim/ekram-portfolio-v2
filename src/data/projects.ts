@@ -27,6 +27,8 @@ export interface Project {
   page?: string;
   /** Shown instead of a link while the project isn't out yet, e.g. "Coming soon". */
   status?: string;
+  /** The project's in-depth page (src/data/products). Its card goes straight there instead of opening the window. */
+  product?: string;
 }
 
 /** Every project, in display order. */
@@ -36,6 +38,7 @@ export const PROJECTS: Project[] = [
     summary: "Native macOS terminal for coding with Claude Code and Codex. Shepherd Mini drops your terminals over any app with ⌥⇧Space, even a full-screen IDE, and Shepherd tells you the moment an agent needs you. With projects in groups, split panes, a code editor, Git with a commit graph, a built-in dev browser and signed auto-updates.",
     stack: ["Swift", "SwiftUI", "AppKit", "SwiftTerm", "CloudKit", "Network.framework", "Sparkle"],
     href: "https://sphrd.dev/download",
+    product: "/apps/shepherd",
     screenshots: ["1-mini", "2-open", "3-split", "4-browser", "5-git"].map((name) => `/projects/shepherd/${name}.webp`),
     color: "#75c682", color2: "#1d4a2c", x: 100, y: -65,
   },
@@ -44,12 +47,24 @@ export const PROJECTS: Project[] = [
     summary: "Free iPhone companion for Shepherd. Approve or deny an agent from the Lock Screen, read and reply to the whole conversation, type into your Mac's terminals, commit and push with Git, and send photos and files into a project. Your Mac and iPhone talk directly over your own Wi-Fi or through your private iCloud, with no server in the middle.",
     stack: ["Swift", "SwiftUI", "CloudKit", "Network.framework", "ActivityKit", "WidgetKit", "AppIntents"],
     href: "https://apps.apple.com/app/id6823984397",
+    product: "/apps/shepherd#iphone",
     screenshots: ["1-lock", "2-list", "3-chat", "4-chat-terminal", "5-git"].map((name) => `/projects/shepherd-companion/${name}.webp`),
     phone: true,
     color: "#a6dcae", color2: "#2b5a3a", x: -170, y: -10,
   },
   {
+    id: "walleta", name: "Walleta", group: "Mobile", year: "2026",
+    summary: "Savings app for iPhone, iPad and Mac. Give each goal its own fund, forecast what you'll spend from it and see what's still free once those plans are covered, then compare what you actually spent. Syncs through your own iCloud, with no account and no tracking.",
+    stack: ["Swift", "SwiftUI", "SwiftData", "CloudKit", "Swift Charts", "Figma"],
+    product: "/apps/walleta",
+    status: "Coming soon",
+    screenshots: ["01-overview", "02-fund-detail", "03-planned-vs-actual"].map((name) => `/projects/walleta/${name}.webp`),
+    phone: true,
+    color: "#6cbf7c", color2: "#3d6fa8", x: -75, y: 55,
+  },
+  {
     id: "usage-finder", name: "Usage Finder", group: "macOS", year: "2026",
+    product: "/apps/usage-finder",
     summary: "Native macOS system monitor with live per-core CPU, memory and swap meters in the menu bar, history charts for CPU, memory pressure and power, signed auto-updates, and a sandboxed Mac App Store edition.",
     stack: ["Swift", "SwiftUI", "Swift Charts", "AppKit", "IOKit", "Sparkle"],
     href: "https://github.com/ekramjim/UsageFinder-Releases/releases/latest/download/UsageFinder.dmg",
@@ -59,6 +74,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "colorectal-proteomics", name: "Colorectal Cancer Proteomics", group: "Bioinformatics", year: "2026",
+    product: "/apps/colorectal-proteomics",
     summary: "Bioinformatics analysis of CPTAC proteomic data comparing colorectal tumours with healthy colon tissue across 54 samples, including preprocessing, imputation, normalisation and differential abundance testing.",
     stack: ["Python", "Pandas", "NumPy", "SciPy", "Seaborn", "Matplotlib", "Proteomics"],
     href: "/projects/proteomic-analysis-colorectal-cancer-cptac.pdf",
@@ -67,6 +83,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "linkedhive", name: "LinkedHive", group: "Mobile", year: "2025–2026",
+    product: "/apps/linkedhive",
     summary: "Cross-platform (iOS, Android, Web) community and business networking app for Australian suburbs, with real-time chat, events, jobs, local deals and AI translation.",
     stack: ["React Native", "Expo", "Next.js 16", "TypeScript", "Supabase", "Drizzle ORM", "Stripe"],
     href: "https://www.linkedhive.com.au/",
@@ -75,6 +92,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "lynksphere", name: "LynkSphere Website", group: "Web", year: "2026",
+    product: "/apps/lynksphere",
     summary: "Production marketing site for LynkSphere with rich 3D animation. It is the main customer acquisition channel, contributing $30K AUD revenue in 8 months.",
     stack: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "GSAP", "Three.js"],
     href: "https://lynksphere.com/",
@@ -83,6 +101,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "timebreak", name: "TimeBreak", group: "Mobile", year: "2026",
+    product: "/apps/timebreak",
     summary: "Native Pomodoro timer for iPhone, iPad, Mac and the menu bar, with an analog clock, Live Activities, a WidgetKit widget and Reminders integration.",
     stack: ["Swift", "SwiftUI", "WidgetKit", "ActivityKit", "AppIntents", "EventKit"],
     href: "https://apps.apple.com/au/app/timebreak-pomodoro/id6763444390",
@@ -93,6 +112,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "mindsigns", name: "MindSigns Website", group: "Web", year: "2026",
+    product: "/apps/mindsigns",
     summary: "Official website for MindSigns, a Monash University Faculty of IT initiative, with a particle-built 3D hand that morphs between sign-language poses.",
     stack: ["Next.js", "React", "TypeScript", "Three.js", "React Three Fiber", "Framer Motion", "Tailwind CSS"],
     href: "https://mindsigns.online",
@@ -101,6 +121,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "portfolio", name: "Personal Portfolio Website", group: "Web", year: "2026",
+    product: "/apps/portfolio",
     summary: "This portfolio, built around a Three.js galaxy with scroll-driven camera motion and a contact form.",
     stack: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Three.js", "WebGL", "Nodemailer"],
     href: "https://ekram.tech",
@@ -110,6 +131,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "afl", name: "AFL Game Ranking System", group: "Data science", year: "2025",
+    product: "/apps/afl",
     summary: "CatBoost models trained on historical AFL data reach 78% match outcome accuracy, served through a REST API to a React frontend with interactive Plotly charts.",
     stack: ["Next.js", "React", "Python", "CatBoost", "MongoDB", "Pandas", "Scikit-learn", "Plotly.js"],
     href: "https://github.com/yeanle02/FYP",
@@ -117,6 +139,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "renewable-energy", name: "Visualizing Renewable Energy", group: "Data science", year: "2024",
+    product: "/apps/renewable-energy",
     summary: "Interactive dashboard exploring global renewable energy trends from World Bank data, with five chart idioms linked across views.",
     stack: ["Vega-Lite", "Vega-Embed", "TopoJSON", "Python", "HTML/CSS"],
     href: "https://ekramjim.github.io/visualizing-renewable-energy/",
@@ -125,6 +148,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "f1", name: "F1 Pinnacle Of Motor Sports", group: "Data science", year: "2024",
+    product: "/apps/f1",
     summary: "Interactive Tableau dashboards covering driver nationality, constructor performance and season-by-season comparisons across decades of F1 data.",
     stack: ["Tableau", "Data Visualisation", "Statistical Analysis"],
     href: "https://public.tableau.com/app/profile/ekramul.islam/viz/Visualization1F1/Dashboard1",
@@ -133,6 +157,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "call-monitor", name: "Android Call State Monitor", group: "Mobile", year: "2024",
+    product: "/apps/call-monitor",
     summary: "Android app that listens for call state changes and shows the incoming caller ID in real time.",
     stack: ["Java", "Android SDK", "BroadcastReceiver", "TelephonyManager", "Gradle"],
     href: "https://github.com/ekramjim/MyCallReceiver",
@@ -140,6 +165,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "hearts", name: "Hearts Card Game", group: "Software", year: "2023",
+    product: "/apps/hearts",
     summary: "Terminal Hearts in Python with full game logic and score tracking, plus two AI opponent strategies.",
     stack: ["Python", "OOP", "AI Heuristics"],
     href: "https://github.com/ekramjim/Hearts-Game",
@@ -148,9 +174,10 @@ export const PROJECTS: Project[] = [
 ];
 
 /**
- * The eight projects on the home page, in the order shown: the Mac apps first (the first two get the wide cards), then
- * the rest, mixing apps and sites so neighbouring cards don't look alike.
+ * The eight projects on the home page, in the order shown: the two apps with in-depth pages get the wide cards (Shepherd
+ * Companion is a chapter of Shepherd's page, so it stays on /projects), then the rest, mixing apps and sites so
+ * neighbouring cards don't look alike.
  */
-const FEATURED_IDS = ["shepherd", "shepherd-companion", "usage-finder", "lynksphere", "mindsigns", "timebreak", "linkedhive", "colorectal-proteomics"];
+const FEATURED_IDS = ["shepherd", "walleta", "usage-finder", "lynksphere", "mindsigns", "timebreak", "linkedhive", "colorectal-proteomics"];
 
 export const FEATURED_PROJECTS: Project[] = FEATURED_IDS.map((id) => PROJECTS.find((p) => p.id === id)!);

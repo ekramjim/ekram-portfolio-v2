@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { Project } from "@/data/projects";
 import { hostLabel } from "./ProjectDevice";
@@ -110,15 +111,26 @@ export default function ProjectCard({ project, index, wide, onOpen, onPreview, b
           {status && <span className={styles.status}>{status}</span>}
         </p>
         <h3 className={styles.name}>
-          <button
-            ref={buttonRef}
-            type="button"
-            onClick={() => mediaRef.current && onOpen(mediaRef.current)}
-            onFocus={(e) => { if (e.currentTarget.matches(":focus-visible")) showPreview(true); }}
-            onBlur={() => showPreview(false)}
-          >
-            {name}
-          </button>
+          {/* An app with an in-depth page goes straight to it; everything else opens in the window. */}
+          {project.product ? (
+            <Link
+              href={project.product}
+              onFocus={(e) => { if (e.currentTarget.matches(":focus-visible")) showPreview(true); }}
+              onBlur={() => showPreview(false)}
+            >
+              {name}
+            </Link>
+          ) : (
+            <button
+              ref={buttonRef}
+              type="button"
+              onClick={() => mediaRef.current && onOpen(mediaRef.current)}
+              onFocus={(e) => { if (e.currentTarget.matches(":focus-visible")) showPreview(true); }}
+              onBlur={() => showPreview(false)}
+            >
+              {name}
+            </button>
+          )}
         </h3>
         <p className={styles.summary}>{summary}</p>
         <p className={styles.stack}>{stack.slice(0, 4).join("  ·  ")}{stack.length > 4 && `  +${stack.length - 4}`}</p>

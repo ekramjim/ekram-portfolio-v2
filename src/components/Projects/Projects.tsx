@@ -52,6 +52,7 @@ function Details({ project, index, total, onStep }: { project: Project; index: n
       <p className={styles.summary}>{project.summary}</p>
       <p className={styles.stack}>{project.stack.join("  ·  ")}</p>
       <div className={styles.actions}>
+        {project.product && <GlassButton href={project.product}>Product page →</GlassButton>}
         {project.href && <GlassButton href={project.href}>{linkLabel(project.href)} ↗</GlassButton>}
         {project.status && <span className={styles.status}>{project.status}</span>}
         {project.github && <GlassButton href={project.github}>GitHub ↗</GlassButton>}
