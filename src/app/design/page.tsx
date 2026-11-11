@@ -14,7 +14,6 @@ export const metadata: Metadata = {
     title: "Design — Ekram",
     description: "App screens, app icons, App Store artwork and wallpapers designed in Figma.",
     url: "/design",
-    images: ["/design/shepherd-cover-v2.webp"],
   },
 };
 
