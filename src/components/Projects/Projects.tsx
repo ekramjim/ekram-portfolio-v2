@@ -15,6 +15,12 @@ interface ProjectsProps {
   note?: string;
   /** Link shown beside the heading and under the grid, if any. */
   footer?: { label: string; href: string };
+  /** Another button beside the footer's under the grid (the home page's link to the design work). */
+  footerAlt?: { label: string; href: string };
+  /** A heading over the grid, with a short note beside it (the home page's "Software", over its design tiles' "Design"). */
+  gridHeading?: { title: string; note?: string };
+  /** Shown under the grid, above the footer (the home page's design tiles). */
+  children?: React.ReactNode;
   /** A short, curated set: the first two get wide cards, the rest sit three to a row. */
   featured?: boolean;
   /** Buttons above the grid that narrow it to one kind of project. */
@@ -76,7 +82,7 @@ function linkLabel(href: string) {
  * full scene: the grid fades away, the camera flies into the star, and the project's details set themselves inside the
  * window. Arrow keys travel between stars; Escape returns.
  */
-export default function Projects({ projects, heading, note, footer, featured, filters, initialId }: ProjectsProps) {
+export default function Projects({ projects, heading, note, footer, footerAlt, gridHeading, children, featured, filters, initialId }: ProjectsProps) {
   const [hover, setHover] = useState(-1);
   const [open, setOpen] = useState(() => (initialId ? projects.findIndex((p) => p.id === initialId) : -1));
   const [holder, setHolder] = useState<number | undefined>(undefined);
@@ -240,6 +246,12 @@ export default function Projects({ projects, heading, note, footer, featured, fi
               ))}
             </div>
           )}
+          {gridHeading && (
+            <h3 className={styles.gridHead}>
+              <b>{gridHeading.title}</b>
+              {gridHeading.note && <span>{gridHeading.note}</span>}
+            </h3>
+          )}
           <ul className={styles.grid} data-featured={featured ? "" : undefined}>
             {shown.map((i, k) => (
               <li key={projects[i].id}>
@@ -254,9 +266,11 @@ export default function Projects({ projects, heading, note, footer, featured, fi
               </li>
             ))}
           </ul>
+          {children}
           {footer && (
             <p className={styles.more}>
               <GlassButton href={footer.href} size="large">{footer.label}</GlassButton>
+              {footerAlt && <GlassButton href={footerAlt.href} size="large">{footerAlt.label}</GlassButton>}
             </p>
           )}
         </div>

@@ -71,3 +71,9 @@ body {
 .custom-cursor * {
   cursor: none !important;
 }
+
+/* The Design page's colours, registered so the whole page can ease from one piece's palette to the next. */
+@property --d-bg { syntax: "<color>"; inherits: true; initial-value: #f5f3ee; }
+@property --d-ink { syntax: "<color>"; inherits: true; initial-value: #0d1724; }
+@property --d-ink2 { syntax: "<color>"; inherits: true; initial-value: #45576b; }
+@property --d-accent { syntax: "<color>"; inherits: true; initial-value: #5b7853; }

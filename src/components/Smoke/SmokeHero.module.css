@@ -61,10 +61,105 @@
 .role { white-space: nowrap; }
 .dot { margin-inline: 0.7em; opacity: 0.6; }
 
+/* Ways into the work: a stack of thumbnails from what's behind it and a label, on the smoke itself. The thumbnails fan out on hover. The stage passes clicks through, so these take them back. */
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: clamp(30px, 4.6vh, 52px);
+  pointer-events: auto;
+  animation: condense 1.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(0.25s + var(--i) * 0.14s);
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  height: 56px;
+  padding: 0 12px 0 0;
+  border-radius: 999px;
+  color: #eaf5f2;
+  text-decoration: none;
+}
+.pill:focus-visible { outline: 2px solid #eaf5f2; outline-offset: 6px; }
+
+.stack { flex: none; display: flex; padding-left: 2px; }
+.stack img {
+  width: 44px;
+  height: 44px;
+  margin-left: -16px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 2px #04161f;
+  background: #04161f;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), margin 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform: rotate(calc((var(--t) - 1) * -6deg));
+}
+.stack img:first-child { margin-left: 0; }
+.pill:hover .stack img { margin-left: -6px; transform: rotate(calc((var(--t) - 1) * 8deg)) translateY(-2px); }
+.pill:hover .stack img:first-child { margin-left: 0; }
+
+.pillLabel { display: inline-flex; align-items: center; gap: 8px; font: 500 16px/1 var(--font-sans); letter-spacing: -0.015em; white-space: nowrap; }
+.arrow { font-size: 16px; opacity: 0.7; transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.35s; }
+.pill:hover .arrow { transform: translateX(4px); opacity: 1; }
+
 /* On narrow screens the roles stack, one per line, instead of wrapping mid-role. */
 @media (max-width: 599px) {
   .role { display: block; }
   .dot { display: none; }
+  /* On phones the two sit side by side: thumbnails fanned across the top, the label under them. */
+  .links { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .pill {
+    position: relative;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    height: auto;
+    padding: 4px 0;
+    border-radius: 12px;
+  }
+  .stack img { width: 40px; height: 40px; margin-left: -14px; }
+  .pillLabel { font-size: 15px; gap: 6px; }
+}
+
+/* The scroll cue at the foot of the first screen (see ScrollCue), on the headline's left edge. It sits on the pale
+   smoke, so it's drawn in dark ink. */
+.cue {
+  position: absolute;
+  left: max(var(--gutter), calc((100% - var(--content-max)) / 2 + var(--gutter)));
+  bottom: calc(32px + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #04212b;
+  text-decoration: none;
+  pointer-events: auto;
+  animation: condense 1.4s 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  transition: opacity 0.5s, translate 0.5s;
+}
+.cue[data-gone] { opacity: 0; translate: 0 10px; pointer-events: none; }
+.cue:focus-visible { outline: 2px solid #04212b; outline-offset: 6px; border-radius: 4px; }
+.cueText { font: 400 11px/1 var(--font-mono); letter-spacing: 0.24em; text-transform: uppercase; opacity: 0.8; }
+.cueLine {
+  position: relative;
+  width: 1px;
+  height: 46px;
+  overflow: hidden;
+  background: rgba(4, 33, 43, 0.2);
+}
+.cueLine::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 18px;
+  background: linear-gradient(to bottom, transparent, #04212b);
+  animation: drip 1.9s cubic-bezier(0.6, 0, 0.3, 1) infinite;
+}
+@keyframes drip {
+  from { transform: translateY(-18px); }
+  to { transform: translateY(46px); }
 }
 
 @keyframes condense {
@@ -80,5 +175,8 @@
 @media (prefers-reduced-motion: reduce) {
   .word,
   .star,
-  .roles { animation: none; }
+  .roles,
+  .links,
+  .cue,
+  .cueLine::after { animation: none; }
 }

@@ -27,14 +27,16 @@ export const MISSIONS: Mission[] = [
     note: "Part-time",
     start: { year: 2026, month: 8 },
     objectives: [
-      "Building a new e-commerce platform from the ground up with Next.js and TypeScript, including end-to-end payment integration and a REST API layer for catalog, cart, and order management",
-      "Enhancing existing iOS and Android applications, implementing Row-Level Security (RLS) policies to enforce per-user data access at the database layer",
-      "Transitioning the app's UI to Apple's Liquid Glass design language, adopting the latest iOS visual and interaction patterns",
+      "Rebuilt the LinkedHive iOS app natively in Swift and SwiftUI with Apple's Liquid Glass design, now live on the App Store, replacing the React Native version while migrating existing users' sessions so they stayed signed in",
+      "Implemented Supabase Row-Level Security (RLS) policies to enforce per-user data access at the database layer, and enhanced the React Native Android and web apps on the shared backend",
+      "Developing WishDeals, an Australian fashion price-comparison app (SwiftUI iPhone, Next.js web) with a robots.txt-respecting store-data collector and Supabase price checks sending size-aware price-drop alerts",
+      "Developing an e-commerce platform from the ground up in Next.js and TypeScript, with end-to-end payment integration and a REST API for catalogue, cart and order management",
     ],
   },
   {
     company: "MindSigns",
-    role: "Full Stack Software Developer",
+    role: "Web Developer",
+    note: "Casual",
     start: { year: 2026, month: 5 },
     link: { label: "mindsigns.online", href: "https://mindsigns.online" },
     objectives: [

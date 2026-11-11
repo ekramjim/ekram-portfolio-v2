@@ -1,0 +1,47 @@
+/* The home page's row of design tiles (inside Projects). On phones it scrolls sideways. */
+.strip { margin-top: clamp(72px, 9vw, 112px); padding-top: clamp(28px, 3vw, 40px); border-top: 1px solid var(--line); }
+.head { display: flex; align-items: baseline; gap: 14px; margin: 0 0 clamp(24px, 3vw, 36px); font-weight: 400; }
+.head b { color: var(--ink-head); font: var(--heading-weight) clamp(26px, 2.6vw, 38px)/1 var(--font-sans); letter-spacing: var(--heading-tracking); }
+.head span { color: var(--ink-3); font: 400 12px/1 var(--font-mono); letter-spacing: 0.04em; }
+
+.row { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(14px, 1.6vw, 24px); }
+.tile { display: grid; gap: 6px; color: inherit; text-decoration: none; }
+.art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 5;
+  margin-bottom: 8px;
+  overflow: hidden;
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 1px rgb(13 23 36 / 0.06);
+}
+.art img { display: block; transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.art[data-fit="cover"] img { width: 100%; height: 100%; object-fit: cover; }
+.art[data-fit="contain"] img { max-width: 58%; max-height: 78%; object-fit: contain; border-radius: 12px; filter: drop-shadow(0 18px 24px rgb(0 0 0 / 0.22)); }
+.name { color: var(--ink-head); font-size: 15px; font-weight: 500; letter-spacing: -0.01em; }
+.sub { color: var(--ink-3); font-size: 13px; }
+@media (hover: hover) {
+  .tile:hover .art img { transform: scale(1.04); }
+  .tile:hover .name { color: var(--sage-deep); }
+}
+.tile:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: 14px; }
+
+@media (max-width: 899px) {
+  .row {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 46%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+  .row::-webkit-scrollbar { display: none; }
+  .row li { scroll-snap-align: start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .art img { transition: none; }
+}

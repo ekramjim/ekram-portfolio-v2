@@ -8,23 +8,28 @@ import { useReveal } from "@/components/ui/useReveal";
 import workspace from "./workspace.jpeg";
 import styles from "./About.module.css";
 
-const STATEMENT =
-  "I build software end to end, from iOS apps to 3D websites to data models, and a bit of research.";
+const STATEMENT = "I design and build apps, websites and data models.";
 
+// One short line each: the statement says what, these say where.
 const FIELDS: { name: string; text: ReactNode }[] = [
   {
     name: "Entrepreneurship",
     text: (
       <>
-        Co-founder of{" "}
-        <UnderlineLink href="https://lynksphere.com/">LynkSphere</UnderlineLink>
-        , a Melbourne software studio building iOS, Android and web apps for Australian startups.
+        Co-founder of <UnderlineLink href="https://lynksphere.com/">LynkSphere</UnderlineLink>, a Melbourne software studio.
       </>
     ),
   },
-  { name: "Research", text: "Researching human-centred computing." },
-  { name: "Computer science and data science", text: "Infusing design with code, and arranging data into its finest form." },
-  { name: "Bioinformatics", text: "RNA-seq from FastQC to DESeq2, applied to a colorectal cancer dataset." },
+  {
+    name: "Design",
+    text: (
+      <>
+        Interfaces, icons and App Store art. <UnderlineLink href="/design">See&nbsp;the&nbsp;work</UnderlineLink>
+      </>
+    ),
+  },
+  { name: "Data science", text: "Machine learning and proteomics analysis." },
+  { name: "Research", text: "Human-centred computing at Monash." },
 ];
 
 /** Four-pointed star used as the section's only marker. */

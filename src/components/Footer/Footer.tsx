@@ -4,6 +4,7 @@ import styles from "./Footer.module.css";
 const NAV_LINKS = [
   { label: "About", href: "#about" },
   { label: "Projects", href: "#projects" },
+  { label: "Design", href: "/design" },
   { label: "Experience", href: "#experience" },
   { label: "Skills", href: "#skills" },
   { label: "Leadership", href: "#leadership" },

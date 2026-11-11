@@ -53,6 +53,11 @@ main > div:first-child > .section { --nav: 74px; }
 /* The link to the other projects page, level with the heading. */
 .topLink { position: absolute; top: calc(28px + var(--nav, 0px)); right: var(--gutter); }
 
+/* A heading over the grid; the same as the design tiles' heading under it (DesignStrip.module.css). */
+.gridHead { display: flex; align-items: baseline; gap: 14px; margin: 0 0 clamp(24px, 3vw, 36px); font-weight: 400; }
+.gridHead b { color: var(--ink-head); font: var(--heading-weight) clamp(26px, 2.6vw, 38px)/1 var(--font-sans); letter-spacing: var(--heading-tracking); }
+.gridHead span { color: var(--ink-3); font: 400 12px/1 var(--font-mono); letter-spacing: 0.04em; }
+
 .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: -36px 0 48px; }
 .filters .count { margin-left: 2px; color: var(--ink-3); font: 400 11px/1 var(--font-mono); }
 
@@ -61,7 +66,7 @@ main > div:first-child > .section { --nav: 74px; }
 .grid > li { grid-column: span 2; }
 .grid[data-featured] > li:nth-child(-n + 2) { grid-column: span 3; }
 
-.more { display: flex; justify-content: center; margin: clamp(56px, 8vw, 88px) 0 0; }
+.more { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: clamp(56px, 8vw, 88px) 0 0; }
 
 /* The star colour, deepened so it reads on paper (see sky.ts). */
 .dot { display: inline-block; width: 8px; height: 8px; margin-right: 10px; border-radius: 50%; background: color-mix(in srgb, var(--c) 55%, var(--c2)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 22%, transparent); }

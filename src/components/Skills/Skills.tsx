@@ -3,12 +3,11 @@ import { useRef, type CSSProperties } from "react";
 import StarBackdrop from "@/components/ui/StarBackdrop";
 import { useReveal } from "@/components/ui/useReveal";
 import { SKILL_GROUPS } from "@/data/skills";
-import Constellation from "./Constellation";
 import styles from "./Skills.module.css";
 
 /**
- * Skills as star maps, one constellation per group. The stars are flat dots in the star field's colours, and a
- * star's size and brightness show how strong the skill is. The pointer joins each map as a small star of its own.
+ * Skills as a spec sheet: one row per group from the CV, numbered, with the most-used skills in each brighter than
+ * the rest.
  */
 export default function Skills() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -20,15 +19,22 @@ export default function Skills() {
       <div className={styles.inner}>
         <h2 id="skills-title" className={styles.head}>
           <b>Core Skills</b>
-          <span>Technical expertise</span>
+          <span>What I work with</span>
         </h2>
 
-        <div className={styles.grid}>
-          {SKILL_GROUPS.map((group, i) => <Constellation key={group.label} group={group} seed={11 + i * 97} index={i} />)}
-          <p className={styles.key} data-reveal style={{ "--i": SKILL_GROUPS.length } as CSSProperties}>
-            Move your pointer over a map.
-          </p>
-        </div>
+        <ol className={styles.rows}>
+          {SKILL_GROUPS.map((group, i) => (
+            <li key={group.label} className={styles.row} data-reveal style={{ "--i": i * 0.5 } as CSSProperties}>
+              <span className={styles.no}>{String(i + 1).padStart(2, "0")}</span>
+              <h3 className={styles.label}>{group.label}</h3>
+              <ul className={styles.skills}>
+                {group.skills.map((s, j) => (
+                  <li key={s} className={j < group.core ? styles.core : undefined}>{s}</li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );

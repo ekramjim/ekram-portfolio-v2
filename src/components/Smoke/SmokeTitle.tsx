@@ -1,15 +1,33 @@
 "use client";
 import { Fragment, useEffect, useRef, type CSSProperties } from "react";
+import Link from "next/link";
 import styles from "./SmokeHero.module.css";
 
 // The headline is gone into the fog after this share of a screen has been scrolled.
 const SINK_SCREENS = 0.55;
 
+/** A way into the work: a label and a few thumbnails from what's behind it. */
+export interface HeroLink {
+  label: string;
+  href: string;
+  thumbs: string[];
+}
+
 /**
  * The hero headline: its words condense out of the mist on load, and as the page scrolls it lags behind, blurs and
  * fades, sinking into the fog before the paper begins.
  */
-export default function SmokeTitle({ greeting, name, roles }: { greeting: string; name: string; roles: string[] }) {
+export default function SmokeTitle({
+  greeting,
+  name,
+  roles,
+  links = [],
+}: {
+  greeting: string;
+  name: string;
+  roles: string[];
+  links?: HeroLink[];
+}) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -60,6 +78,24 @@ export default function SmokeTitle({ greeting, name, roles }: { greeting: string
           </Fragment>
         ))}
       </p>
+      {links.length > 0 && (
+        <nav className={styles.links} style={{ "--i": words.length + 2.5 } as CSSProperties} aria-label="Work">
+          {links.map((link) => (
+            <Link key={link.href} href={link.href} className={styles.pill}>
+              <span className={styles.stack} aria-hidden="true">
+                {link.thumbs.map((src, i) => (
+                  // eslint-disable-next-line @next/next/no-img-element -- small static thumbnails
+                  <img key={src} src={src} alt="" width={44} height={44} style={{ "--t": i } as CSSProperties} />
+                ))}
+              </span>
+              <span className={styles.pillLabel}>
+                {link.label}
+                <span className={styles.arrow} aria-hidden="true">→</span>
+              </span>
+            </Link>
+          ))}
+        </nav>
+      )}
     </div>
   );
 }

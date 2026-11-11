@@ -53,14 +53,18 @@ export default function Navbar() {
       setScrolled(window.scrollY > 36);
       // A dark hero is midnight over roughly its top 40%; below that it pales into mist, where dark ink reads again.
       const hero = document.querySelector<HTMLElement>("[data-hero-dark]");
-      setOnDark(hero ? hero.getBoundingClientRect().top + hero.offsetHeight * 0.42 > 37 : false);
+      // Elsewhere a page can say its ground is dark (the Design page does, while a dark piece is on screen).
+      const pageDark = document.documentElement.dataset.navTone === "dark";
+      setOnDark(hero ? hero.getBoundingClientRect().top + hero.offsetHeight * 0.42 > 37 : pageDark);
     };
     updateScroll();
     window.addEventListener("scroll", updateScroll, { passive: true });
     window.addEventListener("resize", updateScroll);
+    window.addEventListener("navtone", updateScroll);
     return () => {
       window.removeEventListener("scroll", updateScroll);
       window.removeEventListener("resize", updateScroll);
+      window.removeEventListener("navtone", updateScroll);
     };
   }, [pathname]);
 
