@@ -14,6 +14,14 @@ const nextConfig = {
       },
     ];
   },
+  // Walleta's App Store support and privacy pages are plain HTML in public/walleta. Next doesn't serve a folder's
+  // index.html by itself, so map the clean URLs onto the files.
+  async rewrites() {
+    return [
+      { source: "/walleta", destination: "/walleta/index.html" },
+      { source: "/walleta/privacy", destination: "/walleta/privacy.html" },
+    ];
+  },
 };
 
 // /archive/v1 is proxied to the archived v1 site by src/middleware.ts.
